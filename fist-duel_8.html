@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ХВАТКА — карточная дуэль кулаков</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#15100d;
+    --bg-panel:#1e1712;
+    --line:#3a2c22;
+    --bone:#e9e0cf;
+    --bone-dim:#a89a84;
+    --brass:#c9a227;
+    --brass-dim:#8a7020;
+    --crimson:#a12c2c;
+    --crimson-bright:#e04a3f;
+    --steel:#3d5a73;
+    --steel-bright:#5c85a8;
+    --win:#4f8a5b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(161,44,44,0.18), transparent 55%),
+      radial-gradient(ellipse at 50% 110%, rgba(61,90,115,0.16), transparent 55%),
+      var(--bg);
+    color:var(--bone);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:18px 10px 40px;
+  }
+  h1{
+    font-family:'Bebas Neue',cursive;
+    letter-spacing:6px;
+    font-size:clamp(28px,6vw,46px);
+    margin:4px 0 2px;
+    background:linear-gradient(180deg,#f3e6bd,var(--brass) 70%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-align:center;
+  }
+  .subtitle{
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+    margin-bottom:16px;
+  }
+
+  .arena{
+    width:100%;
+    max-width:760px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+    position:relative;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+
+  .hero-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:2px 6px 10px;
+  }
+  .hero{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1;
+    position:relative;
+  }
+  .hero.player{flex-direction:row-reverse; text-align:left;}
+  .fist-icon{width:40px;height:40px;flex-shrink:0;}
+  .hero-info{flex:1;}
+  .hero-name{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+  }
+  .hpbar-wrap{
+    width:100%;
+    height:14px;
+    background:#0c0906;
+    border:1px solid var(--line);
+    border-radius:7px;
+    overflow:hidden;
+    margin-top:4px;
+    position:relative;
+  }
+  .hpbar{
+    height:100%;
+    transition:width .5s ease;
+  }
+  .hero.player .hpbar{background:linear-gradient(90deg,var(--crimson),var(--crimson-bright));}
+  .hero.enemy .hpbar{background:linear-gradient(90deg,var(--steel-bright),var(--steel));}
+  .hp-label{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+    text-shadow:0 1px 2px #000;
+  }
+
+  .mana-center{
+    text-align:center;
+    padding:0 6px;
+    min-width:90px;
+  }
+  .mana-orb{
+    font-family:'Bebas Neue',cursive;
+    font-size:24px;
+    color:var(--brass);
+    letter-spacing:1px;
+  }
+  .mana-label{
+    font-family:'Oswald',sans-serif;
+    font-size:9px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+  }
+  .round-label{
+    font-size:9px;
+    color:var(--bone-dim);
+    margin-top:4px;
+    letter-spacing:1px;
+  }
+
+  .battlefield{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin:10px 0;
+  }
+  .lane-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(0,0,0,0.18);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:6px;
+  }
+  .side-slots{
+    display:flex;
+    gap:6px;
+    flex:1;
+  }
+  .side-slots.player-side{justify-content:flex-end;}
+  .side-slots.enemy-side{justify-content:flex-start;}
+  .vs-marker{
+    display:flex;
+    align-items:center;
+    gap:3px;
+    flex:0 0 auto;
+    padding:0 2px;
+    opacity:.75;
+  }
+  .vs-marker svg{width:16px;height:16px;}
+  .vs-marker .vs-fist-l{transform:scaleX(-1);}
+  .lane-tag{
+    position:absolute;
+    top:1px; left:3px;
+    font-size:7px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#5a4c3c;
+  }
+  .slot{
+    height:78px;
+    width:76px;
+    flex:0 0 76px;
+    border-radius:6px;
+    border:1px dashed #4a3a2c;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    color:#5a4c3c;
+    position:relative;
+    cursor:default;
+    transition:border-color .15s, background .15s;
+  }
+  .slot.selectable{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.08);
+    cursor:pointer;
+  }
+  .slot.selectable:hover{background:rgba(201,162,39,0.18);}
+  .slot.spell-target{
+    border-color:var(--crimson-bright);
+    background:rgba(224,74,63,0.1);
+    cursor:pointer;
+  }
+  .slot.spell-target:hover{background:rgba(224,74,63,0.22);}
+
+  .unit-card{
+    width:100%;
+    height:100%;
+    border-radius:6px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:5px 6px;
+    position:relative;
+    border:1px solid;
+  }
+  .unit-card.mine{background:linear-gradient(160deg,#2c1414,#1c0f0f); border-color:var(--crimson);}
+  .unit-card.theirs{background:linear-gradient(160deg,#131f28,#0d161c); border-color:var(--steel);}
+  .unit-name{font-size:10px; font-weight:700; line-height:1.15; padding-right:18px;}
+  .unit-stats{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    font-weight:600;
+  }
+  .stat-atk{color:var(--crimson-bright);}
+  .stat-hp{color:#7fd68a;}
+  .row-tag{
+    position:absolute;
+    top:2px; right:4px;
+    font-size:8px;
+    color:#00000055;
+  }
+  .unit-hit{}
+  .unit-dying{}
+
+  /* Attack lunge: unit darts toward the opposing fist and snaps back (no resizing) */
+  @keyframes lunge-right{
+    0%{transform:translateX(0); z-index:3;}
+    38%{transform:translateX(22px); z-index:3;}
+    60%{transform:translateX(10px);}
+    100%{transform:translateX(0);}
+  }
+  @keyframes lunge-left{
+    0%{transform:translateX(0); z-index:3;}
+    38%{transform:translateX(-22px); z-index:3;}
+    60%{transform:translateX(-10px);}
+    100%{transform:translateX(0);}
+  }
+  .lunge-right{animation:lunge-right 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
+  .lunge-left{animation:lunge-left 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
+
+  @keyframes hero-shake{
+    0%,100%{transform:translateX(0);}
+    15%{transform:translateX(-6px) rotate(-1deg);}
+    35%{transform:translateX(5px) rotate(1deg);}
+    55%{transform:translateX(-4px);}
+    75%{transform:translateX(3px);}
+  }
+  .hero-hit{animation:hero-shake 1.35s ease;}
+  .hero-hit .hpbar-wrap{box-shadow:0 0 0 2px var(--crimson-bright);}
+
+  .dmg-pop{
+    position:absolute;
+    top:38%; left:50%;
+    transform:translate(-50%,-50%);
+    font-family:'Bebas Neue',cursive;
+    font-size:20px;
+    letter-spacing:1px;
+    text-shadow:0 2px 4px rgba(0,0,0,0.7), 0 0 10px currentColor;
+    pointer-events:none;
+    z-index:10;
+    animation:dmg-float 2.25s ease-out forwards;
+    white-space:nowrap;
+  }
+  @keyframes dmg-float{
+    0%{opacity:0; transform:translate(-50%,-35%) scale(.5);}
+    18%{opacity:1; transform:translate(-50%,-65%) scale(1.2);}
+    100%{opacity:0; transform:translate(-50%,-125%) scale(1);}
+  }
+
+  .clash-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding:6px 0;
+  }
+  .clash-fist{width:26px;height:26px;opacity:.85;}
+  .clash-fist.left{transform:scaleX(-1);}
+  .clash-line{flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent);}
+
+  .log{
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    color:var(--bone-dim);
+    text-align:center;
+    min-height:16px;
+    margin:4px 0 8px;
+    letter-spacing:.3px;
+  }
+
+  .hand-area{
+    margin-top:6px;
+    padding-top:10px;
+    border-top:1px solid var(--line);
+  }
+  .hand-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .hand-header span{
+    font-family:'Oswald',sans-serif;
+    font-size:10px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+  }
+  .btn{
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    background:linear-gradient(180deg,var(--crimson-bright),var(--crimson));
+    color:#fff2ee;
+    border:none;
+    border-radius:6px;
+    padding:8px 16px;
+    cursor:pointer;
+    font-weight:600;
+    box-shadow:0 3px 0 #5e1717;
+    transition:transform .08s;
+  }
+  .btn:active{transform:translateY(2px); box-shadow:0 1px 0 #5e1717;}
+  .btn:disabled{background:#3a2c22; box-shadow:none; cursor:not-allowed; color:#7a6c5c;}
+  .btn.ghost{
+    background:transparent;
+    border:1px solid var(--brass-dim);
+    color:var(--brass);
+    box-shadow:none;
+    padding:7px 14px;
+  }
+
+  .hand{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    min-height:176px;
+  }
+  .hand-card{
+    flex:0 0 98px;
+    height:172px;
+    border-radius:8px;
+    border:2px solid var(--line);
+    background:linear-gradient(160deg,#241b14,#1a130d);
+    padding:7px 7px 8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    cursor:pointer;
+    transition:transform .15s, border-color .15s, box-shadow .15s;
+    position:relative;
+  }
+  .card-art{
+    width:100%;
+    height:52px;
+    border-radius:5px;
+    background:radial-gradient(ellipse at 50% 30%, rgba(201,162,39,0.14), transparent 70%), #0f0b08;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .card-art svg{width:34px; height:34px;}
+  .unit-art{
+    position:absolute;
+    top:3px; right:3px;
+    width:18px; height:18px;
+    opacity:.6;
+  }
+  .unit-art svg{width:100%; height:100%;}
+  .hand-card:hover{transform:translateY(-4px);}
+  .hand-card.affordable{border-color:var(--brass-dim);}
+  .hand-card.selected{
+    border-color:var(--brass);
+    box-shadow:0 0 0 2px rgba(201,162,39,0.35), 0 -4px 12px rgba(201,162,39,0.25);
+    transform:translateY(-6px);
+  }
+  .hand-card.unaffordable{opacity:.4; cursor:not-allowed;}
+  .hand-card .cost{
+    position:absolute; top:-8px; left:-8px;
+    width:22px;height:22px;border-radius:50%;
+    background:var(--brass);
+    color:#1a1206;
+    font-family:'Bebas Neue',cursive;
+    font-size:13px;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 4px rgba(0,0,0,0.5);
+  }
+  .hand-card .cname{font-size:10.5px; font-weight:700; line-height:1.2; margin-top:6px;}
+  .hand-card .ctype{font-size:8px; color:var(--bone-dim); text-transform:uppercase; letter-spacing:1px;}
+  .hand-card .cstats{
+    display:flex; justify-content:space-between;
+    font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+  }
+  .hand-card .cdesc{font-size:8.5px; color:var(--bone-dim); line-height:1.25;}
+
+  .hint{
+    font-size:10px;
+    color:var(--bone-dim);
+    text-align:center;
+    margin-top:6px;
+    min-height:14px;
+  }
+
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(10,7,5,0.88);
+    display:flex; align-items:center; justify-content:center;
+    z-index:50;
+    animation:fade-in .3s ease;
+  }
+  @keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+  .overlay-box{
+    text-align:center;
+    padding:30px 40px;
+  }
+  .overlay-title{
+    font-family:'Bebas Neue',cursive;
+    font-size:52px;
+    letter-spacing:5px;
+    margin-bottom:16px;
+  }
+  .overlay-title.win{color:var(--win);}
+  .overlay-title.lose{color:var(--crimson-bright);}
+
+  @media(max-width:480px){
+    .slot{height:62px; width:58px; flex-basis:58px;}
+    .lane-row{gap:3px; padding:4px;}
+    .side-slots{gap:3px;}
+    .hand-card{flex:0 0 84px; height:158px;}
+    .card-art{height:44px;}
+    .card-art svg{width:28px; height:28px;}
+  }
+</style>
+</head>
+<body>
+
+<h1>Хватка</h1>
+<div class="subtitle">Дуэль кулаков · карточная тактика</div>
+
+<div class="arena" id="arena">
+
+  <div class="hero-row">
+    <div class="hero player">
+      <svg class="fist-icon" viewBox="0 0 64 64"><path fill="#e04a3f" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+      <div class="hero-info">
+        <div class="hero-name">Ты</div>
+        <div class="hpbar-wrap"><div class="hpbar" id="playerHpBar" style="width:100%"></div><div class="hp-label" id="playerHpLabel">30/30</div></div>
+      </div>
+    </div>
+    <div class="mana-center">
+      <div class="mana-orb" id="manaOrb">2/2</div>
+      <div class="mana-label">Мана</div>
+      <div class="round-label" id="roundLabel">Раунд 1</div>
+    </div>
+    <div class="hero enemy">
+      <svg class="fist-icon" viewBox="0 0 64 64"><path fill="#5c85a8" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+      <div class="hero-info">
+        <div class="hero-name">Соперник</div>
+        <div class="hpbar-wrap"><div class="hpbar" id="enemyHpBar" style="width:100%"></div><div class="hp-label" id="enemyHpLabel">30/30</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="battlefield" id="battlefield"></div>
+
+  <div class="log" id="logLine">Выложи бойцов на передние или задние позиции и заверши ход.</div>
+
+  <div class="hand-area">
+    <div class="hand-header">
+      <span id="handCount">Рука: 3</span>
+      <div style="display:flex; gap:8px;">
+        <button class="btn ghost" id="sacBtn">Пожертвовать (+1 мана)</button>
+        <button class="btn" id="endTurnBtn">Завершить ход</button>
+      </div>
+    </div>
+    <div class="hand" id="hand"></div>
+    <div class="hint" id="hint">Выбери карту, затем свободную позицию на своей стороне.</div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Card pool ----------
+  const POOL = [
+    {id:'c1', name:'Забияка', type:'creature', cost:1, atk:1, hp:2, desc:'Дешёвый застрельщик.', art:'scrapper'},
+    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, desc:'Держит удар в первой линии.', art:'shield'},
+    {id:'c3', name:'Костолом', type:'creature', cost:2, atk:3, hp:2, desc:'Бьёт больно, ломается быстро.', art:'bones'},
+    {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, desc:'Сбалансированный боец.', art:'dagger'},
+    {id:'c5', name:'Ветеран Ямы', type:'creature', cost:3, atk:2, hp:6, desc:'Живучий защитник тыла.', art:'veteran'},
+    {id:'c6', name:'Берсерк', type:'creature', cost:4, atk:6, hp:2, desc:'Всё в атаку, ничего в защиту.', art:'berserk'},
+    {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, desc:'Почти не падает.', art:'wall'},
+    {id:'c8', name:'Чемпион Ринга', type:'creature', cost:5, atk:5, hp:6, desc:'Опасен с любой позиции.', art:'champion'},
+    {id:'c9', name:'Тяжеловес', type:'creature', cost:6, atk:7, hp:8, desc:'Финальный аргумент.', art:'anvil'},
+    {id:'s1', name:'Удар в челюсть', type:'spell', cost:2, dmg:3, desc:'3 урона переднему врагу в выбранной полосе.', art:'hook'},
+    {id:'s2', name:'Прямой в корпус', type:'spell', cost:4, dmg:5, desc:'5 урона переднему врагу в выбранной полосе.', art:'straight'},
+    {id:'s3', name:'Перевязка', type:'spell', cost:2, heal:4, desc:'Лечит своего бойца на 4.', art:'bandage'},
+  ];
+
+  // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
+  const ICONS = {
+    scrapper: `<svg viewBox="0 0 64 64"><circle cx="32" cy="20" r="9" fill="#e04a3f"/><path d="M20 52c1-11 6-17 12-17s11 6 12 17" stroke="#e04a3f" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M14 44l6-4M50 44l-6-4" stroke="#8a7020" stroke-width="3" stroke-linecap="round"/></svg>`,
+    shield: `<svg viewBox="0 0 64 64"><path d="M32 6l18 6v16c0 14-9 24-18 30-9-6-18-16-18-30V12z" fill="#3d5a73" stroke="#5c85a8" stroke-width="2.5"/><path d="M32 14v30M20 26h24" stroke="#e9e0cf" stroke-width="2" opacity=".5"/></svg>`,
+    bones: `<svg viewBox="0 0 64 64"><g stroke="#e9e0cf" stroke-width="5" stroke-linecap="round"><path d="M14 20l36 24"/><path d="M50 20l-36 24"/></g><g fill="#c9a227"><circle cx="14" cy="20" r="5"/><circle cx="50" cy="20" r="5"/><circle cx="14" cy="44" r="5"/><circle cx="50" cy="44" r="5"/></g></svg>`,
+    dagger: `<svg viewBox="0 0 64 64"><path d="M32 6l6 30h-12z" fill="#a89a84"/><rect x="29" y="34" width="6" height="16" fill="#8a7020"/><rect x="21" y="48" width="22" height="6" rx="2" fill="#a12c2c"/><rect x="30" y="52" width="4" height="8" fill="#3a2c22"/></svg>`,
+    veteran: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="none" stroke="#8a7020" stroke-width="3"/><path d="M20 20l10 10M44 20L34 30M20 44l10-10M44 44L34 34" stroke="#e04a3f" stroke-width="3" stroke-linecap="round"/></svg>`,
+    berserk: `<svg viewBox="0 0 64 64"><path d="M32 8c-3 8 3 10 0 16-4-2-6 1-6 5 0 6 5 10 6 10s6-4 6-10c0-3-1-5-3-6 4-1 6-6 3-15z" fill="#e04a3f"/><path d="M22 50c4 4 16 4 20 0" stroke="#8a7020" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+    wall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#a89a84" stroke-width="2"><rect x="8" y="12" width="20" height="10"/><rect x="28" y="12" width="20" height="10"/><rect x="48" y="12" width="8" height="10"/><rect x="18" y="22" width="20" height="10"/><rect x="38" y="22" width="18" height="10"/><rect x="8" y="22" width="10" height="10"/><rect x="8" y="32" width="20" height="10"/><rect x="28" y="32" width="20" height="10"/><rect x="48" y="32" width="8" height="10"/><rect x="18" y="42" width="20" height="10"/><rect x="8" y="42" width="10" height="10"/><rect x="38" y="42" width="18" height="10"/></g></svg>`,
+    champion: `<svg viewBox="0 0 64 64"><path d="M22 26c-6 0-10-4-10-10h10M42 26c6 0 10-4 10-10H42" fill="none" stroke="#c9a227" stroke-width="3"/><path d="M20 14h24v14c0 8-5 13-12 13s-12-5-12-13z" fill="#c9a227"/><rect x="26" y="41" width="12" height="6" fill="#8a7020"/><path d="M20 47h24l3 10H17z" fill="#8a7020"/></svg>`,
+    anvil: `<svg viewBox="0 0 64 64"><path d="M14 40h14l4-6h16l6 6v4H14z" fill="#a89a84"/><rect x="28" y="44" width="8" height="10" fill="#5c4536"/><rect x="20" y="54" width="24" height="5" rx="1.5" fill="#3a2c22"/></svg>`,
+    hook: `<svg viewBox="0 0 64 64"><path d="M14 32c4-10 12-16 20-16 10 0 18 8 18 16" fill="none" stroke="#e04a3f" stroke-width="3" stroke-dasharray="4 4"/><path d="M40 20c4-2 9-1 9 5 0 5-6 8-6 8" fill="#e04a3f"/><path d="M12 30l6 6-6 6" stroke="#c9a227" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    straight: `<svg viewBox="0 0 64 64"><rect x="10" y="27" width="26" height="10" rx="4" fill="#e04a3f"/><path d="M36 22c6 0 12 4 12 10s-6 10-12 10" fill="#e04a3f"/><g stroke="#c9a227" stroke-width="3" stroke-linecap="round"><path d="M46 14l6 6M50 32h8M46 50l6-6"/></g></svg>`,
+    bandage: `<svg viewBox="0 0 64 64"><rect x="10" y="26" width="44" height="12" rx="3" fill="#e9e0cf"/><rect x="10" y="26" width="44" height="12" rx="3" fill="none" stroke="#8a7020" stroke-width="1.5" stroke-dasharray="3 3"/><rect x="27" y="16" width="4" height="32" fill="#4f8a5b"/><rect x="16" y="26" width="32" height="4" fill="#4f8a5b"/></svg>`
+  };
+  function cardArt(id){ return ICONS[id] || ''; }
+
+  function shuffledDeck(){
+    // build a 16-card deck by repeating pool with light weighting, then shuffle
+    let deck = [];
+    POOL.forEach(c=>{ deck.push({...c}); if(c.cost<=3) deck.push({...c}); });
+    for(let i=deck.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [deck[i],deck[j]] = [deck[j],deck[i]];
+    }
+    return deck.map((c,i)=>({...c, uid: c.id+'_'+i+'_'+Math.random().toString(36).slice(2,7)}));
+  }
+
+  // ---------- State ----------
+  const LANES = 3, DEPTH = 2; // front(0)/back(1)
+  const MAX_MANA = 10, MAX_HAND = 7, START_HP = 30;
+
+  function freshBoard(){
+    return Array.from({length:LANES}, ()=>[null,null]);
+  }
+
+  const state = {
+    round:1,
+    mana:2, maxMana:2,
+    playerHp:START_HP, enemyHp:START_HP,
+    playerDeck: shuffledDeck(),
+    enemyDeck: shuffledDeck(),
+    playerHand: [],
+    enemyBoard: freshBoard(),
+    playerBoard: freshBoard(),
+    selectedCardUid: null,
+    phase: 'player', // player | resolving | over
+    gameOver:false
+  };
+
+  function draw(deck, hand, n){
+    for(let i=0;i<n;i++){
+      if(hand.length>=MAX_HAND) break;
+      const card = deck.shift();
+      if(card) hand.push(card);
+    }
+  }
+
+  draw(state.playerDeck, state.playerHand, 3);
+  const enemyHandSeed = [];
+  draw(state.enemyDeck, enemyHandSeed, 3);
+  state.enemyHand = enemyHandSeed;
+
+  // ---------- DOM refs ----------
+  const el = {
+    hand: document.getElementById('hand'),
+    handCount: document.getElementById('handCount'),
+    manaOrb: document.getElementById('manaOrb'),
+    roundLabel: document.getElementById('roundLabel'),
+    playerHpBar: document.getElementById('playerHpBar'),
+    enemyHpBar: document.getElementById('enemyHpBar'),
+    playerHpLabel: document.getElementById('playerHpLabel'),
+    enemyHpLabel: document.getElementById('enemyHpLabel'),
+    logLine: document.getElementById('logLine'),
+    hint: document.getElementById('hint'),
+    endTurnBtn: document.getElementById('endTurnBtn'),
+    sacBtn: document.getElementById('sacBtn'),
+    arena: document.getElementById('arena'),
+    battlefield: document.getElementById('battlefield'),
+  };
+
+  function log(msg){ el.logLine.textContent = msg; }
+
+  // ---------- Rendering ----------
+  function unitCardHtml(unit, mine, laneIdx, depthIdx){
+    if(!unit) return '';
+    const cls = mine ? 'mine' : 'theirs';
+    return `<div class="unit-card ${cls}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
+      <div class="unit-art">${cardArt(unit.art)}</div>
+      <div class="unit-name">${unit.name}</div>
+      <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span></div>
+    </div>`;
+  }
+
+  const FIST_PATH = 'M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z';
+
+  function buildSlot(board, laneIdx, depthIdx, mine){
+    const unit = board[laneIdx][depthIdx];
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.lane = laneIdx;
+    slot.dataset.depth = depthIdx;
+    slot.dataset.mine = mine;
+    if(unit){
+      slot.innerHTML = unitCardHtml(unit, mine, laneIdx, depthIdx);
+    } else {
+      slot.innerHTML = `<span>${depthIdx===0?'Перед':'Тыл'}</span>`;
+      const selectedCard = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+      if(mine && state.phase==='player' && selectedCard && selectedCard.type==='creature'){
+        slot.classList.add('selectable');
+        slot.addEventListener('click', ()=>placeSelectedCard(laneIdx, depthIdx));
+      }
+    }
+    return slot;
+  }
+
+  function renderBattlefield(){
+    el.battlefield.innerHTML = '';
+    for(let l=0;l<LANES;l++){
+      const row = document.createElement('div');
+      row.className = 'lane-row';
+      row.dataset.lane = l;
+
+      const playerSide = document.createElement('div');
+      playerSide.className = 'side-slots player-side';
+      // back slot on the outside, front slot next to the VS marker (facing the enemy)
+      playerSide.appendChild(buildSlot(state.playerBoard, l, 1, true));
+      playerSide.appendChild(buildSlot(state.playerBoard, l, 0, true));
+
+      const vs = document.createElement('div');
+      vs.className = 'vs-marker';
+      vs.innerHTML = `<svg class="vs-fist-l" viewBox="0 0 64 64"><path fill="#6a5a46" d="${FIST_PATH}"/></svg><svg viewBox="0 0 64 64"><path fill="#6a5a46" d="${FIST_PATH}"/></svg>`;
+
+      const enemySide = document.createElement('div');
+      enemySide.className = 'side-slots enemy-side';
+      // front slot next to the VS marker (facing the player), back slot on the outside
+      enemySide.appendChild(buildSlot(state.enemyBoard, l, 0, false));
+      enemySide.appendChild(buildSlot(state.enemyBoard, l, 1, false));
+
+      row.appendChild(playerSide);
+      row.appendChild(vs);
+      row.appendChild(enemySide);
+      el.battlefield.appendChild(row);
+    }
+  }
+
+  function renderHand(){
+    el.hand.innerHTML = '';
+    el.handCount.textContent = `Рука: ${state.playerHand.length}`;
+    state.playerHand.forEach(card=>{
+      const affordable = card.cost <= state.mana;
+      const div = document.createElement('div');
+      div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable') + (state.selectedCardUid===card.uid ? ' selected':'');
+      const statsHtml = card.type==='creature'
+        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span></div>`
+        : `<div class="cstats"><span style="color:var(--brass)">${card.dmg? '−'+card.dmg+' HP' : '+'+card.heal+' HP'}</span></div>`;
+      div.innerHTML = `
+        <div class="cost">${card.cost}</div>
+        <div class="card-art">${cardArt(card.art)}</div>
+        <div>
+          <div class="cname">${card.name}</div>
+          <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'}</div>
+        </div>
+        ${statsHtml}
+        <div class="cdesc">${card.desc}</div>
+      `;
+      div.addEventListener('click', ()=>onHandCardClick(card));
+      el.hand.appendChild(div);
+    });
+  }
+
+  function renderTop(){
+    el.manaOrb.textContent = `${state.mana}/${state.maxMana}`;
+    el.roundLabel.textContent = `Раунд ${state.round}`;
+    const pPct = Math.max(0, state.playerHp/START_HP*100);
+    const ePct = Math.max(0, state.enemyHp/START_HP*100);
+    el.playerHpBar.style.width = pPct+'%';
+    el.enemyHpBar.style.width = ePct+'%';
+    el.playerHpLabel.textContent = `${Math.max(0,state.playerHp)}/${START_HP}`;
+    el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}/${START_HP}`;
+  }
+
+  function renderAll(){
+    renderTop();
+    renderBattlefield();
+    renderHand();
+    el.endTurnBtn.disabled = state.phase!=='player';
+    el.sacBtn.disabled = state.phase!=='player' || state.playerHand.length===0;
+  }
+
+  // ---------- Player actions ----------
+  function onHandCardClick(card){
+    if(state.phase!=='player') return;
+    if(card.cost > state.mana){ hintFlash('Недостаточно маны для этой карты.'); return; }
+    if(state.selectedCardUid === card.uid){
+      state.selectedCardUid = null;
+    } else {
+      state.selectedCardUid = card.uid;
+    }
+    renderAll();
+    if(state.selectedCardUid){
+      if(card.type==='creature'){
+        el.hint.textContent = 'Выбери пустую позицию (перед/тыл) на своей стороне.';
+      } else if(card.dmg){
+        el.hint.textContent = 'Выбери полосу — заклинание ударит переднего врага в ней.';
+        highlightEnemyLanesForSpell();
+      } else if(card.heal){
+        el.hint.textContent = 'Выбери своего бойца, чтобы вылечить его.';
+        highlightOwnUnitsForHeal();
+      }
+    } else {
+      el.hint.textContent = 'Выбери карту, затем свободную позицию на своей стороне.';
+    }
+  }
+
+  function highlightEnemyLanesForSpell(){
+    const rows = el.battlefield.querySelectorAll('.lane-row');
+    rows.forEach(row=>{
+      const l = parseInt(row.dataset.lane,10);
+      const enemySide = row.querySelector('.enemy-side');
+      enemySide.querySelectorAll('.slot').forEach(s=>s.classList.add('spell-target'));
+      enemySide.style.cursor = 'pointer';
+      enemySide.onclick = ()=>castDamageSpell(l);
+    });
+  }
+  function highlightOwnUnitsForHeal(){
+    const unitEls = el.battlefield.querySelectorAll('.unit-card.mine');
+    unitEls.forEach(u=>{
+      u.style.cursor='pointer';
+      u.style.outline = '2px solid var(--brass)';
+      u.onclick = (ev)=>{
+        ev.stopPropagation();
+        castHealSpell(parseInt(u.dataset.lane,10), parseInt(u.dataset.depth,10));
+      };
+    });
+  }
+
+  function placeSelectedCard(laneIdx, depthIdx){
+    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+    if(!card || card.type!=='creature') return;
+    if(state.playerBoard[laneIdx][depthIdx]) return;
+    if(card.cost > state.mana) return;
+    state.mana -= card.cost;
+    state.playerBoard[laneIdx][depthIdx] = {name:card.name, atk:card.atk, hp:card.hp, maxHp:card.hp, art:card.art};
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
+    state.selectedCardUid = null;
+    log(`Ты выставил «${card.name}» в бой.`);
+    renderAll();
+  }
+
+  function castDamageSpell(laneIdx){
+    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+    if(!card || !card.dmg) return;
+    if(card.cost > state.mana) return;
+    const target = state.enemyBoard[laneIdx][0]; // front slot physically index 0
+    state.mana -= card.cost;
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
+    state.selectedCardUid = null;
+    clearLaneHandlers();
+    if(target){
+      const targetEl = findUnitEl(laneIdx, false);
+      target.hp -= card.dmg;
+      const died = target.hp<=0;
+      log(`«${card.name}» бьёт ${target.name} на ${card.dmg}.`);
+      if(targetEl){
+        targetEl.classList.add('unit-hit');
+        spawnDamageNumber(targetEl, '-'+card.dmg, 'dmg');
+        if(died) targetEl.classList.add('unit-dying');
+      }
+      if(died){
+        state.enemyBoard[laneIdx][0] = null;
+        shiftForward(state.enemyBoard, laneIdx);
+      }
+      setTimeout(()=>{
+        if(died) log(`${target.name} повержен!`);
+        checkGameOver();
+        renderAll();
+      }, died ? 430 : 300);
+    } else {
+      state.enemyHp -= card.dmg;
+      log(`«${card.name}» бьёт прямо в кулак соперника на ${card.dmg}.`);
+      const heroEl = document.querySelector('.hero.enemy');
+      if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+card.dmg, 'dmg'); }
+      setTimeout(()=>{ checkGameOver(); renderAll(); }, 300);
+    }
+  }
+
+  function castHealSpell(laneIdx, depthIdx){
+    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+    if(!card || !card.heal) return;
+    if(card.cost > state.mana) return;
+    const unit = state.playerBoard[laneIdx][depthIdx];
+    if(!unit) return;
+    state.mana -= card.cost;
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
+    state.selectedCardUid = null;
+    clearLaneHandlers();
+    unit.hp = Math.min(unit.maxHp, unit.hp + card.heal);
+    log(`«${card.name}» лечит ${unit.name}.`);
+    const unitEl = findUnitEl(laneIdx, true, depthIdx);
+    if(unitEl) spawnDamageNumber(unitEl, '+'+card.heal, 'heal');
+    setTimeout(()=>renderAll(), 300);
+  }
+
+  function clearLaneHandlers(){
+    el.battlefield.querySelectorAll('.enemy-side').forEach(s=>{ s.onclick=null; s.style.cursor=''; });
+    el.battlefield.querySelectorAll('.slot.spell-target').forEach(s=>s.classList.remove('spell-target'));
+  }
+
+  function shiftForward(board, laneIdx){
+    if(!board[laneIdx][0] && board[laneIdx][1]){
+      board[laneIdx][0] = board[laneIdx][1];
+      board[laneIdx][1] = null;
+    }
+  }
+
+  el.sacBtn.addEventListener('click', ()=>{
+    if(state.phase!=='player' || state.playerHand.length===0) return;
+    // sacrifice the selected card, or the last card in hand if none selected
+    let card = state.playerHand.find(c=>c.uid===state.selectedCardUid) || state.playerHand[state.playerHand.length-1];
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
+    state.mana += 1; // sacrifice grants bonus mana for this round only, can exceed max
+    state.selectedCardUid = null;
+    log(`Ты пожертвовал «${card.name}» ради +1 маны.`);
+    renderAll();
+  });
+
+  function hintFlash(msg){
+    el.hint.textContent = msg;
+    el.hint.style.color = 'var(--crimson-bright)';
+    setTimeout(()=>{ el.hint.style.color=''; el.hint.textContent='Выбери карту, затем свободную позицию на своей стороне.'; }, 1400);
+  }
+
+  // ---------- AI ----------
+  function aiTakeTurn(){
+    let guard = 0;
+    let aiMana = state.maxMana; // AI gets its own pool equal to the round's max mana
+    while(guard++<20){
+      const affordable = state.enemyHand.filter(c=>c.cost<=aiMana);
+      if(affordable.length===0) break;
+      // prefer creatures into empty slots, occasionally spells
+      const creature = affordable.filter(c=>c.type==='creature');
+      const openSlots = [];
+      for(let l=0;l<LANES;l++) for(let d=0;d<DEPTH;d++) if(!state.enemyBoard[l][d]) openSlots.push([l,d]);
+      if(creature.length && openSlots.length){
+        const pick = creature[Math.floor(Math.random()*creature.length)];
+        const slot = openSlots[Math.floor(Math.random()*openSlots.length)];
+        state.enemyBoard[slot[0]][slot[1]] = {name:pick.name, atk:pick.atk, hp:pick.hp, maxHp:pick.hp, art:pick.art};
+        state.enemyHand = state.enemyHand.filter(c=>c.uid!==pick.uid);
+        aiMana -= pick.cost;
+        continue;
+      }
+      const dmgSpell = affordable.find(c=>c.dmg);
+      if(dmgSpell){
+        // hit strongest threat on player's front line, else hero
+        let bestLane=-1, bestAtk=-1;
+        for(let l=0;l<LANES;l++){
+          const u = state.playerBoard[l][0];
+          if(u && u.atk>bestAtk){ bestAtk=u.atk; bestLane=l; }
+        }
+        state.enemyHand = state.enemyHand.filter(c=>c.uid!==dmgSpell.uid);
+        aiMana -= dmgSpell.cost;
+        if(bestLane>=0){
+          const target = state.playerBoard[bestLane][0];
+          target.hp -= dmgSpell.dmg;
+          if(target.hp<=0){ state.playerBoard[bestLane][0]=null; shiftForward(state.playerBoard, bestLane); }
+        } else {
+          state.playerHp -= dmgSpell.dmg;
+        }
+        continue;
+      }
+      break;
+    }
+  }
+
+  // ---------- Combat resolution ----------
+  function spawnDamageNumber(container, text, kind){
+    if(!container) return;
+    const span = document.createElement('div');
+    span.className = 'dmg-pop';
+    span.textContent = text;
+    span.style.color = kind==='heal' ? 'var(--win)' : 'var(--crimson-bright)';
+    container.appendChild(span);
+    setTimeout(()=>{ span.remove(); }, 2280);
+  }
+
+  function findUnitEl(laneIdx, mine, depth=0){
+    return el.battlefield.querySelector(`.unit-card[data-lane="${laneIdx}"][data-depth="${depth}"][data-mine="${mine}"]`);
+  }
+
+  function resolveCombat(cb){
+    const laneQueue = [];
+    for(let l=0;l<LANES;l++){
+      if(state.playerBoard[l][0] || state.enemyBoard[l][0]) laneQueue.push(l);
+    }
+    if(laneQueue.length===0){ cb(); return; }
+    let i=0;
+    function nextLane(){
+      if(i>=laneQueue.length){ cb(); return; }
+      const l = laneQueue[i]; i++;
+      runLaneCombat(l, nextLane);
+    }
+    nextLane();
+  }
+
+  function runLaneCombat(l, done){
+    const a = state.playerBoard[l][0];
+    const b = state.enemyBoard[l][0];
+    const myUnitEl = findUnitEl(l, true);
+    const enemyUnitEl = findUnitEl(l, false);
+
+    if(a && b){
+      log(`Полоса ${l+1}: ${a.name} и ${b.name} обмениваются ударами.`);
+      if(myUnitEl) myUnitEl.classList.add('lunge-right');
+      if(enemyUnitEl) enemyUnitEl.classList.add('lunge-left');
+      setTimeout(()=>{
+        b.hp -= a.atk; a.hp -= b.atk;
+        if(myUnitEl) spawnDamageNumber(myUnitEl, '-'+b.atk, 'dmg');
+        if(enemyUnitEl) spawnDamageNumber(enemyUnitEl, '-'+a.atk, 'dmg');
+        const bDied = b.hp<=0, aDied = a.hp<=0;
+        if(bDied && enemyUnitEl) enemyUnitEl.classList.add('unit-dying');
+        if(aDied && myUnitEl) myUnitEl.classList.add('unit-dying');
+        const wrapUp = (aDied||bDied) ? 1290 : 780;
+        setTimeout(()=>{
+          if(bDied){ state.enemyBoard[l][0]=null; shiftForward(state.enemyBoard,l); log(`${b.name} повержен!`); }
+          if(aDied){ state.playerBoard[l][0]=null; shiftForward(state.playerBoard,l); log(`${a.name} повержен!`); }
+          renderAll();
+          done();
+        }, wrapUp);
+      }, 570);
+    } else if(a && !b){
+      log(`Полоса ${l+1}: ${a.name} бьёт прямо в кулак соперника.`);
+      if(myUnitEl) myUnitEl.classList.add('lunge-right');
+      const heroEl = document.querySelector('.hero.enemy');
+      setTimeout(()=>{
+        state.enemyHp -= a.atk;
+        if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+a.atk, 'dmg'); }
+        setTimeout(()=>{ renderAll(); done(); }, 780);
+      }, 570);
+    } else if(b && !a){
+      log(`Полоса ${l+1}: ${b.name} бьёт прямо в твой кулак.`);
+      if(enemyUnitEl) enemyUnitEl.classList.add('lunge-left');
+      const heroEl = document.querySelector('.hero.player');
+      setTimeout(()=>{
+        state.playerHp -= b.atk;
+        if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+b.atk, 'dmg'); }
+        setTimeout(()=>{ renderAll(); done(); }, 780);
+      }, 570);
+    } else {
+      done();
+    }
+  }
+
+  function checkGameOver(){
+    if(state.playerHp<=0 || state.enemyHp<=0){
+      state.phase='over';
+      showOverlay(state.enemyHp<=0 && state.playerHp>0);
+      return true;
+    }
+    return false;
+  }
+
+  function showOverlay(won){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `
+      <div class="overlay-box">
+        <div class="overlay-title ${won?'win':'lose'}">${won?'ПОБЕДА':'ПОРАЖЕНИЕ'}</div>
+        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">${won? 'Кулак соперника сломлен.' : 'Твой кулак не выдержал.'}</div>
+        <button class="btn" id="restartBtn">Новая дуэль</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('restartBtn').addEventListener('click', ()=>window.location.reload());
+  }
+
+  // ---------- Turn flow ----------
+  el.endTurnBtn.addEventListener('click', ()=>{
+    if(state.phase!=='player') return;
+    state.phase='resolving';
+    state.selectedCardUid=null;
+    clearLaneHandlers();
+    log('Соперник обдумывает ход...');
+    renderAll();
+    setTimeout(()=>{
+      aiTakeTurn();
+      renderAll();
+      log('Начинается обмен ударами!');
+      setTimeout(()=>{
+        resolveCombat(()=>{
+          if(checkGameOver()) return;
+          startNewRound();
+        });
+      }, 500);
+    }, 600);
+  });
+
+  function startNewRound(){
+    state.round += 1;
+    state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
+    state.mana = state.maxMana;
+    draw(state.playerDeck, state.playerHand, 1);
+    draw(state.enemyDeck, state.enemyHand, 1);
+    state.phase='player';
+    log(`Раунд ${state.round}: твой ход.`);
+    renderAll();
+  }
+
+  // ---------- init ----------
+  renderAll();
+})();
+</script>
+</body>
+</html>
