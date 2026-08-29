@@ -779,13 +779,14 @@
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
     if(!card || !card.dmg) return;
     if(card.cost > state.mana) return;
-    const target = state.enemyBoard[laneIdx][0]; // front slot physically index 0
+    const info = frontUnit(state.enemyBoard, laneIdx); // whichever slot is actually defending the lane
+    const target = info && info.unit;
     state.mana -= card.cost;
     state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.selectedCardUid = null;
     clearLaneHandlers();
     if(target){
-      const targetEl = findUnitEl(laneIdx, false);
+      const targetEl = findUnitEl(laneIdx, false, info.depth);
       target.hp -= card.dmg;
       const died = target.hp<=0;
       log(`«${card.name}» бьёт ${target.name} на ${card.dmg}.`);
@@ -795,8 +796,7 @@
         if(died) targetEl.classList.add('unit-dying');
       }
       if(died){
-        state.enemyBoard[laneIdx][0] = null;
-        shiftForward(state.enemyBoard, laneIdx);
+        state.enemyBoard[laneIdx][info.depth] = null;
       }
       setTimeout(()=>{
         if(died) log(`${target.name} повержен!`);
@@ -834,11 +834,12 @@
     el.battlefield.querySelectorAll('.slot.spell-target').forEach(s=>s.classList.remove('spell-target'));
   }
 
-  function shiftForward(board, laneIdx){
-    if(!board[laneIdx][0] && board[laneIdx][1]){
-      board[laneIdx][0] = board[laneIdx][1];
-      board[laneIdx][1] = null;
-    }
+  // The "effective front" of a lane is whichever slot is occupied, front first —
+  // a lone back-row unit still fights (and blocks hero damage) if the front is empty.
+  function frontUnit(board, laneIdx){
+    if(board[laneIdx][0]) return {unit:board[laneIdx][0], depth:0};
+    if(board[laneIdx][1]) return {unit:board[laneIdx][1], depth:1};
+    return null;
   }
 
   el.sacBtn.addEventListener('click', ()=>{
@@ -879,18 +880,19 @@
       }
       const dmgSpell = affordable.find(c=>c.dmg);
       if(dmgSpell){
-        // hit strongest threat on player's front line, else hero
+        // hit the strongest threat currently defending each lane, else hero
         let bestLane=-1, bestAtk=-1;
         for(let l=0;l<LANES;l++){
-          const u = state.playerBoard[l][0];
-          if(u && u.atk>bestAtk){ bestAtk=u.atk; bestLane=l; }
+          const info = frontUnit(state.playerBoard, l);
+          if(info && info.unit.atk>bestAtk){ bestAtk=info.unit.atk; bestLane=l; }
         }
         state.enemyHand = state.enemyHand.filter(c=>c.uid!==dmgSpell.uid);
         aiMana -= dmgSpell.cost;
         if(bestLane>=0){
-          const target = state.playerBoard[bestLane][0];
+          const info = frontUnit(state.playerBoard, bestLane);
+          const target = info.unit;
           target.hp -= dmgSpell.dmg;
-          if(target.hp<=0){ state.playerBoard[bestLane][0]=null; shiftForward(state.playerBoard, bestLane); }
+          if(target.hp<=0){ state.playerBoard[bestLane][info.depth]=null; }
         } else {
           state.playerHp -= dmgSpell.dmg;
         }
@@ -918,7 +920,8 @@
   function resolveCombat(cb){
     const laneQueue = [];
     for(let l=0;l<LANES;l++){
-      if(state.playerBoard[l][0] || state.enemyBoard[l][0]) laneQueue.push(l);
+      const any = state.playerBoard[l][0] || state.playerBoard[l][1] || state.enemyBoard[l][0] || state.enemyBoard[l][1];
+      if(any) laneQueue.push(l);
     }
     if(laneQueue.length===0){ cb(); return; }
     let i=0;
@@ -930,52 +933,75 @@
     nextLane();
   }
 
-  function runLaneCombat(l, done){
-    const a = state.playerBoard[l][0];
-    const b = state.enemyBoard[l][0];
-    const myUnitEl = findUnitEl(l, true);
-    const enemyUnitEl = findUnitEl(l, false);
+  // A lane fights in up to two waves. Each side's first available unit — the front-line
+  // one if it exists, otherwise the back-line unit standing in for it — acts in the first
+  // wave. If a side placed both a front and a back unit, the back unit gets a second,
+  // later wave of its own. Every attack hits whatever unit is currently first in the
+  // opposing row, or the hero directly if that row is empty.
+  function actingOrder(board, laneIdx){
+    const order = [];
+    if(board[laneIdx][0]) order.push({unit:board[laneIdx][0], depth:0});
+    if(board[laneIdx][1]) order.push({unit:board[laneIdx][1], depth:1});
+    return order;
+  }
 
-    if(a && b){
-      log(`Полоса ${l+1}: ${a.name} и ${b.name} обмениваются ударами.`);
-      if(myUnitEl) myUnitEl.classList.add('lunge-right');
-      if(enemyUnitEl) enemyUnitEl.classList.add('lunge-left');
-      setTimeout(()=>{
-        b.hp -= a.atk; a.hp -= b.atk;
-        if(myUnitEl) spawnDamageNumber(myUnitEl, '-'+b.atk, 'dmg');
-        if(enemyUnitEl) spawnDamageNumber(enemyUnitEl, '-'+a.atk, 'dmg');
-        const bDied = b.hp<=0, aDied = a.hp<=0;
-        if(bDied && enemyUnitEl) enemyUnitEl.classList.add('unit-dying');
-        if(aDied && myUnitEl) myUnitEl.classList.add('unit-dying');
-        const wrapUp = (aDied||bDied) ? 1290 : 780;
-        setTimeout(()=>{
-          if(bDied){ state.enemyBoard[l][0]=null; shiftForward(state.enemyBoard,l); log(`${b.name} повержен!`); }
-          if(aDied){ state.playerBoard[l][0]=null; shiftForward(state.playerBoard,l); log(`${a.name} повержен!`); }
-          renderAll();
-          done();
-        }, wrapUp);
-      }, 570);
-    } else if(a && !b){
-      log(`Полоса ${l+1}: ${a.name} бьёт прямо в кулак соперника.`);
-      if(myUnitEl) myUnitEl.classList.add('lunge-right');
-      const heroEl = document.querySelector('.hero.enemy');
-      setTimeout(()=>{
-        state.enemyHp -= a.atk;
-        if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+a.atk, 'dmg'); }
-        setTimeout(()=>{ renderAll(); done(); }, 780);
-      }, 570);
-    } else if(b && !a){
-      log(`Полоса ${l+1}: ${b.name} бьёт прямо в твой кулак.`);
-      if(enemyUnitEl) enemyUnitEl.classList.add('lunge-left');
-      const heroEl = document.querySelector('.hero.player');
-      setTimeout(()=>{
-        state.playerHp -= b.atk;
-        if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+b.atk, 'dmg'); }
-        setTimeout(()=>{ renderAll(); done(); }, 780);
-      }, 570);
-    } else {
-      done();
+  function runLaneCombat(l, done){
+    const playerOrder = actingOrder(state.playerBoard, l);
+    const enemyOrder = actingOrder(state.enemyBoard, l);
+    const maxWaves = Math.max(playerOrder.length, enemyOrder.length);
+    let w = 0;
+    function nextWave(){
+      if(w>=maxWaves){ done(); return; }
+      const idx = w; w++;
+      runWave(l, playerOrder[idx] || null, enemyOrder[idx] || null, nextWave);
     }
+    nextWave();
+  }
+
+  function runWave(l, aInfo, bInfo, done){
+    // Defensive: skip an actor that already died earlier this lane's combat.
+    if(aInfo && state.playerBoard[l][aInfo.depth] !== aInfo.unit) aInfo = null;
+    if(bInfo && state.enemyBoard[l][bInfo.depth] !== bInfo.unit) bInfo = null;
+    if(!aInfo && !bInfo){ done(); return; }
+
+    const aUnit = aInfo && aInfo.unit;
+    const bUnit = bInfo && bInfo.unit;
+    const aTarget = aUnit ? frontUnit(state.enemyBoard, l) : null;
+    const bTarget = bUnit ? frontUnit(state.playerBoard, l) : null;
+
+    const actorAEl = aUnit ? findUnitEl(l, true, aInfo.depth) : null;
+    const actorBEl = bUnit ? findUnitEl(l, false, bInfo.depth) : null;
+    const heroEnemyEl = document.querySelector('.hero.enemy');
+    const heroPlayerEl = document.querySelector('.hero.player');
+    const targetAEl = aUnit ? (aTarget ? findUnitEl(l, false, aTarget.depth) : heroEnemyEl) : null;
+    const targetBEl = bUnit ? (bTarget ? findUnitEl(l, true, bTarget.depth) : heroPlayerEl) : null;
+
+    const parts = [];
+    if(aUnit) parts.push(`${aUnit.name} → ${aTarget ? aTarget.unit.name : 'кулак соперника'}`);
+    if(bUnit) parts.push(`${bUnit.name} → ${bTarget ? bTarget.unit.name : 'твой кулак'}`);
+    log(`Полоса ${l+1}: ` + parts.join(' · '));
+
+    if(actorAEl) actorAEl.classList.add('lunge-right');
+    if(actorBEl) actorBEl.classList.add('lunge-left');
+
+    setTimeout(()=>{
+      let aDied=false, bDied=false;
+      if(aUnit){
+        if(aTarget){ aTarget.unit.hp -= aUnit.atk; aDied = aTarget.unit.hp<=0; if(targetAEl) spawnDamageNumber(targetAEl,'-'+aUnit.atk,'dmg'); if(aDied && targetAEl) targetAEl.classList.add('unit-dying'); }
+        else { state.enemyHp -= aUnit.atk; if(heroEnemyEl){ heroEnemyEl.classList.add('hero-hit'); spawnDamageNumber(heroEnemyEl,'-'+aUnit.atk,'dmg'); } }
+      }
+      if(bUnit){
+        if(bTarget){ bTarget.unit.hp -= bUnit.atk; bDied = bTarget.unit.hp<=0; if(targetBEl) spawnDamageNumber(targetBEl,'-'+bUnit.atk,'dmg'); if(bDied && targetBEl) targetBEl.classList.add('unit-dying'); }
+        else { state.playerHp -= bUnit.atk; if(heroPlayerEl){ heroPlayerEl.classList.add('hero-hit'); spawnDamageNumber(heroPlayerEl,'-'+bUnit.atk,'dmg'); } }
+      }
+      const wrapUp = (aDied || bDied) ? 1290 : 780;
+      setTimeout(()=>{
+        if(aDied){ state.enemyBoard[l][aTarget.depth]=null; log(`${aTarget.unit.name} повержен!`); }
+        if(bDied){ state.playerBoard[l][bTarget.depth]=null; log(`${bTarget.unit.name} повержен!`); }
+        renderAll();
+        done();
+      }, wrapUp);
+    }, 570);
   }
 
   function checkGameOver(){
