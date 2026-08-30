@@ -67,6 +67,178 @@
     box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
   }
 
+  /* ---------- Main menu ---------- */
+  .screen-menu{
+    width:100%;
+    max-width:320px;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:14px;
+    padding:36px 20px 20px;
+    margin:0 auto;
+  }
+  .menu-fist{
+    width:64px; height:64px;
+    margin:0 auto 10px;
+    opacity:.9;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+  }
+  .menu-fist svg{width:100%; height:100%;}
+  .btn-menu{
+    padding:15px 10px;
+    font-size:14px;
+    letter-spacing:2.5px;
+  }
+  .online-counter{
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:1px;
+    color:var(--bone-dim);
+    margin-top:2px;
+  }
+  .online-counter::before{
+    content:'';
+    display:inline-block;
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--win);
+    margin-right:6px;
+    box-shadow:0 0 5px var(--win);
+    vertical-align:middle;
+  }
+  #onlineCount{
+    color:var(--brass);
+    font-weight:600;
+  }
+
+  /* ---------- Deck builder ---------- */
+  .screen-deck{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .deck-builder-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:0 4px 10px;
+  }
+  .deck-builder-header h2{
+    font-family:'Bebas Neue',cursive;
+    letter-spacing:4px;
+    font-size:24px;
+    color:var(--brass);
+    margin:0;
+  }
+  .deck-count-label{
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    letter-spacing:1px;
+    color:var(--bone-dim);
+  }
+  .deck-count-label.full{color:var(--crimson-bright);}
+  .deck-builder-body{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .pool-panel, .deck-panel-wrap{
+    flex:1 1 320px;
+    min-width:280px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px;
+  }
+  .panel-title{
+    font-family:'Oswald',sans-serif;
+    font-size:10.5px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+    margin-bottom:8px;
+    padding:0 2px;
+  }
+  .deck-row-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    max-height:56vh;
+    overflow-y:auto;
+    padding-right:2px;
+  }
+  .deck-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(0,0,0,0.18);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:6px 8px;
+  }
+  .deck-row-art{
+    width:30px; height:30px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:#0f0b08;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .deck-row-art svg{width:20px; height:20px;}
+  .deck-row-info{flex:1; min-width:0;}
+  .deck-row-name{
+    font-size:11.5px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .deck-row-cost{color:var(--brass); font-family:'Oswald',sans-serif; font-size:10px; flex-shrink:0;}
+  .deck-row-sub{font-size:9.5px; color:var(--bone-dim); margin-top:1px;}
+  .deck-row-count{
+    font-family:'Bebas Neue',cursive;
+    font-size:14px;
+    color:var(--bone);
+    min-width:34px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .deck-row-btn{
+    width:26px; height:26px;
+    border-radius:6px;
+    border:1px solid var(--brass-dim);
+    background:rgba(201,162,39,0.12);
+    color:var(--brass);
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    flex-shrink:0;
+    font-size:15px;
+    line-height:1;
+  }
+  .deck-row-btn:disabled{opacity:.3; cursor:not-allowed;}
+  .deck-row-btn.minus{
+    border-color:var(--crimson);
+    color:var(--crimson-bright);
+    background:rgba(161,44,44,0.12);
+  }
+  .deck-panel-actions{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+  }
+  .deck-panel-actions .btn{flex:1;}
+  .deck-empty-hint{
+    font-size:10px;
+    color:var(--bone-dim);
+    text-align:center;
+    padding:16px 8px;
+  }
+
   .hero-row{
     display:flex;
     align-items:center;
@@ -289,6 +461,40 @@
     100%{opacity:0; transform:translate(-50%,-125%) scale(1);}
   }
 
+  /* Spell impact burst: plays once, at the moment a queued spell actually fires */
+  .spell-burst{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    z-index:9;
+  }
+  .spell-burst svg{
+    width:135%;
+    height:135%;
+    overflow:visible;
+  }
+  .sb-ring{transform-origin:50px 50px; opacity:0;}
+  .sb-ring1{animation:sb-ring-expand 1.05s ease-out forwards;}
+  .sb-ring2{animation:sb-ring-expand 1.05s ease-out .18s forwards;}
+  @keyframes sb-ring-expand{
+    0%{transform:scale(.25); opacity:.95;}
+    65%{opacity:.5;}
+    100%{transform:scale(2.3); opacity:0;}
+  }
+  .sb-spikes{transform-origin:50px 50px; animation:sb-spikes-burst .8s ease-out forwards;}
+  @keyframes sb-spikes-burst{
+    0%{transform:scale(.3) rotate(0deg); opacity:1;}
+    100%{transform:scale(1.5) rotate(8deg); opacity:0;}
+  }
+  .sb-sparks{transform-origin:50px 50px; animation:sb-sparks-rise 1.2s ease-out forwards;}
+  @keyframes sb-sparks-rise{
+    0%{transform:scale(.4) translateY(0); opacity:1;}
+    100%{transform:scale(1.15) translateY(-14px); opacity:0;}
+  }
+
   .clash-divider{
     display:flex;
     align-items:center;
@@ -308,6 +514,31 @@
     min-height:16px;
     margin:4px 0 8px;
     letter-spacing:.3px;
+  }
+
+  .pending-spells{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+    min-height:0;
+    margin-bottom:6px;
+  }
+  .pending-chip{
+    font-family:'Oswald',sans-serif;
+    font-size:9.5px;
+    letter-spacing:.5px;
+    padding:3px 9px;
+    border-radius:12px;
+    border:1px solid var(--brass-dim);
+    background:rgba(201,162,39,0.1);
+    color:var(--brass);
+    white-space:nowrap;
+  }
+  .pending-chip.enemy-chip{
+    border-color:var(--steel);
+    background:rgba(61,90,115,0.15);
+    color:var(--steel-bright);
   }
 
   .hand-area{
@@ -447,6 +678,11 @@
   }
   .overlay-title.win{color:var(--win);}
   .overlay-title.lose{color:var(--crimson-bright);}
+  .overlay-actions{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+  }
 
   @media(max-width:480px){
     .slot{height:62px; width:58px; flex-basis:58px;}
@@ -463,7 +699,38 @@
 <h1>Хватка</h1>
 <div class="subtitle">Дуэль кулаков · карточная тактика</div>
 
-<div class="arena" id="arena">
+<div class="screen-menu" id="mainMenu">
+  <div class="menu-fist">
+    <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+  </div>
+  <button class="btn btn-menu" id="newGameBtn">Новая игра</button>
+  <button class="btn ghost btn-menu" id="deckBtn">Колода</button>
+  <div class="online-counter">Сейчас онлайн: <span id="onlineCount">—</span></div>
+</div>
+
+<div class="screen-deck" id="deckBuilder" style="display:none;">
+  <div class="deck-builder-header">
+    <h2>Колода</h2>
+    <div class="deck-count-label" id="deckCountLabel">0/30</div>
+  </div>
+  <div class="deck-builder-body">
+    <div class="pool-panel">
+      <div class="panel-title">Доступные карты</div>
+      <div class="deck-row-list" id="poolList"></div>
+    </div>
+    <div class="deck-panel-wrap">
+      <div class="panel-title">Твоя колода</div>
+      <div class="deck-row-list" id="deckList"></div>
+      <div class="deck-panel-actions">
+        <button class="btn" id="saveDeckBtn">Сохранить</button>
+        <button class="btn ghost" id="backFromDeckBtn">Назад</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arena" id="arena" style="display:none;">
+
 
   <div class="hero-row">
     <div class="hero player">
@@ -490,6 +757,7 @@
   <div class="battlefield" id="battlefield"></div>
 
   <div class="log" id="logLine">Выложи бойцов на передние или задние позиции и заверши ход.</div>
+  <div class="pending-spells" id="pendingSpells"></div>
 
   <div class="hand-area">
     <div class="hand-header">
@@ -556,24 +824,14 @@
   // ---------- State ----------
   const LANES = 3, DEPTH = 2; // front(0)/back(1)
   const MAX_MANA = 10, MAX_HAND = 7, START_HP = 30;
+  const MAX_DECK_SIZE = 30, MAX_COPIES_PER_CARD = 4;
+  const DECK_STORAGE_KEY = 'fistDuelPlayerDeck';
 
   function freshBoard(){
     return Array.from({length:LANES}, ()=>[null,null]);
   }
 
-  const state = {
-    round:1,
-    mana:2, maxMana:2,
-    playerHp:START_HP, enemyHp:START_HP,
-    playerDeck: shuffledDeck(),
-    enemyDeck: shuffledDeck(),
-    playerHand: [],
-    enemyBoard: freshBoard(),
-    playerBoard: freshBoard(),
-    selectedCardUid: null,
-    phase: 'player', // player | resolving | over
-    gameOver:false
-  };
+  let state = {};
 
   function draw(deck, hand, n){
     for(let i=0;i<n;i++){
@@ -583,10 +841,68 @@
     }
   }
 
-  draw(state.playerDeck, state.playerHand, 3);
-  const enemyHandSeed = [];
-  draw(state.enemyDeck, enemyHandSeed, 3);
-  state.enemyHand = enemyHandSeed;
+  // ---------- Deck building ----------
+  function defaultDeckCounts(){
+    const counts = {};
+    POOL.forEach(c=>{ counts[c.id] = c.cost<=3 ? 2 : 1; });
+    return counts;
+  }
+
+  function loadSavedDeckCounts(){
+    try{
+      const raw = localStorage.getItem(DECK_STORAGE_KEY);
+      if(!raw) return null;
+      const parsed = JSON.parse(raw);
+      if(parsed && typeof parsed==='object') return parsed;
+    } catch(e){}
+    return null;
+  }
+
+  function saveDeckCounts(counts){
+    try{ localStorage.setItem(DECK_STORAGE_KEY, JSON.stringify(counts)); } catch(e){}
+  }
+
+  function totalDeckCount(counts){
+    return Object.values(counts).reduce((a,b)=>a+b,0);
+  }
+
+  function buildDeckFromCounts(counts){
+    let deck = [];
+    Object.keys(counts).forEach(id=>{
+      const base = POOL.find(c=>c.id===id);
+      if(!base) return;
+      for(let i=0;i<counts[id];i++) deck.push({...base});
+    });
+    for(let i=deck.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [deck[i],deck[j]] = [deck[j],deck[i]];
+    }
+    return deck.map((c,i)=>({...c, uid: c.id+'_'+i+'_'+Math.random().toString(36).slice(2,7)}));
+  }
+
+  function initGame(){
+    const counts = loadSavedDeckCounts() || defaultDeckCounts();
+    state = {
+      round:1,
+      mana:2, maxMana:2,
+      playerHp:START_HP, enemyHp:START_HP,
+      playerDeck: buildDeckFromCounts(counts),
+      enemyDeck: shuffledDeck(),
+      playerHand: [],
+      enemyBoard: freshBoard(),
+      playerBoard: freshBoard(),
+      selectedCardUid: null,
+      phase: 'player', // player | resolving | over
+      gameOver:false,
+      pendingSpells: [] // queued this round, resolved after both sides finish placing, before combat
+    };
+    draw(state.playerDeck, state.playerHand, 3);
+    const enemyHandSeed = [];
+    draw(state.enemyDeck, enemyHandSeed, 3);
+    state.enemyHand = enemyHandSeed;
+    renderAll();
+    log('Раунд 1: твой ход.');
+  }
 
   // ---------- DOM refs ----------
   const el = {
@@ -599,6 +915,7 @@
     playerHpLabel: document.getElementById('playerHpLabel'),
     enemyHpLabel: document.getElementById('enemyHpLabel'),
     logLine: document.getElementById('logLine'),
+    pendingSpells: document.getElementById('pendingSpells'),
     hint: document.getElementById('hint'),
     endTurnBtn: document.getElementById('endTurnBtn'),
     sacBtn: document.getElementById('sacBtn'),
@@ -707,10 +1024,22 @@
     el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}/${START_HP}`;
   }
 
+  function renderPendingSpells(){
+    el.pendingSpells.innerHTML = '';
+    state.pendingSpells.forEach(sp=>{
+      const chip = document.createElement('div');
+      chip.className = 'pending-chip' + (sp.side==='enemy' ? ' enemy-chip' : '');
+      const who = sp.side==='player' ? 'Ты' : 'Соперник';
+      chip.textContent = `⏳ ${who}: «${sp.name}» — полоса ${sp.laneIdx+1}`;
+      el.pendingSpells.appendChild(chip);
+    });
+  }
+
   function renderAll(){
     renderTop();
     renderBattlefield();
     renderHand();
+    renderPendingSpells();
     el.endTurnBtn.disabled = state.phase!=='player';
     el.sacBtn.disabled = state.phase!=='player' || state.playerHand.length===0;
   }
@@ -779,37 +1108,13 @@
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
     if(!card || !card.dmg) return;
     if(card.cost > state.mana) return;
-    const info = frontUnit(state.enemyBoard, laneIdx); // whichever slot is actually defending the lane
-    const target = info && info.unit;
     state.mana -= card.cost;
     state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.selectedCardUid = null;
     clearLaneHandlers();
-    if(target){
-      const targetEl = findUnitEl(laneIdx, false, info.depth);
-      target.hp -= card.dmg;
-      const died = target.hp<=0;
-      log(`«${card.name}» бьёт ${target.name} на ${card.dmg}.`);
-      if(targetEl){
-        targetEl.classList.add('unit-hit');
-        spawnDamageNumber(targetEl, '-'+card.dmg, 'dmg');
-        if(died) targetEl.classList.add('unit-dying');
-      }
-      if(died){
-        state.enemyBoard[laneIdx][info.depth] = null;
-      }
-      setTimeout(()=>{
-        if(died) log(`${target.name} повержен!`);
-        checkGameOver();
-        renderAll();
-      }, died ? 430 : 300);
-    } else {
-      state.enemyHp -= card.dmg;
-      log(`«${card.name}» бьёт прямо в кулак соперника на ${card.dmg}.`);
-      const heroEl = document.querySelector('.hero.enemy');
-      if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+card.dmg, 'dmg'); }
-      setTimeout(()=>{ checkGameOver(); renderAll(); }, 300);
-    }
+    state.pendingSpells.push({side:'player', kind:'damage', laneIdx, dmg:card.dmg, name:card.name});
+    log(`«${card.name}» готово — сработает перед боем, в начале следующего хода.`);
+    renderAll();
   }
 
   function castHealSpell(laneIdx, depthIdx){
@@ -822,11 +1127,9 @@
     state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.selectedCardUid = null;
     clearLaneHandlers();
-    unit.hp = Math.min(unit.maxHp, unit.hp + card.heal);
-    log(`«${card.name}» лечит ${unit.name}.`);
-    const unitEl = findUnitEl(laneIdx, true, depthIdx);
-    if(unitEl) spawnDamageNumber(unitEl, '+'+card.heal, 'heal');
-    setTimeout(()=>renderAll(), 300);
+    state.pendingSpells.push({side:'player', kind:'heal', laneIdx, depthIdx, heal:card.heal, name:card.name});
+    log(`«${card.name}» готово для ${unit.name} — сработает перед боем.`);
+    renderAll();
   }
 
   function clearLaneHandlers(){
@@ -880,7 +1183,7 @@
       }
       const dmgSpell = affordable.find(c=>c.dmg);
       if(dmgSpell){
-        // hit the strongest threat currently defending each lane, else hero
+        // pick the lane with the strongest current threat, else any lane (will hit hero directly)
         let bestLane=-1, bestAtk=-1;
         for(let l=0;l<LANES;l++){
           const info = frontUnit(state.playerBoard, l);
@@ -888,17 +1191,67 @@
         }
         state.enemyHand = state.enemyHand.filter(c=>c.uid!==dmgSpell.uid);
         aiMana -= dmgSpell.cost;
-        if(bestLane>=0){
-          const info = frontUnit(state.playerBoard, bestLane);
-          const target = info.unit;
-          target.hp -= dmgSpell.dmg;
-          if(target.hp<=0){ state.playerBoard[bestLane][info.depth]=null; }
-        } else {
-          state.playerHp -= dmgSpell.dmg;
-        }
+        const targetLane = bestLane>=0 ? bestLane : Math.floor(Math.random()*LANES);
+        state.pendingSpells.push({side:'enemy', kind:'damage', laneIdx: targetLane, dmg:dmgSpell.dmg, name:dmgSpell.name});
         continue;
       }
       break;
+    }
+  }
+
+  // ---------- Spell resolution (queued during placement, fired before combat) ----------
+  function resolveSpells(cb){
+    if(state.pendingSpells.length===0){ cb(); return; }
+    const queue = state.pendingSpells.slice();
+    state.pendingSpells = [];
+    renderAll();
+    let i=0;
+    function next(){
+      if(i>=queue.length){ cb(); return; }
+      const spell = queue[i]; i++;
+      applyQueuedSpell(spell, next);
+    }
+    next();
+  }
+
+  function applyQueuedSpell(spell, done){
+    const whoLabel = spell.side==='player' ? 'Ты' : 'Соперник';
+    if(spell.kind==='damage'){
+      const defBoard = spell.side==='player' ? state.enemyBoard : state.playerBoard;
+      const info = frontUnit(defBoard, spell.laneIdx);
+      const heroEl = spell.side==='player' ? document.querySelector('.hero.enemy') : document.querySelector('.hero.player');
+      const targetEl = info ? findUnitEl(spell.laneIdx, spell.side!=='player', info.depth) : heroEl;
+      log(`${whoLabel}: «${spell.name}» бьёт в полосе ${spell.laneIdx+1}${info ? ' — '+info.unit.name : ''}.`);
+      setTimeout(()=>{
+        let died=false;
+        if(info){
+          info.unit.hp -= spell.dmg;
+          died = info.unit.hp<=0;
+          if(targetEl){ targetEl.classList.add('unit-hit'); spawnSpellBurst(targetEl, 'dmg'); spawnDamageNumber(targetEl, '-'+spell.dmg, 'dmg'); if(died) targetEl.classList.add('unit-dying'); }
+        } else {
+          if(spell.side==='player') state.enemyHp -= spell.dmg; else state.playerHp -= spell.dmg;
+          if(heroEl){ heroEl.classList.add('hero-hit'); spawnSpellBurst(heroEl, 'dmg'); spawnDamageNumber(heroEl, '-'+spell.dmg, 'dmg'); }
+        }
+        setTimeout(()=>{
+          if(died){ defBoard[spell.laneIdx][info.depth] = null; log(`${info.unit.name} повержен!`); }
+          checkGameOver();
+          renderAll();
+          done();
+        }, 1300);
+      }, 300);
+    } else if(spell.kind==='heal'){
+      const board = spell.side==='player' ? state.playerBoard : state.enemyBoard;
+      const unit = board[spell.laneIdx][spell.depthIdx];
+      if(!unit){ done(); return; }
+      const targetEl = findUnitEl(spell.laneIdx, spell.side==='player', spell.depthIdx);
+      log(`${whoLabel}: «${spell.name}» лечит ${unit.name}.`);
+      setTimeout(()=>{
+        unit.hp = Math.min(unit.maxHp, unit.hp + spell.heal);
+        if(targetEl){ spawnSpellBurst(targetEl, 'heal'); spawnDamageNumber(targetEl, '+'+spell.heal, 'heal'); }
+        setTimeout(()=>{ renderAll(); done(); }, 1300);
+      }, 300);
+    } else {
+      done();
     }
   }
 
@@ -911,6 +1264,39 @@
     span.style.color = kind==='heal' ? 'var(--win)' : 'var(--crimson-bright)';
     container.appendChild(span);
     setTimeout(()=>{ span.remove(); }, 2280);
+  }
+
+  const SPELL_BURST_DMG = `<svg viewBox="0 0 100 100">
+    <circle class="sb-ring sb-ring1" cx="50" cy="50" r="10" fill="none" stroke="#e04a3f" stroke-width="4"/>
+    <circle class="sb-ring sb-ring2" cx="50" cy="50" r="10" fill="none" stroke="#c9a227" stroke-width="2"/>
+    <g class="sb-spikes" stroke="#e04a3f" stroke-width="3" stroke-linecap="round">
+      <line x1="50" y1="50" x2="50" y2="20"/>
+      <line x1="50" y1="50" x2="74" y2="34"/>
+      <line x1="50" y1="50" x2="80" y2="50"/>
+      <line x1="50" y1="50" x2="74" y2="66"/>
+      <line x1="50" y1="50" x2="50" y2="80"/>
+      <line x1="50" y1="50" x2="26" y2="66"/>
+      <line x1="50" y1="50" x2="20" y2="50"/>
+      <line x1="50" y1="50" x2="26" y2="34"/>
+    </g>
+  </svg>`;
+  const SPELL_BURST_HEAL = `<svg viewBox="0 0 100 100">
+    <circle class="sb-ring sb-ring1" cx="50" cy="50" r="10" fill="none" stroke="#4f8a5b" stroke-width="4"/>
+    <circle class="sb-ring sb-ring2" cx="50" cy="50" r="10" fill="none" stroke="#8fd6a0" stroke-width="2"/>
+    <g class="sb-sparks" fill="#8fd6a0">
+      <path d="M50 22l2.4 7.2 7.2 2.4-7.2 2.4-2.4 7.2-2.4-7.2-7.2-2.4 7.2-2.4z"/>
+      <path d="M76 50l1.6 4.8 4.8 1.6-4.8 1.6-1.6 4.8-1.6-4.8-4.8-1.6 4.8-1.6z"/>
+      <path d="M24 50l1.6 4.8 4.8 1.6-4.8 1.6-1.6 4.8-1.6-4.8-4.8-1.6 4.8-1.6z"/>
+    </g>
+  </svg>`;
+
+  function spawnSpellBurst(container, kind){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'spell-burst';
+    wrap.innerHTML = kind==='heal' ? SPELL_BURST_HEAL : SPELL_BURST_DMG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 1300);
   }
 
   function findUnitEl(laneIdx, mine, depth=0){
@@ -1020,10 +1406,20 @@
       <div class="overlay-box">
         <div class="overlay-title ${won?'win':'lose'}">${won?'ПОБЕДА':'ПОРАЖЕНИЕ'}</div>
         <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">${won? 'Кулак соперника сломлен.' : 'Твой кулак не выдержал.'}</div>
-        <button class="btn" id="restartBtn">Новая дуэль</button>
+        <div class="overlay-actions">
+          <button class="btn" id="restartBtn">Новая дуэль</button>
+          <button class="btn ghost" id="exitBtn">Выход</button>
+        </div>
       </div>`;
     document.body.appendChild(overlay);
-    document.getElementById('restartBtn').addEventListener('click', ()=>window.location.reload());
+    document.getElementById('restartBtn').addEventListener('click', ()=>{
+      overlay.remove();
+      initGame();
+    });
+    document.getElementById('exitBtn').addEventListener('click', ()=>{
+      overlay.remove();
+      showScreen('menu');
+    });
   }
 
   // ---------- Turn flow ----------
@@ -1037,11 +1433,18 @@
     setTimeout(()=>{
       aiTakeTurn();
       renderAll();
-      log('Начинается обмен ударами!');
+      const spellsQueued = state.pendingSpells.length>0;
+      log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
       setTimeout(()=>{
-        resolveCombat(()=>{
+        resolveSpells(()=>{
           if(checkGameOver()) return;
-          startNewRound();
+          log('Начинается обмен ударами!');
+          setTimeout(()=>{
+            resolveCombat(()=>{
+              if(checkGameOver()) return;
+              startNewRound();
+            });
+          }, 500);
         });
       }, 500);
     }, 600);
@@ -1058,8 +1461,140 @@
     renderAll();
   }
 
+  // ---------- Screens ----------
+  const screens = {
+    menu: document.getElementById('mainMenu'),
+    deck: document.getElementById('deckBuilder'),
+    arena: document.getElementById('arena'),
+  };
+  function showScreen(name){
+    screens.menu.style.display = name==='menu' ? 'flex' : 'none';
+    screens.deck.style.display = name==='deck' ? 'block' : 'none';
+    screens.arena.style.display = name==='arena' ? 'block' : 'none';
+  }
+
+  // ---------- Deck builder screen ----------
+  let editingDeckCounts = {};
+  const poolListEl = document.getElementById('poolList');
+  const deckListEl = document.getElementById('deckList');
+  const deckCountLabelEl = document.getElementById('deckCountLabel');
+
+  function cardStatsLine(card){
+    if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}`;
+    if(card.dmg) return `−${card.dmg} урона`;
+    return `+${card.heal} HP`;
+  }
+
+  function renderDeckBuilder(){
+    const total = totalDeckCount(editingDeckCounts);
+    deckCountLabelEl.textContent = `${total}/${MAX_DECK_SIZE}`;
+    deckCountLabelEl.classList.toggle('full', total>=MAX_DECK_SIZE);
+
+    poolListEl.innerHTML = POOL.map(card=>{
+      const count = editingDeckCounts[card.id] || 0;
+      const disabled = count>=MAX_COPIES_PER_CARD || total>=MAX_DECK_SIZE;
+      return `<div class="deck-row">
+        <div class="deck-row-art">${cardArt(card.art)}</div>
+        <div class="deck-row-info">
+          <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
+          <div class="deck-row-sub">${cardStatsLine(card)}</div>
+        </div>
+        <div class="deck-row-count">${count}/${MAX_COPIES_PER_CARD}</div>
+        <button class="deck-row-btn plus" data-id="${card.id}" ${disabled?'disabled':''}>+</button>
+      </div>`;
+    }).join('');
+
+    const deckCards = POOL.filter(c=> (editingDeckCounts[c.id]||0) > 0);
+    deckListEl.innerHTML = deckCards.length ? deckCards.map(card=>{
+      const count = editingDeckCounts[card.id];
+      return `<div class="deck-row">
+        <div class="deck-row-art">${cardArt(card.art)}</div>
+        <div class="deck-row-info">
+          <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
+          <div class="deck-row-sub">${cardStatsLine(card)}</div>
+        </div>
+        <div class="deck-row-count">×${count}</div>
+        <button class="deck-row-btn minus" data-id="${card.id}">−</button>
+      </div>`;
+    }).join('') : `<div class="deck-empty-hint">Добавляй карты слева, чтобы собрать колоду (максимум ${MAX_DECK_SIZE} карт, до ${MAX_COPIES_PER_CARD} копий каждой).</div>`;
+
+    poolListEl.querySelectorAll('.deck-row-btn.plus').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.id;
+        const total = totalDeckCount(editingDeckCounts);
+        const cur = editingDeckCounts[id] || 0;
+        if(total>=MAX_DECK_SIZE || cur>=MAX_COPIES_PER_CARD) return;
+        editingDeckCounts[id] = cur+1;
+        renderDeckBuilder();
+      });
+    });
+    deckListEl.querySelectorAll('.deck-row-btn.minus').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.id;
+        const cur = editingDeckCounts[id] || 0;
+        if(cur<=1) delete editingDeckCounts[id]; else editingDeckCounts[id] = cur-1;
+        renderDeckBuilder();
+      });
+    });
+  }
+
+  document.getElementById('newGameBtn').addEventListener('click', ()=>{
+    initGame();
+    showScreen('arena');
+  });
+  document.getElementById('deckBtn').addEventListener('click', ()=>{
+    editingDeckCounts = {...(loadSavedDeckCounts() || defaultDeckCounts())};
+    renderDeckBuilder();
+    showScreen('deck');
+  });
+  document.getElementById('saveDeckBtn').addEventListener('click', ()=>{
+    saveDeckCounts(editingDeckCounts);
+    showScreen('menu');
+  });
+  document.getElementById('backFromDeckBtn').addEventListener('click', ()=>{
+    showScreen('menu');
+  });
+
+  // ---------- Real online counter (WebSocket presence) ----------
+  // Connects to a small Node.js server you deploy yourself — see
+  // /server/README.md in the project for the server code and deploy steps.
+  // Replace the URL below with your deployed server's wss:// address.
+  const ONLINE_SERVER_URL = 'wss://fist-of-truth-server.onrender.com/';
+
+  const onlineCountEl = document.getElementById('onlineCount');
+  let onlineSocket = null;
+
+  function connectOnlineCounter(){
+    if(!onlineCountEl) return;
+    if(!ONLINE_SERVER_URL || ONLINE_SERVER_URL.includes('YOUR-SERVER-URL-HERE')){
+      onlineCountEl.textContent = '—';
+      return; // no server configured yet
+    }
+    try{
+      onlineSocket = new WebSocket(ONLINE_SERVER_URL);
+      onlineSocket.addEventListener('message', (event)=>{
+        try{
+          const data = JSON.parse(event.data);
+          if(data && typeof data.count === 'number'){
+            onlineCountEl.textContent = data.count;
+          }
+        } catch(e){ /* ignore malformed message */ }
+      });
+      onlineSocket.addEventListener('close', ()=>{
+        onlineCountEl.textContent = '—';
+        setTimeout(connectOnlineCounter, 4000); // retry connection
+      });
+      onlineSocket.addEventListener('error', ()=>{
+        onlineCountEl.textContent = '—';
+      });
+    } catch(e){
+      onlineCountEl.textContent = '—';
+    }
+  }
+  connectOnlineCounter();
+
   // ---------- init ----------
-  renderAll();
+  showScreen('menu');
 })();
 </script>
 </body>
