@@ -160,6 +160,25 @@
     color:var(--bone-dim);
     margin:-4px 0 4px;
   }
+  .mode-title{
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin:0 0 6px;
+  }
+  .searching-note{
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:10.5px;
+    color:var(--bone-dim);
+    min-height:14px;
+    margin:-2px 0 4px;
+  }
+  @keyframes pulse-fade{0%,100%{opacity:.35;}50%{opacity:1;}}
+  .spin-fist{animation:pulse-fade 1.2s ease-in-out infinite;}
   .online-counter{
     text-align:center;
     font-family:'Oswald',sans-serif;
@@ -815,6 +834,25 @@
   <div class="online-counter">Сейчас онлайн: <span id="onlineCount">—</span></div>
 </div>
 
+<div class="screen-menu" id="modeSelect" style="display:none;">
+  <div class="menu-fist">
+    <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+  </div>
+  <div class="mode-title">Выбери режим</div>
+  <button class="btn btn-menu" id="pveBtn">PVE — против ИИ</button>
+  <button class="btn ghost btn-menu" id="pvpBtn">PVP — против игрока</button>
+  <button class="btn ghost btn-menu" id="modeBackBtn">Назад</button>
+</div>
+
+<div class="screen-menu" id="searchingScreen" style="display:none;">
+  <div class="menu-fist spin-fist">
+    <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+  </div>
+  <div class="mode-title">Ищем соперника…</div>
+  <div class="searching-note" id="searchingNote"></div>
+  <button class="btn ghost btn-menu" id="cancelSearchBtn">Отмена</button>
+</div>
+
 <div class="screen-deck" id="deckBuilder" style="display:none;">
   <div class="deck-builder-header">
     <h2>Колода</h2>
@@ -987,7 +1025,8 @@
     return deck.map((c,i)=>({...c, uid: c.id+'_'+i+'_'+Math.random().toString(36).slice(2,7)}));
   }
 
-  function initGame(){
+  function initGame(opts){
+    opts = opts || {};
     const counts = loadSavedDeckCounts() || defaultDeckCounts();
     state = {
       round:1,
@@ -1001,7 +1040,9 @@
       selectedCardUid: null,
       phase: 'player', // player | resolving | over
       gameOver:false,
-      pendingSpells: [] // queued this round, resolved after both sides finish placing, before combat
+      pendingSpells: [], // queued this round, resolved after both sides finish placing, before combat
+      mode: 'pve',
+      opponentName: 'Соперник'
     };
     draw(state.playerDeck, state.playerHand, 3);
     const enemyHandSeed = [];
@@ -1009,6 +1050,30 @@
     state.enemyHand = enemyHandSeed;
     renderAll();
     log('Раунд 1: твой ход.');
+  }
+
+  function initPvpMatch(matchId, opponentName){
+    const counts = loadSavedDeckCounts() || defaultDeckCounts();
+    state = {
+      round:1,
+      mana:2, maxMana:2,
+      playerHp:START_HP, enemyHp:START_HP,
+      playerDeck: buildDeckFromCounts(counts),
+      playerHand: [],
+      enemyBoard: freshBoard(),
+      playerBoard: freshBoard(),
+      selectedCardUid: null,
+      phase: 'player',
+      gameOver:false,
+      pendingSpells: [],
+      mode: 'pvp',
+      matchId,
+      opponentName: opponentName || 'Соперник',
+      pvpOpponentData: null
+    };
+    draw(state.playerDeck, state.playerHand, 3);
+    renderAll();
+    log(`Матч против ${state.opponentName}. Раунд 1: твой ход.`);
   }
 
   // ---------- DOM refs ----------
@@ -1129,6 +1194,8 @@
     el.enemyHpBar.style.width = ePct+'%';
     el.playerHpLabel.textContent = `${Math.max(0,state.playerHp)}/${START_HP}`;
     el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}/${START_HP}`;
+    const enemyNameEl = document.querySelector('.hero.enemy .hero-name');
+    if(enemyNameEl) enemyNameEl.textContent = state.mode==='pvp' ? state.opponentName : 'Соперник';
   }
 
   function renderPendingSpells(){
@@ -1519,9 +1586,14 @@
         </div>
       </div>`;
     document.body.appendChild(overlay);
+    leavePvpMatchIfActive();
     document.getElementById('restartBtn').addEventListener('click', ()=>{
       overlay.remove();
-      initGame();
+      if(state.mode==='pvp'){
+        showScreen('mode');
+      } else {
+        initGame({ mode:'pve' });
+      }
     });
     document.getElementById('exitBtn').addEventListener('click', ()=>{
       overlay.remove();
@@ -1530,32 +1602,85 @@
   }
 
   // ---------- Turn flow ----------
+  function runResolutionPhase(onRoundStart){
+    const spellsQueued = state.pendingSpells.length>0;
+    log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
+    setTimeout(()=>{
+      resolveSpells(()=>{
+        if(checkGameOver()) return;
+        log('Начинается обмен ударами!');
+        setTimeout(()=>{
+          resolveCombat(()=>{
+            if(checkGameOver()) return;
+            onRoundStart();
+          });
+        }, 500);
+      });
+    }, 500);
+  }
+
   el.endTurnBtn.addEventListener('click', ()=>{
     if(state.phase!=='player') return;
     state.phase='resolving';
     state.selectedCardUid=null;
     clearLaneHandlers();
+    if(state.mode==='pvp'){
+      pvpEndTurn();
+      return;
+    }
     log('Соперник обдумывает ход...');
     renderAll();
     setTimeout(()=>{
       aiTakeTurn();
       renderAll();
-      const spellsQueued = state.pendingSpells.length>0;
-      log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
-      setTimeout(()=>{
-        resolveSpells(()=>{
-          if(checkGameOver()) return;
-          log('Начинается обмен ударами!');
-          setTimeout(()=>{
-            resolveCombat(()=>{
-              if(checkGameOver()) return;
-              startNewRound();
-            });
-          }, 500);
-        });
-      }, 500);
+      runResolutionPhase(startNewRound);
     }, 600);
   });
+
+  // ---------- PVP turn exchange ----------
+  function sendTurnData(){
+    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
+      log('Потеряно соединение с сервером — не удалось отправить ход.');
+      return;
+    }
+    const mySpells = state.pendingSpells.filter(sp=>sp.side==='player');
+    onlineSocket.send(JSON.stringify({
+      type:'turn_data',
+      matchId: state.matchId,
+      payload: { board: state.playerBoard, spells: mySpells }
+    }));
+  }
+
+  function pvpEndTurn(){
+    sendTurnData();
+    renderAll();
+    if(state.pvpOpponentData){
+      const data = state.pvpOpponentData;
+      state.pvpOpponentData = null;
+      applyOpponentTurn(data);
+    } else {
+      log('Ход отправлен — ждём соперника...');
+    }
+  }
+
+  function applyOpponentTurn(payload){
+    state.enemyBoard = (payload && payload.board) || freshBoard();
+    ((payload && payload.spells) || []).forEach(sp=>{
+      state.pendingSpells.push({ ...sp, side:'enemy' });
+    });
+    renderAll();
+    runResolutionPhase(pvpStartNewRound);
+  }
+
+  function pvpStartNewRound(){
+    state.round += 1;
+    state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
+    state.mana = state.maxMana;
+    draw(state.playerDeck, state.playerHand, 1);
+    state.phase='player';
+    log(`Раунд ${state.round}: твой ход.`);
+    renderAll();
+  }
 
   function startNewRound(){
     state.round += 1;
@@ -1573,6 +1698,8 @@
     login: document.getElementById('loginScreen'),
     register: document.getElementById('registerScreen'),
     menu: document.getElementById('mainMenu'),
+    mode: document.getElementById('modeSelect'),
+    searching: document.getElementById('searchingScreen'),
     deck: document.getElementById('deckBuilder'),
     arena: document.getElementById('arena'),
   };
@@ -1581,6 +1708,8 @@
     screens.login.style.display = name==='login' ? 'flex' : 'none';
     screens.register.style.display = name==='register' ? 'flex' : 'none';
     screens.menu.style.display = name==='menu' ? 'flex' : 'none';
+    screens.mode.style.display = name==='mode' ? 'flex' : 'none';
+    screens.searching.style.display = name==='searching' ? 'flex' : 'none';
     screens.deck.style.display = name==='deck' ? 'block' : 'none';
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
@@ -1652,8 +1781,21 @@
   }
 
   document.getElementById('newGameBtn').addEventListener('click', ()=>{
-    initGame();
+    showScreen('mode');
+  });
+  document.getElementById('modeBackBtn').addEventListener('click', ()=>{
+    showScreen('menu');
+  });
+  document.getElementById('pveBtn').addEventListener('click', ()=>{
+    initGame({ mode:'pve' });
     showScreen('arena');
+  });
+  document.getElementById('pvpBtn').addEventListener('click', ()=>{
+    startMatchmaking();
+  });
+  document.getElementById('cancelSearchBtn').addEventListener('click', ()=>{
+    cancelMatchmaking();
+    showScreen('mode');
   });
   document.getElementById('deckBtn').addEventListener('click', ()=>{
     editingDeckCounts = {...(loadSavedDeckCounts() || defaultDeckCounts())};
@@ -1674,7 +1816,7 @@
   // Fill in just the host (no protocol), e.g. 'your-app.onrender.com'.
   // Both the online counter (wss://) and the login/register API (https://)
   // are derived from this single value.
-  const GAME_SERVER_HOST = 'fist-of-truth-server.onrender.com';
+  const GAME_SERVER_HOST = 'YOUR-SERVER-URL-HERE';
 
   function serverConfigured(){
     return !!GAME_SERVER_HOST && !GAME_SERVER_HOST.includes('YOUR-SERVER-URL-HERE');
@@ -1834,12 +1976,10 @@
     try{
       onlineSocket = new WebSocket(wsUrl());
       onlineSocket.addEventListener('message', (event)=>{
-        try{
-          const data = JSON.parse(event.data);
-          if(data && typeof data.count === 'number'){
-            onlineCountEl.textContent = data.count;
-          }
-        } catch(e){ /* ignore malformed message */ }
+        let data;
+        try{ data = JSON.parse(event.data); } catch(e){ return; }
+        if(!data || typeof data.type !== 'string') return;
+        handleServerMessage(data);
       });
       onlineSocket.addEventListener('close', ()=>{
         onlineCountEl.textContent = '—';
@@ -1853,6 +1993,87 @@
     }
   }
   connectOnlineCounter();
+
+  // ---------- Matchmaking (real, relayed through the same server) ----------
+  function handleServerMessage(data){
+    if(data.type === 'count'){
+      if(typeof data.count === 'number' && onlineCountEl) onlineCountEl.textContent = data.count;
+      return;
+    }
+    if(data.type === 'searching'){
+      const note = document.getElementById('searchingNote');
+      if(note) note.textContent = 'Ты в очереди — ждём второго игрока.';
+      return;
+    }
+    if(data.type === 'match_found'){
+      initPvpMatch(data.matchId, data.opponent);
+      showScreen('arena');
+      return;
+    }
+    if(data.type === 'opponent_turn'){
+      if(state.mode!=='pvp') return; // stray message from a stale match
+      if(state.phase==='resolving'){
+        applyOpponentTurn(data.payload);
+      } else {
+        state.pvpOpponentData = data.payload;
+        log('Соперник уже сделал ход — доигрывай свой и жми «Завершить ход».');
+      }
+      return;
+    }
+    if(data.type === 'opponent_left'){
+      if(state.mode==='pvp' && state.phase!=='over'){
+        log('Соперник покинул матч.');
+        state.phase = 'over';
+        showOpponentLeftOverlay();
+      }
+      return;
+    }
+  }
+
+  function showOpponentLeftOverlay(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `
+      <div class="overlay-box">
+        <div class="overlay-title lose">СОПЕРНИК ВЫШЕЛ</div>
+        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">Матч прерван — соперник покинул игру.</div>
+        <div class="overlay-actions">
+          <button class="btn ghost" id="oppLeftExitBtn">Выход</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('oppLeftExitBtn').addEventListener('click', ()=>{
+      overlay.remove();
+      showScreen('menu');
+    });
+  }
+
+  function startMatchmaking(){
+    const note = document.getElementById('searchingNote');
+    if(!serverConfigured() || !onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
+      if(note) note.textContent = 'Сервер не настроен или недоступен — PVP сейчас невозможен.';
+      showScreen('searching');
+      return;
+    }
+    if(note) note.textContent = 'Подключаемся к очереди…';
+    showScreen('searching');
+    onlineSocket.send(JSON.stringify({
+      type:'find_match',
+      username: currentUser || ('Гость-' + Math.floor(Math.random()*1000))
+    }));
+  }
+
+  function cancelMatchmaking(){
+    if(onlineSocket && onlineSocket.readyState===WebSocket.OPEN){
+      onlineSocket.send(JSON.stringify({ type:'cancel_search' }));
+    }
+  }
+
+  function leavePvpMatchIfActive(){
+    if(state.mode==='pvp' && state.matchId && onlineSocket && onlineSocket.readyState===WebSocket.OPEN){
+      onlineSocket.send(JSON.stringify({ type:'leave_match', matchId: state.matchId }));
+    }
+  }
 
   // ---------- init ----------
   tryAutoLogin();
