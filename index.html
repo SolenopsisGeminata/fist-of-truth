@@ -1041,6 +1041,7 @@
       phase: 'player', // player | resolving | over
       gameOver:false,
       pendingSpells: [], // queued this round, resolved after both sides finish placing, before combat
+      sacrificesThisRound: 0,
       mode: 'pve',
       opponentName: 'Соперник'
     };
@@ -1052,28 +1053,56 @@
     log('Раунд 1: твой ход.');
   }
 
-  function initPvpMatch(matchId, opponentName){
+  const ACTIVE_MATCH_KEY = 'fistDuelActiveMatch';
+  function saveActiveMatch(matchId, opponentName){
+    try{ localStorage.setItem(ACTIVE_MATCH_KEY, JSON.stringify({matchId, opponentName})); } catch(e){}
+  }
+  function loadActiveMatch(){
+    try{
+      const raw = localStorage.getItem(ACTIVE_MATCH_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e){ return null; }
+  }
+  function clearActiveMatch(){
+    try{ localStorage.removeItem(ACTIVE_MATCH_KEY); } catch(e){}
+  }
+
+  function isValidBoard(b){
+    return Array.isArray(b) && b.length===LANES && b.every(lane=>Array.isArray(lane) && lane.length===DEPTH);
+  }
+
+  function initPvpMatch(matchId, opponentName, resumeState){
     const counts = loadSavedDeckCounts() || defaultDeckCounts();
+    const resumedOpponentBoard = resumeState && isValidBoard(resumeState.opponentBoard) ? resumeState.opponentBoard : null;
+    const resumedMyBoard = resumeState && isValidBoard(resumeState.myBoard) ? resumeState.myBoard : null;
     state = {
-      round:1,
+      round: (resumeState && resumeState.round) || 1,
       mana:2, maxMana:2,
-      playerHp:START_HP, enemyHp:START_HP,
+      playerHp: (resumeState && typeof resumeState.myHp==='number') ? resumeState.myHp : START_HP,
+      enemyHp: (resumeState && typeof resumeState.opponentHp==='number') ? resumeState.opponentHp : START_HP,
       playerDeck: buildDeckFromCounts(counts),
       playerHand: [],
-      enemyBoard: freshBoard(),
-      playerBoard: freshBoard(),
+      enemyBoard: resumedOpponentBoard || freshBoard(),
+      playerBoard: resumedMyBoard || freshBoard(),
       selectedCardUid: null,
       phase: 'player',
       gameOver:false,
       pendingSpells: [],
+      sacrificesThisRound: 0,
       mode: 'pvp',
       matchId,
       opponentName: opponentName || 'Соперник',
-      pvpOpponentData: null
+      pvpOpponentData: null,
+      myUsername: currentUser || 'Игрок'
     };
     draw(state.playerDeck, state.playerHand, 3);
+    saveActiveMatch(matchId, state.opponentName);
     renderAll();
-    log(`Матч против ${state.opponentName}. Раунд 1: твой ход.`);
+    if(resumeState){
+      log(`Матч против ${state.opponentName} восстановлен — раунд ${state.round}.`);
+    } else {
+      log(`Матч против ${state.opponentName}. Раунд 1: твой ход.`);
+    }
   }
 
   // ---------- DOM refs ----------
@@ -1325,6 +1354,7 @@
     let card = state.playerHand.find(c=>c.uid===state.selectedCardUid) || state.playerHand[state.playerHand.length-1];
     state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.mana += 1; // sacrifice grants bonus mana for this round only, can exceed max
+    state.sacrificesThisRound = (state.sacrificesThisRound||0) + 1;
     state.selectedCardUid = null;
     log(`Ты пожертвовал «${card.name}» ради +1 маны.`);
     renderAll();
@@ -1567,7 +1597,12 @@
   function checkGameOver(){
     if(state.playerHp<=0 || state.enemyHp<=0){
       state.phase='over';
-      showOverlay(state.enemyHp<=0 && state.playerHp>0);
+      const won = state.enemyHp<=0 && state.playerHp>0;
+      if(state.mode==='pvp'){
+        sendMatchOver(won ? 'win' : 'lose');
+        clearActiveMatch();
+      }
+      showOverlay(won);
       return true;
     }
     return false;
@@ -1586,7 +1621,6 @@
         </div>
       </div>`;
     document.body.appendChild(overlay);
-    leavePvpMatchIfActive();
     document.getElementById('restartBtn').addEventListener('click', ()=>{
       overlay.remove();
       if(state.mode==='pvp'){
@@ -1647,7 +1681,30 @@
     onlineSocket.send(JSON.stringify({
       type:'turn_data',
       matchId: state.matchId,
-      payload: { board: state.playerBoard, spells: mySpells }
+      username: state.myUsername,
+      payload: { board: state.playerBoard, spells: mySpells, sacrifices: state.sacrificesThisRound||0 }
+    }));
+  }
+
+  function sendStateSync(){
+    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
+    onlineSocket.send(JSON.stringify({
+      type:'state_sync',
+      matchId: state.matchId,
+      username: state.myUsername,
+      round: state.round,
+      myHp: state.playerHp,
+      opponentHp: state.enemyHp
+    }));
+  }
+
+  function sendMatchOver(result){
+    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
+    onlineSocket.send(JSON.stringify({
+      type:'match_over',
+      matchId: state.matchId,
+      username: state.myUsername,
+      result
     }));
   }
 
@@ -1669,13 +1726,17 @@
       state.pendingSpells.push({ ...sp, side:'enemy' });
     });
     renderAll();
-    runResolutionPhase(pvpStartNewRound);
+    runResolutionPhase(()=>{
+      sendStateSync();
+      pvpStartNewRound();
+    });
   }
 
   function pvpStartNewRound(){
     state.round += 1;
     state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
     state.mana = state.maxMana;
+    state.sacrificesThisRound = 0;
     draw(state.playerDeck, state.playerHand, 1);
     state.phase='player';
     log(`Раунд ${state.round}: твой ход.`);
@@ -1894,6 +1955,7 @@
       hint.textContent = '';
       document.getElementById('loginPassword').value = '';
       showScreen('menu');
+      maybeResumeMatch();
     } catch(e){
       hint.textContent = 'Не удалось связаться с сервером.';
     }
@@ -1957,6 +2019,7 @@
         currentUser = data.username;
         updateUserBadge();
         showScreen('menu');
+        maybeResumeMatch();
         return;
       }
     } catch(e){ /* fall through to login */ }
@@ -1975,6 +2038,9 @@
     }
     try{
       onlineSocket = new WebSocket(wsUrl());
+      onlineSocket.addEventListener('open', ()=>{
+        maybeResumeMatch();
+      });
       onlineSocket.addEventListener('message', (event)=>{
         let data;
         try{ data = JSON.parse(event.data); } catch(e){ return; }
@@ -1995,6 +2061,20 @@
   connectOnlineCounter();
 
   // ---------- Matchmaking (real, relayed through the same server) ----------
+  let resumeAttempted = false;
+  function maybeResumeMatch(){
+    if(resumeAttempted) return;
+    const active = loadActiveMatch();
+    if(!active || !currentUser) return;
+    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
+    resumeAttempted = true;
+    onlineSocket.send(JSON.stringify({
+      type:'resume_match',
+      matchId: active.matchId,
+      username: currentUser
+    }));
+  }
+
   function handleServerMessage(data){
     if(data.type === 'count'){
       if(typeof data.count === 'number' && onlineCountEl) onlineCountEl.textContent = data.count;
@@ -2003,6 +2083,14 @@
     if(data.type === 'searching'){
       const note = document.getElementById('searchingNote');
       if(note) note.textContent = 'Ты в очереди — ждём второго игрока.';
+      return;
+    }
+    if(data.type === 'turn_rejected'){
+      if(state.mode==='pvp' && state.phase==='resolving'){
+        state.phase = 'player';
+        log('Сервер отклонил ход (' + (data.reason || 'неизвестная причина') + ') — поправь и заверши ход снова.');
+        renderAll();
+      }
       return;
     }
     if(data.type === 'match_found'){
@@ -2024,7 +2112,33 @@
       if(state.mode==='pvp' && state.phase!=='over'){
         log('Соперник покинул матч.');
         state.phase = 'over';
+        clearActiveMatch();
         showOpponentLeftOverlay();
+      }
+      return;
+    }
+    if(data.type === 'opponent_disconnected'){
+      if(state.mode==='pvp' && state.phase!=='over'){
+        log('Соперник отключился — матч сохранён, ждём его возвращения…');
+      }
+      return;
+    }
+    if(data.type === 'opponent_reconnected'){
+      if(state.mode==='pvp' && state.phase!=='over'){
+        log('Соперник снова на связи.');
+      }
+      return;
+    }
+    if(data.type === 'match_state'){
+      // Response to our own resume_match request.
+      initPvpMatch(data.matchId, data.opponentName, data);
+      showScreen('arena');
+      return;
+    }
+    if(data.type === 'resume_failed'){
+      clearActiveMatch();
+      if(screens.login.style.display==='none' && screens.menu.style.display==='none'){
+        showScreen('menu');
       }
       return;
     }
@@ -2059,7 +2173,7 @@
     showScreen('searching');
     onlineSocket.send(JSON.stringify({
       type:'find_match',
-      username: currentUser || ('Гость-' + Math.floor(Math.random()*1000))
+      username: currentUser || 'Игрок'
     }));
   }
 
@@ -2071,8 +2185,9 @@
 
   function leavePvpMatchIfActive(){
     if(state.mode==='pvp' && state.matchId && onlineSocket && onlineSocket.readyState===WebSocket.OPEN){
-      onlineSocket.send(JSON.stringify({ type:'leave_match', matchId: state.matchId }));
+      onlineSocket.send(JSON.stringify({ type:'leave_match', matchId: state.matchId, username: state.myUsername }));
     }
+    clearActiveMatch();
   }
 
   // ---------- init ----------
