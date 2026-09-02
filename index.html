@@ -989,9 +989,9 @@
 
   // ---------- Deck building ----------
   function defaultDeckCounts(){
-    const counts = {};
-    POOL.forEach(c=>{ counts[c.id] = c.cost<=3 ? 2 : 1; });
-    return counts;
+    // A full 30-card starting deck (max 4 copies of any single card),
+    // given to every new account from the moment it's registered.
+    return {c1:4, c2:3, c3:3, c4:2, c5:2, c6:2, c7:2, c8:2, c9:2, s1:3, s2:2, s3:3};
   }
 
   function loadSavedDeckCounts(){
@@ -1198,7 +1198,7 @@
     } else {
       slot.innerHTML = `<span>${depthIdx===0?'Перед':'Тыл'}</span>`;
       const selectedCard = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-      if(mine && state.phase==='player' && selectedCard && selectedCard.type==='creature'){
+      if(mine && state.phase==='player' && selectedCard && selectedCard.type==='creature' && selectedCard.cost<=state.mana){
         slot.classList.add('selectable');
         slot.addEventListener('click', ()=>placeSelectedCard(laneIdx, depthIdx));
       }
@@ -1297,7 +1297,6 @@
   // ---------- Player actions ----------
   function onHandCardClick(card){
     if(state.phase!=='player') return;
-    if(card.cost > state.mana){ hintFlash('Недостаточно маны для этой карты.'); return; }
     if(state.selectedCardUid === card.uid){
       state.selectedCardUid = null;
     } else {
@@ -1305,6 +1304,10 @@
     }
     renderAll();
     if(state.selectedCardUid){
+      if(card.cost > state.mana){
+        el.hint.textContent = 'Недостаточно маны, чтобы разыграть эту карту — можно принести её в жертву ради +1 маны.';
+        return;
+      }
       if(card.type==='creature'){
         el.hint.textContent = 'Выбери пустую позицию (перед/тыл) на своей стороне.';
       } else if(card.dmg){
@@ -1435,12 +1438,6 @@
     log(`Ты пожертвовал «${card.name}» ради +1 маны.`);
     renderAll();
   });
-
-  function hintFlash(msg){
-    el.hint.textContent = msg;
-    el.hint.style.color = 'var(--crimson-bright)';
-    setTimeout(()=>{ el.hint.style.color=''; el.hint.textContent='Выбери карту, затем свободную позицию на своей стороне.'; }, 1400);
-  }
 
   // ---------- AI ----------
   function aiTakeTurn(){
