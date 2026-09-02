@@ -767,6 +767,7 @@
   }
   .overlay-title.win{color:var(--win);}
   .overlay-title.lose{color:var(--crimson-bright);}
+  .overlay-title.draw{color:var(--brass);}
   .overlay-actions{
     display:flex;
     gap:10px;
@@ -1071,19 +1072,36 @@
     return Array.isArray(b) && b.length===LANES && b.every(lane=>Array.isArray(lane) && lane.length===DEPTH);
   }
 
-  function initPvpMatch(matchId, opponentName, resumeState){
-    const counts = loadSavedDeckCounts() || defaultDeckCounts();
-    const resumedOpponentBoard = resumeState && isValidBoard(resumeState.opponentBoard) ? resumeState.opponentBoard : null;
-    const resumedMyBoard = resumeState && isValidBoard(resumeState.myBoard) ? resumeState.myBoard : null;
+  // ---------- PVP: server is the only source of truth ----------
+  // The server sends back plain {id, uid, atk, hp, maxHp} for units and
+  // {id, uid} for hand cards — no name/art, since that's purely a display
+  // concern the client already knows from POOL. These helpers turn a
+  // server snapshot into the exact same shape the (unchanged) rendering
+  // code already expects for PVE.
+  function cardDefById(id){
+    return POOL.find(c=>c.id===id);
+  }
+  function hydrateUnit(u){
+    if(!u) return null;
+    const card = cardDefById(u.id);
+    return { id:u.id, uid:u.uid, name: card?card.name:u.id, art: card?card.art:null, atk:u.atk, hp:u.hp, maxHp:u.maxHp };
+  }
+  function hydrateBoard(board){
+    return (isValidBoard(board) ? board : freshBoard()).map(lane=>[hydrateUnit(lane[0]), hydrateUnit(lane[1])]);
+  }
+  function hydrateHandCard(c){
+    const card = cardDefById(c.id);
+    return card ? { ...card, uid:c.uid } : { id:c.id, uid:c.uid, name:c.id, type:'creature', cost:0, atk:0, hp:1, desc:'' };
+  }
+
+  function initPvpMatch(matchId, opponentName){
     state = {
-      round: (resumeState && resumeState.round) || 1,
-      mana:2, maxMana:2,
-      playerHp: (resumeState && typeof resumeState.myHp==='number') ? resumeState.myHp : START_HP,
-      enemyHp: (resumeState && typeof resumeState.opponentHp==='number') ? resumeState.opponentHp : START_HP,
-      playerDeck: buildDeckFromCounts(counts),
+      round:1, mana:2, maxMana:2,
+      playerHp:START_HP, enemyHp:START_HP,
+      playerDeck: [], enemyDeck: [], // unused in PVP — the server owns both decks
       playerHand: [],
-      enemyBoard: resumedOpponentBoard || freshBoard(),
-      playerBoard: resumedMyBoard || freshBoard(),
+      enemyBoard: freshBoard(),
+      playerBoard: freshBoard(),
       selectedCardUid: null,
       phase: 'player',
       gameOver:false,
@@ -1092,16 +1110,45 @@
       mode: 'pvp',
       matchId,
       opponentName: opponentName || 'Соперник',
-      pvpOpponentData: null,
       myUsername: currentUser || 'Игрок'
     };
-    draw(state.playerDeck, state.playerHand, 3);
     saveActiveMatch(matchId, state.opponentName);
     renderAll();
-    if(resumeState){
-      log(`Матч против ${state.opponentName} восстановлен — раунд ${state.round}.`);
+    log(`Матч против ${state.opponentName} начинается…`);
+  }
+
+  // Applies a full authoritative snapshot from the server. Used both for
+  // instant feedback after a single action (place/cast/sacrifice) and as
+  // the final settle-step after replaying a round's resolution events.
+  function applyPvpSnapshot(snapshot){
+    if(!snapshot || state.mode!=='pvp') return;
+    const wasOver = state.phase === 'over';
+    state.round = snapshot.round;
+    state.mana = snapshot.mana;
+    state.maxMana = snapshot.maxMana;
+    state.playerHp = snapshot.myHp;
+    state.enemyHp = snapshot.opponentHp;
+    state.playerBoard = hydrateBoard(snapshot.myBoard);
+    state.enemyBoard = hydrateBoard(snapshot.opponentBoard);
+    state.playerHand = (snapshot.myHand||[]).map(hydrateHandCard);
+    if(snapshot.opponentName) state.opponentName = snapshot.opponentName;
+    state.pendingSpells = (snapshot.pendingSpells||[]).map(sp=>({
+      side: sp.side===state.myUsername ? 'player' : 'enemy',
+      name: (cardDefById(sp.cardId)||{}).name || sp.cardId,
+      laneIdx: sp.laneIdx
+    }));
+    if(snapshot.phase==='over'){
+      state.phase='over';
+    } else if(snapshot.myReady){
+      state.phase='resolving';
     } else {
-      log(`Матч против ${state.opponentName}. Раунд 1: твой ход.`);
+      state.phase='player';
+    }
+    renderAll();
+    if(snapshot.phase==='over' && !wasOver){
+      clearActiveMatch();
+      const result = snapshot.winner==null ? 'draw' : (snapshot.winner===state.myUsername ? 'win' : 'lose');
+      showOverlay(result);
     }
   }
 
@@ -1294,15 +1341,29 @@
     });
   }
 
+  function pvpSendAction(obj){
+    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
+      log('Потеряно соединение с сервером.');
+      return false;
+    }
+    onlineSocket.send(JSON.stringify({ matchId: state.matchId, username: state.myUsername, ...obj }));
+    return true;
+  }
+
   function placeSelectedCard(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
     if(!card || card.type!=='creature') return;
     if(state.playerBoard[laneIdx][depthIdx]) return;
     if(card.cost > state.mana) return;
+    state.selectedCardUid = null;
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'place_card', uid: card.uid, lane: laneIdx, depth: depthIdx });
+      renderAll();
+      return;
+    }
     state.mana -= card.cost;
     state.playerBoard[laneIdx][depthIdx] = {name:card.name, atk:card.atk, hp:card.hp, maxHp:card.hp, art:card.art};
     state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
-    state.selectedCardUid = null;
     log(`Ты выставил «${card.name}» в бой.`);
     renderAll();
   }
@@ -1311,10 +1372,15 @@
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
     if(!card || !card.dmg) return;
     if(card.cost > state.mana) return;
-    state.mana -= card.cost;
-    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.selectedCardUid = null;
     clearLaneHandlers();
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'cast_spell', uid: card.uid, lane: laneIdx });
+      renderAll();
+      return;
+    }
+    state.mana -= card.cost;
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.pendingSpells.push({side:'player', kind:'damage', laneIdx, dmg:card.dmg, name:card.name});
     log(`«${card.name}» готово — сработает перед боем, в начале следующего хода.`);
     renderAll();
@@ -1326,10 +1392,15 @@
     if(card.cost > state.mana) return;
     const unit = state.playerBoard[laneIdx][depthIdx];
     if(!unit) return;
-    state.mana -= card.cost;
-    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.selectedCardUid = null;
     clearLaneHandlers();
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'cast_spell', uid: card.uid, lane: laneIdx, depth: depthIdx });
+      renderAll();
+      return;
+    }
+    state.mana -= card.cost;
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.pendingSpells.push({side:'player', kind:'heal', laneIdx, depthIdx, heal:card.heal, name:card.name});
     log(`«${card.name}» готово для ${unit.name} — сработает перед боем.`);
     renderAll();
@@ -1352,10 +1423,15 @@
     if(state.phase!=='player' || state.playerHand.length===0) return;
     // sacrifice the selected card, or the last card in hand if none selected
     let card = state.playerHand.find(c=>c.uid===state.selectedCardUid) || state.playerHand[state.playerHand.length-1];
+    state.selectedCardUid = null;
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'sacrifice', uid: card.uid });
+      renderAll();
+      return;
+    }
     state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
     state.mana += 1; // sacrifice grants bonus mana for this round only, can exceed max
     state.sacrificesThisRound = (state.sacrificesThisRound||0) + 1;
-    state.selectedCardUid = null;
     log(`Ты пожертвовал «${card.name}» ради +1 маны.`);
     renderAll();
   });
@@ -1598,23 +1674,25 @@
     if(state.playerHp<=0 || state.enemyHp<=0){
       state.phase='over';
       const won = state.enemyHp<=0 && state.playerHp>0;
-      if(state.mode==='pvp'){
-        sendMatchOver(won ? 'win' : 'lose');
-        clearActiveMatch();
-      }
-      showOverlay(won);
+      showOverlay(won ? 'win' : 'lose');
       return true;
     }
     return false;
   }
 
-  function showOverlay(won){
+  function showOverlay(result){
+    // Accepts 'win' | 'lose' | 'draw' (kept tolerant of legacy booleans too).
+    if(result===true) result='win';
+    if(result===false) result='lose';
+    const title = result==='win' ? 'ПОБЕДА' : result==='draw' ? 'НИЧЬЯ' : 'ПОРАЖЕНИЕ';
+    const cls = result==='win' ? 'win' : result==='draw' ? 'draw' : 'lose';
+    const sub = result==='win' ? 'Кулак соперника сломлен.' : result==='draw' ? 'Оба кулака сломлены одновременно.' : 'Твой кулак не выдержал.';
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
     overlay.innerHTML = `
       <div class="overlay-box">
-        <div class="overlay-title ${won?'win':'lose'}">${won?'ПОБЕДА':'ПОРАЖЕНИЕ'}</div>
-        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">${won? 'Кулак соперника сломлен.' : 'Твой кулак не выдержал.'}</div>
+        <div class="overlay-title ${cls}">${title}</div>
+        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">${sub}</div>
         <div class="overlay-actions">
           <button class="btn" id="restartBtn">Новая дуэль</button>
           <button class="btn ghost" id="exitBtn">Выход</button>
@@ -1655,13 +1733,16 @@
 
   el.endTurnBtn.addEventListener('click', ()=>{
     if(state.phase!=='player') return;
-    state.phase='resolving';
     state.selectedCardUid=null;
     clearLaneHandlers();
     if(state.mode==='pvp'){
-      pvpEndTurn();
+      state.phase='resolving';
+      pvpSendAction({ type:'end_turn' });
+      log('Ход отправлен — ждём соперника...');
+      renderAll();
       return;
     }
+    state.phase='resolving';
     log('Соперник обдумывает ход...');
     renderAll();
     setTimeout(()=>{
@@ -1671,76 +1752,102 @@
     }, 600);
   });
 
-  // ---------- PVP turn exchange ----------
-  function sendTurnData(){
-    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
-      log('Потеряно соединение с сервером — не удалось отправить ход.');
+  // ---------- PVP resolution replay ----------
+  // The server has already computed the entire outcome (see game-engine.js);
+  // this just plays it back visually, one event at a time, reusing the same
+  // lunge/flash/damage-number primitives the PVE combat uses — then applies
+  // the server's final snapshot to settle everything exactly (hand, mana,
+  // next round's draw, etc.).
+  function playPvpResolution(events, finalSnapshot){
+    const spellsQueued = (events||[]).some(e=>e.type==='spell');
+    log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
+    let i = 0;
+    function next(){
+      if(i>=(events||[]).length){
+        applyPvpSnapshot(finalSnapshot);
+        return;
+      }
+      const ev = events[i]; i++;
+      if(ev.type==='spell') playPvpSpellEvent(ev, next);
+      else if(ev.type==='wave') playPvpWaveEvent(ev, next);
+      else next();
+    }
+    setTimeout(next, 500);
+  }
+
+  function playPvpSpellEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const label = (cardDefById(ev.cardId)||{}).name || ev.cardId;
+    if(ev.targetHero){
+      const heroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+      log(`«${label}» бьёт прямо в кулак ${targetMine?'твой':'соперника'}.`);
+      setTimeout(()=>{
+        if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+        if(heroEl){ heroEl.classList.add('hero-hit'); spawnSpellBurst(heroEl,'dmg'); spawnDamageNumber(heroEl,'-'+ev.amount,'dmg'); }
+        renderAll();
+        setTimeout(done, 1300);
+      }, 300);
       return;
     }
-    const mySpells = state.pendingSpells.filter(sp=>sp.side==='player');
-    onlineSocket.send(JSON.stringify({
-      type:'turn_data',
-      matchId: state.matchId,
-      username: state.myUsername,
-      payload: { board: state.playerBoard, spells: mySpells, sacrifices: state.sacrificesThisRound||0 }
-    }));
+    const board = targetMine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+    const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth);
+    log(`«${label}» (${mine?'ты':'соперник'}) действует в полосе ${ev.laneIdx+1}${unit? ' — '+unit.name:''}.`);
+    setTimeout(()=>{
+      if(unit){
+        if(ev.kind==='damage'){
+          unit.hp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('unit-hit'); spawnSpellBurst(targetEl,'dmg'); spawnDamageNumber(targetEl,'-'+ev.amount,'dmg'); }
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+        } else {
+          unit.hp = Math.min(unit.maxHp, unit.hp+ev.amount);
+          if(targetEl){ spawnSpellBurst(targetEl,'heal'); spawnDamageNumber(targetEl, '+'+ev.amount, 'heal'); }
+        }
+      }
+      renderAll();
+      setTimeout(done, ev.died ? 1300 : 900);
+    }, 300);
   }
 
-  function sendStateSync(){
-    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
-    onlineSocket.send(JSON.stringify({
-      type:'state_sync',
-      matchId: state.matchId,
-      username: state.myUsername,
-      round: state.round,
-      myHp: state.playerHp,
-      opponentHp: state.enemyHp
-    }));
-  }
+  function playPvpWaveEvent(ev, done){
+    const actions = [];
+    if(ev.attackerA) actions.push({ isMe: ev.attackerA.side===state.myUsername, depth: ev.attackerA.depth, dmg: ev.aDamage, targetHero: ev.targetAHero, targetDepth: ev.targetADepth, died: ev.aDied });
+    if(ev.attackerB) actions.push({ isMe: ev.attackerB.side===state.myUsername, depth: ev.attackerB.depth, dmg: ev.bDamage, targetHero: ev.targetBHero, targetDepth: ev.targetBDepth, died: ev.bDied });
+    if(actions.length===0){ done(); return; }
 
-  function sendMatchOver(result){
-    if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
-    onlineSocket.send(JSON.stringify({
-      type:'match_over',
-      matchId: state.matchId,
-      username: state.myUsername,
-      result
-    }));
-  }
-
-  function pvpEndTurn(){
-    sendTurnData();
-    renderAll();
-    if(state.pvpOpponentData){
-      const data = state.pvpOpponentData;
-      state.pvpOpponentData = null;
-      applyOpponentTurn(data);
-    } else {
-      log('Ход отправлен — ждём соперника...');
-    }
-  }
-
-  function applyOpponentTurn(payload){
-    state.enemyBoard = (payload && payload.board) || freshBoard();
-    ((payload && payload.spells) || []).forEach(sp=>{
-      state.pendingSpells.push({ ...sp, side:'enemy' });
+    const parts = [];
+    actions.forEach(a=>{
+      const board = a.isMe ? state.playerBoard : state.enemyBoard;
+      const atkUnit = board[ev.lane][a.depth];
+      const targetBoard = a.isMe ? state.enemyBoard : state.playerBoard;
+      const targetName = a.targetHero ? (a.isMe?'кулак соперника':'твой кулак') : ((targetBoard[ev.lane][a.targetDepth]||{}).name || '???');
+      const unitEl = findUnitEl(ev.lane, a.isMe, a.depth);
+      if(unitEl) unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left');
+      parts.push(`${atkUnit? atkUnit.name : '???'} → ${targetName}`);
     });
-    renderAll();
-    runResolutionPhase(()=>{
-      sendStateSync();
-      pvpStartNewRound();
-    });
-  }
+    log(`Полоса ${ev.lane+1}: ` + parts.join(' · '));
 
-  function pvpStartNewRound(){
-    state.round += 1;
-    state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
-    state.mana = state.maxMana;
-    state.sacrificesThisRound = 0;
-    draw(state.playerDeck, state.playerHand, 1);
-    state.phase='player';
-    log(`Раунд ${state.round}: твой ход.`);
-    renderAll();
+    setTimeout(()=>{
+      actions.forEach(a=>{
+        if(a.targetHero){
+          if(a.isMe) state.enemyHp -= a.dmg; else state.playerHp -= a.dmg;
+          const heroEl = a.isMe ? document.querySelector('.hero.enemy') : document.querySelector('.hero.player');
+          if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+a.dmg, 'dmg'); }
+        } else {
+          const targetBoard = a.isMe ? state.enemyBoard : state.playerBoard;
+          const unit = targetBoard[ev.lane][a.targetDepth];
+          const targetEl = findUnitEl(ev.lane, !a.isMe, a.targetDepth);
+          if(unit){
+            unit.hp -= a.dmg;
+            if(targetEl) spawnDamageNumber(targetEl, '-'+a.dmg, 'dmg');
+            if(a.died){ if(targetEl) targetEl.classList.add('unit-dying'); targetBoard[ev.lane][a.targetDepth]=null; }
+          }
+        }
+      });
+      const anyDied = actions.some(a=>a.died);
+      setTimeout(()=>{ renderAll(); done(); }, anyDied ? 1290 : 780);
+    }, 570);
   }
 
   function startNewRound(){
@@ -1858,13 +1965,40 @@
     cancelMatchmaking();
     showScreen('mode');
   });
-  document.getElementById('deckBtn').addEventListener('click', ()=>{
+  document.getElementById('deckBtn').addEventListener('click', async ()=>{
     editingDeckCounts = {...(loadSavedDeckCounts() || defaultDeckCounts())};
     renderDeckBuilder();
     showScreen('deck');
+    if(serverConfigured()){
+      const session = loadSession();
+      if(session && session.token){
+        try{
+          const res = await fetch(apiUrl('/api/deck'), { headers:{ 'Authorization':'Bearer '+session.token } });
+          if(res.ok){
+            const data = await res.json();
+            if(data && data.counts && Object.keys(data.counts).length){
+              editingDeckCounts = {...data.counts};
+              renderDeckBuilder();
+            }
+          }
+        } catch(e){ /* keep the local copy if the server isn't reachable */ }
+      }
+    }
   });
-  document.getElementById('saveDeckBtn').addEventListener('click', ()=>{
-    saveDeckCounts(editingDeckCounts);
+  document.getElementById('saveDeckBtn').addEventListener('click', async ()=>{
+    saveDeckCounts(editingDeckCounts); // instant local fallback for PVE
+    if(serverConfigured()){
+      const session = loadSession();
+      if(session && session.token){
+        try{
+          await fetch(apiUrl('/api/deck'), {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
+            body: JSON.stringify({ counts: editingDeckCounts })
+          });
+        } catch(e){ /* deck still saved locally for PVE even if this fails */ }
+      }
+    }
     showScreen('menu');
   });
   document.getElementById('backFromDeckBtn').addEventListener('click', ()=>{
@@ -2068,6 +2202,8 @@
     if(!active || !currentUser) return;
     if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
     resumeAttempted = true;
+    initPvpMatch(active.matchId, active.opponentName);
+    showScreen('arena');
     onlineSocket.send(JSON.stringify({
       type:'resume_match',
       matchId: active.matchId,
@@ -2085,12 +2221,8 @@
       if(note) note.textContent = 'Ты в очереди — ждём второго игрока.';
       return;
     }
-    if(data.type === 'turn_rejected'){
-      if(state.mode==='pvp' && state.phase==='resolving'){
-        state.phase = 'player';
-        log('Сервер отклонил ход (' + (data.reason || 'неизвестная причина') + ') — поправь и заверши ход снова.');
-        renderAll();
-      }
+    if(data.type === 'action_rejected'){
+      log('Сервер отклонил действие (' + (data.reason || 'неизвестная причина') + ').');
       return;
     }
     if(data.type === 'match_found'){
@@ -2098,14 +2230,15 @@
       showScreen('arena');
       return;
     }
-    if(data.type === 'opponent_turn'){
+    if(data.type === 'state_update'){
       if(state.mode!=='pvp') return; // stray message from a stale match
-      if(state.phase==='resolving'){
-        applyOpponentTurn(data.payload);
-      } else {
-        state.pvpOpponentData = data.payload;
-        log('Соперник уже сделал ход — доигрывай свой и жми «Завершить ход».');
-      }
+      applyPvpSnapshot(data.state);
+      if(data.resumed) log(`Матч против ${state.opponentName} восстановлен — раунд ${state.round}.`);
+      return;
+    }
+    if(data.type === 'resolution'){
+      if(state.mode!=='pvp') return;
+      playPvpResolution(data.events, data.state);
       return;
     }
     if(data.type === 'opponent_left'){
@@ -2129,15 +2262,9 @@
       }
       return;
     }
-    if(data.type === 'match_state'){
-      // Response to our own resume_match request.
-      initPvpMatch(data.matchId, data.opponentName, data);
-      showScreen('arena');
-      return;
-    }
     if(data.type === 'resume_failed'){
       clearActiveMatch();
-      if(screens.login.style.display==='none' && screens.menu.style.display==='none'){
+      if(state.mode==='pvp'){
         showScreen('menu');
       }
       return;
