@@ -77,6 +77,12 @@
     letter-spacing:1.5px;
     z-index:20;
   }
+  .btn-corner-bottom{
+    top:auto;
+    bottom:16px;
+    border-color:var(--crimson);
+    color:var(--crimson-bright);
+  }
   .screen-login{
     width:100%;
     max-width:320px;
@@ -917,6 +923,8 @@
     <div class="hint" id="hint">Выбери карту, затем свободную позицию на своей стороне.</div>
   </div>
 
+  <button class="btn ghost btn-corner btn-corner-bottom" id="surrenderBtn">Сдаться</button>
+
 </div>
 
 <script>
@@ -1755,7 +1763,15 @@
   // lunge/flash/damage-number primitives the PVE combat uses — then applies
   // the server's final snapshot to settle everything exactly (hand, mana,
   // next round's draw, etc.).
-  function playPvpResolution(events, finalSnapshot){
+  function playPvpResolution(preBoard, events, finalSnapshot){
+    // Step 1: reveal the board exactly as both sides placed it this round
+    // (the opponent's side was hidden until now) — units appear first,
+    // then spells animate, then combat plays out.
+    if(preBoard){
+      state.playerBoard = hydrateBoard(preBoard.myBoard);
+      state.enemyBoard = hydrateBoard(preBoard.opponentBoard);
+      renderAll();
+    }
     const spellsQueued = (events||[]).some(e=>e.type==='spell');
     log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
     let i = 0;
@@ -1769,7 +1785,7 @@
       else if(ev.type==='wave') playPvpWaveEvent(ev, next);
       else next();
     }
-    setTimeout(next, 500);
+    setTimeout(next, 700);
   }
 
   function playPvpSpellEvent(ev, done){
@@ -2235,7 +2251,7 @@
     }
     if(data.type === 'resolution'){
       if(state.mode!=='pvp') return;
-      playPvpResolution(data.events, data.state);
+      playPvpResolution(data.preBoard, data.events, data.state);
       return;
     }
     if(data.type === 'opponent_left'){
@@ -2273,8 +2289,8 @@
     overlay.className = 'overlay';
     overlay.innerHTML = `
       <div class="overlay-box">
-        <div class="overlay-title lose">СОПЕРНИК ВЫШЕЛ</div>
-        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">Матч прерван — соперник покинул игру.</div>
+        <div class="overlay-title win">ПОБЕДА</div>
+        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">Соперник покинул матч (или сдался) — победа засчитана тебе.</div>
         <div class="overlay-actions">
           <button class="btn ghost" id="oppLeftExitBtn">Выход</button>
         </div>
@@ -2313,6 +2329,17 @@
     }
     clearActiveMatch();
   }
+
+  document.getElementById('surrenderBtn').addEventListener('click', ()=>{
+    if(state.phase==='over') return;
+    if(!confirm('Сдаться? Тебе сразу засчитают поражение.')) return;
+    if(state.mode==='pvp'){
+      leavePvpMatchIfActive(); // tells the server: forfeit — opponent wins
+    }
+    state.phase = 'over';
+    renderAll();
+    showOverlay('lose');
+  });
 
   // ---------- init ----------
   tryAutoLogin();
