@@ -726,7 +726,7 @@
     box-shadow:0 0 0 2px rgba(201,162,39,0.35), 0 -4px 12px rgba(201,162,39,0.25);
     transform:translateY(-6px);
   }
-  .hand-card.unaffordable{opacity:.4; cursor:not-allowed;}
+  .hand-card.unaffordable{opacity:.4;}
   .hand-card .cost{
     position:absolute; top:-8px; left:-8px;
     width:22px;height:22px;border-radius:50%;
@@ -1140,6 +1140,7 @@
     state.enemyBoard = hydrateBoard(snapshot.opponentBoard);
     state.playerHand = (snapshot.myHand||[]).map(hydrateHandCard);
     if(snapshot.opponentName) state.opponentName = snapshot.opponentName;
+    state.sacrificesThisRound = snapshot.mySacrifices||0;
     state.pendingSpells = (snapshot.pendingSpells||[]).map(sp=>({
       side: sp.side===state.myUsername ? 'player' : 'enemy',
       name: (cardDefById(sp.cardId)||{}).name || sp.cardId,
@@ -1299,7 +1300,7 @@
     renderHand();
     renderPendingSpells();
     el.endTurnBtn.disabled = state.phase!=='player';
-    el.sacBtn.disabled = state.phase!=='player' || state.playerHand.length===0;
+    el.sacBtn.disabled = state.phase!=='player' || state.playerHand.length===0 || (state.sacrificesThisRound||0)>=1;
   }
 
   // ---------- Player actions ----------
@@ -1431,9 +1432,13 @@
   }
 
   el.sacBtn.addEventListener('click', ()=>{
-    if(state.phase!=='player' || state.playerHand.length===0) return;
-    // sacrifice the selected card, or the last card in hand if none selected
-    let card = state.playerHand.find(c=>c.uid===state.selectedCardUid) || state.playerHand[state.playerHand.length-1];
+    if(state.phase!=='player') return;
+    if((state.sacrificesThisRound||0) >= 1){
+      log('В этом раунде уже принесена жертва — можно только один раз за ход.');
+      return;
+    }
+    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+    if(!card) return; // requires an explicit card selection — no more "pick whatever's last"
     state.selectedCardUid = null;
     if(state.mode==='pvp'){
       pvpSendAction({ type:'sacrifice', uid: card.uid });
