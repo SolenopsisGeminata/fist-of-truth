@@ -537,7 +537,7 @@
   }
   .unit-card.mine{background:linear-gradient(160deg,#2c1414,#1c0f0f); border-color:var(--crimson);}
   .unit-card.theirs{background:linear-gradient(160deg,#131f28,#0d161c); border-color:var(--steel);}
-  .unit-name{font-size:10px; font-weight:700; line-height:1.15; padding-right:16px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
+  .unit-name{font-size:10px; font-weight:700; line-height:1.15; text-align:center; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
   .unit-stats{
     display:flex;
     justify-content:space-between;
@@ -758,12 +758,14 @@
   }
   .card-art svg{width:34px; height:34px;}
   .unit-art{
-    position:absolute;
-    top:3px; right:3px;
-    width:18px; height:18px;
-    opacity:.6;
+    flex:1;
+    min-height:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:.9;
   }
-  .unit-art svg{width:100%; height:100%;}
+  .unit-art svg{width:80%; height:80%;}
   .hand-card:hover{transform:translateY(-4px);}
   .hand-card.affordable{border-color:var(--brass-dim);}
   .hand-card.selected{
@@ -829,9 +831,9 @@
     .slot{height:56px; width:44px; flex-basis:44px; min-width:36px; font-size:8px;}
     .lane-row{gap:3px; padding:4px;}
     .side-slots{gap:2px;}
-    .unit-name{font-size:8px; padding-right:12px;}
+    .unit-name{font-size:8px;}
     .unit-stats{font-size:9px;}
-    .unit-art{width:13px; height:13px;}
+    .unit-art svg{width:75%; height:75%;}
     .hand-card{flex:0 0 84px; height:158px;}
     .card-art{height:44px;}
     .card-art svg{width:28px; height:28px;}
@@ -1191,8 +1193,8 @@
     if(!unit) return '';
     const cls = mine ? 'mine' : 'theirs';
     return `<div class="unit-card ${cls}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
-      <div class="unit-art">${cardArt(unit.art)}</div>
       <div class="unit-name">${unit.name}</div>
+      <div class="unit-art">${cardArt(unit.art)}</div>
       <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span></div>
     </div>`;
   }
