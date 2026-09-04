@@ -82,6 +82,13 @@
     border:2px solid var(--steel-bright);
     box-shadow:0 6px 16px rgba(0,0,0,0.45), 0 0 0 4px rgba(92,133,168,0.15);
     z-index:5;
+    transition:all 0.2s ease;
+  }
+  .mana-circle.drag-over{
+    background:radial-gradient(circle at 35% 30%, var(--brass), var(--brass-dim) 60%, #3a2c1a 100%);
+    border-color:var(--brass);
+    box-shadow:0 6px 20px rgba(201,162,39,0.6), 0 0 0 4px rgba(201,162,39,0.3);
+    transform:scale(1.1);
   }
   .mana-circle .mana-orb{
     font-family:'Bebas Neue',cursive;
@@ -103,11 +110,16 @@
     position:absolute;
     right:16px;
     bottom:16px;
-    padding:8px 16px;
-    font-size:10.5px;
-    letter-spacing:1.5px;
+    width:44px;
+    height:44px;
+    padding:0;
+    border-radius:50%;
     border-color:var(--crimson);
-    color:var(--crimson-bright);
+    background-color:rgba(161,44,44,0.18);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cline x1='5' y1='3' x2='5' y2='21' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M5 4 C10 2 14 6 19 4 C17 7 17 9 19 12 C14 10 10 14 5 12 Z' fill='white'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:22px 22px;
     z-index:5;
   }
 
@@ -504,12 +516,10 @@
     cursor:default;
     transition:border-color .15s, background .15s;
   }
-  .slot.selectable{
+  .slot.drop-target{
     border-color:var(--brass);
     background:rgba(201,162,39,0.08);
-    cursor:pointer;
   }
-  .slot.selectable:hover{background:rgba(201,162,39,0.18);}
   .slot.spell-target{
     border-color:var(--crimson-bright);
     background:rgba(224,74,63,0.1);
@@ -734,9 +744,13 @@
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    cursor:pointer;
+    cursor:grab;
     transition:transform .15s, border-color .15s, box-shadow .15s;
     position:relative;
+  }
+  .hand-card.dragging{
+    opacity:0.5;
+    cursor:grabbing;
   }
   .card-art{
     width:100%;
@@ -759,12 +773,7 @@
   .unit-art svg{width:100%; height:100%;}
   .hand-card:hover{transform:translateY(-4px);}
   .hand-card.affordable{border-color:var(--brass-dim);}
-  .hand-card.selected{
-    border-color:var(--brass);
-    box-shadow:0 0 0 2px rgba(201,162,39,0.35), 0 -4px 12px rgba(201,162,39,0.25);
-    transform:translateY(-6px);
-  }
-  .hand-card.unaffordable{opacity:.4;}
+  .hand-card.unaffordable{opacity:.4; cursor:not-allowed;}
   .hand-card .cost{
     position:absolute; top:-8px; left:-8px;
     width:22px;height:22px;border-radius:50%;
@@ -950,13 +959,10 @@
   <div class="hand-area">
     <div class="hand-header">
       <span id="handCount">Рука: 3</span>
-      <div style="display:flex; gap:8px;">
-        <button class="btn ghost" id="sacBtn">Пожертвовать (+1 мана)</button>
-        <button class="btn" id="endTurnBtn">Завершить ход</button>
-      </div>
+      <button class="btn" id="endTurnBtn">Завершить ход</button>
     </div>
     <div class="hand" id="hand"></div>
-    <div class="hint" id="hint">Выбери карту, затем свободную позицию на своей стороне.</div>
+    <div class="hint" id="hint">Перетащи карту на поле или на круг маны для жертвы.</div>
   </div>
 
   <div class="mana-circle" id="manaCircle">
@@ -964,7 +970,7 @@
     <div class="mana-label">Мана</div>
   </div>
 
-  <button class="btn ghost arena-corner-btn" id="surrenderBtn">Сдаться</button>
+  <button class="btn ghost arena-corner-btn" id="surrenderBtn" aria-label="Сдаться" title="Сдаться"></button>
 
 </div>
 
@@ -1027,6 +1033,7 @@
   }
 
   let state = {};
+  let draggedCard = null;
 
   function draw(deck, hand, n){
     for(let i=0;i<n;i++){
@@ -1087,7 +1094,6 @@
       playerHand: [],
       enemyBoard: freshBoard(),
       playerBoard: freshBoard(),
-      selectedCardUid: null,
       phase: 'player', // player | resolving | over
       gameOver:false,
       pendingSpells: [], // queued this round, resolved after both sides finish placing, before combat
@@ -1122,11 +1128,6 @@
   }
 
   // ---------- PVP: server is the only source of truth ----------
-  // The server sends back plain {id, uid, atk, hp, maxHp} for units and
-  // {id, uid} for hand cards — no name/art, since that's purely a display
-  // concern the client already knows from POOL. These helpers turn a
-  // server snapshot into the exact same shape the (unchanged) rendering
-  // code already expects for PVE.
   function cardDefById(id){
     return POOL.find(c=>c.id===id);
   }
@@ -1147,11 +1148,10 @@
     state = {
       round:1, mana:2, maxMana:2,
       playerHp:START_HP, enemyHp:START_HP,
-      playerDeck: [], enemyDeck: [], // unused in PVP — the server owns both decks
+      playerDeck: [], enemyDeck: [],
       playerHand: [],
       enemyBoard: freshBoard(),
       playerBoard: freshBoard(),
-      selectedCardUid: null,
       phase: 'player',
       gameOver:false,
       pendingSpells: [],
@@ -1166,9 +1166,6 @@
     log(`Матч против ${state.opponentName} начинается…`);
   }
 
-  // Applies a full authoritative snapshot from the server. Used both for
-  // instant feedback after a single action (place/cast/sacrifice) and as
-  // the final settle-step after replaying a round's resolution events.
   function applyPvpSnapshot(snapshot){
     if(!snapshot || state.mode!=='pvp') return;
     const wasOver = state.phase === 'over';
@@ -1207,6 +1204,7 @@
     hand: document.getElementById('hand'),
     handCount: document.getElementById('handCount'),
     manaOrb: document.getElementById('manaOrb'),
+    manaCircle: document.getElementById('manaCircle'),
     roundLabel: document.getElementById('roundLabel'),
     playerHpBar: document.getElementById('playerHpBar'),
     enemyHpBar: document.getElementById('enemyHpBar'),
@@ -1216,7 +1214,6 @@
     pendingSpells: document.getElementById('pendingSpells'),
     hint: document.getElementById('hint'),
     endTurnBtn: document.getElementById('endTurnBtn'),
-    sacBtn: document.getElementById('sacBtn'),
     arena: document.getElementById('arena'),
     battlefield: document.getElementById('battlefield'),
   };
@@ -1247,10 +1244,11 @@
       slot.innerHTML = unitCardHtml(unit, mine, laneIdx, depthIdx);
     } else {
       slot.innerHTML = `<span>${depthIdx===0?'Перед':'Тыл'}</span>`;
-      const selectedCard = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-      if(mine && state.phase==='player' && selectedCard && selectedCard.type==='creature' && selectedCard.cost<=state.mana){
-        slot.classList.add('selectable');
-        slot.addEventListener('click', ()=>placeSelectedCard(laneIdx, depthIdx));
+      // Make slot a drop target for creatures
+      if(mine && state.phase==='player'){
+        slot.addEventListener('dragover', handleSlotDragOver);
+        slot.addEventListener('dragleave', handleSlotDragLeave);
+        slot.addEventListener('drop', (e)=>handleSlotDrop(e, laneIdx, depthIdx));
       }
     }
     return slot;
@@ -1265,7 +1263,6 @@
 
       const playerSide = document.createElement('div');
       playerSide.className = 'side-slots player-side';
-      // back slot on the outside, front slot next to the VS marker (facing the enemy)
       playerSide.appendChild(buildSlot(state.playerBoard, l, 1, true));
       playerSide.appendChild(buildSlot(state.playerBoard, l, 0, true));
 
@@ -1275,7 +1272,6 @@
 
       const enemySide = document.createElement('div');
       enemySide.className = 'side-slots enemy-side';
-      // front slot next to the VS marker (facing the player), back slot on the outside
       enemySide.appendChild(buildSlot(state.enemyBoard, l, 0, false));
       enemySide.appendChild(buildSlot(state.enemyBoard, l, 1, false));
 
@@ -1292,7 +1288,8 @@
     state.playerHand.forEach(card=>{
       const affordable = card.cost <= state.mana;
       const div = document.createElement('div');
-      div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable') + (state.selectedCardUid===card.uid ? ' selected':'');
+      div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable');
+      div.draggable = affordable && state.phase==='player';
       const statsHtml = card.type==='creature'
         ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span></div>`
         : `<div class="cstats"><span style="color:var(--brass)">${card.dmg? '−'+card.dmg+' HP' : '+'+card.heal+' HP'}</span></div>`;
@@ -1306,7 +1303,12 @@
         ${statsHtml}
         <div class="cdesc">${card.desc}</div>
       `;
-      div.addEventListener('click', ()=>onHandCardClick(card));
+
+      if(affordable && state.phase==='player'){
+        div.addEventListener('dragstart', (e)=>handleCardDragStart(e, card));
+        div.addEventListener('dragend', handleCardDragEnd);
+      }
+
       el.hand.appendChild(div);
     });
   }
@@ -1341,57 +1343,103 @@
     renderHand();
     renderPendingSpells();
     el.endTurnBtn.disabled = state.phase!=='player';
-    el.sacBtn.disabled = state.phase!=='player' || state.playerHand.length===0 || (state.sacrificesThisRound||0)>=1;
   }
+
+  // ---------- Drag and drop handlers ----------
+  function handleCardDragStart(e, card){
+    draggedCard = card;
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', card.uid);
+  }
+
+  function handleCardDragEnd(e){
+    e.currentTarget.classList.remove('dragging');
+    draggedCard = null;
+  }
+
+  function handleSlotDragOver(e){
+    if(!draggedCard || draggedCard.type!=='creature') return;
+    e.preventDefault();
+    e.currentTarget.classList.add('drop-target');
+  }
+
+  function handleSlotDragLeave(e){
+    e.currentTarget.classList.remove('drop-target');
+  }
+
+  function handleSlotDrop(e, laneIdx, depthIdx){
+    e.preventDefault();
+    e.currentTarget.classList.remove('drop-target');
+
+    if(!draggedCard || draggedCard.type!=='creature') return;
+    if(state.playerBoard[laneIdx][depthIdx]) return;
+    if(draggedCard.cost > state.mana) return;
+
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'place_card', uid: draggedCard.uid, lane: laneIdx, depth: depthIdx });
+      draggedCard = null;
+      renderAll();
+      return;
+    }
+
+    state.mana -= draggedCard.cost;
+    state.playerBoard[laneIdx][depthIdx] = {name:draggedCard.name, atk:draggedCard.atk, hp:draggedCard.hp, maxHp:draggedCard.hp, art:draggedCard.art};
+    state.playerHand = state.playerHand.filter(c=>c.uid!==draggedCard.uid);
+    log(`Ты выставил «${draggedCard.name}» в бой.`);
+    draggedCard = null;
+    renderAll();
+  }
+
+  // Mana circle drag handlers
+  el.manaCircle.addEventListener('dragover', (e)=>{
+    if(!draggedCard) return;
+    if((state.sacrificesThisRound||0) >= 1) return;
+    e.preventDefault();
+    el.manaCircle.classList.add('drag-over');
+  });
+
+  el.manaCircle.addEventListener('dragleave', ()=>{
+    el.manaCircle.classList.remove('drag-over');
+  });
+
+  el.manaCircle.addEventListener('drop', (e)=>{
+    e.preventDefault();
+    el.manaCircle.classList.remove('drag-over');
+
+    if(!draggedCard) return;
+    if(state.phase!=='player') return;
+    if((state.sacrificesThisRound||0) >= 1){
+      log('В этом раунде уже принесена жертва — можно только один раз за ход.');
+      return;
+    }
+
+    const card = draggedCard;
+    draggedCard = null;
+
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'sacrifice', uid: card.uid });
+      renderAll();
+      return;
+    }
+
+    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
+    state.mana += 1;
+    state.sacrificesThisRound = (state.sacrificesThisRound||0) + 1;
+    log(`Ты пожертвовал «${card.name}» ради +1 маны.`);
+    renderAll();
+  });
 
   // ---------- Player actions ----------
-  function onHandCardClick(card){
-    if(state.phase!=='player') return;
-    if(state.selectedCardUid === card.uid){
-      state.selectedCardUid = null;
-    } else {
-      state.selectedCardUid = card.uid;
-    }
-    renderAll();
-    if(state.selectedCardUid){
-      if(card.cost > state.mana){
-        el.hint.textContent = 'Недостаточно маны, чтобы разыграть эту карту — можно принести её в жертву ради +1 маны.';
-        return;
-      }
-      if(card.type==='creature'){
-        el.hint.textContent = 'Выбери пустую позицию (перед/тыл) на своей стороне.';
-      } else if(card.dmg){
-        el.hint.textContent = 'Выбери полосу — заклинание ударит переднего врага в ней.';
-        highlightEnemyLanesForSpell();
-      } else if(card.heal){
-        el.hint.textContent = 'Выбери своего бойца, чтобы вылечить его.';
-        highlightOwnUnitsForHeal();
-      }
-    } else {
-      el.hint.textContent = 'Выбери карту, затем свободную позицию на своей стороне.';
-    }
+  function clearLaneHandlers(){
+    el.battlefield.querySelectorAll('.enemy-side').forEach(s=>{ s.onclick=null; s.style.cursor=''; });
+    el.battlefield.querySelectorAll('.slot.spell-target').forEach(s=>s.classList.remove('spell-target'));
   }
 
-  function highlightEnemyLanesForSpell(){
-    const rows = el.battlefield.querySelectorAll('.lane-row');
-    rows.forEach(row=>{
-      const l = parseInt(row.dataset.lane,10);
-      const enemySide = row.querySelector('.enemy-side');
-      enemySide.querySelectorAll('.slot').forEach(s=>s.classList.add('spell-target'));
-      enemySide.style.cursor = 'pointer';
-      enemySide.onclick = ()=>castDamageSpell(l);
-    });
-  }
-  function highlightOwnUnitsForHeal(){
-    const unitEls = el.battlefield.querySelectorAll('.unit-card.mine');
-    unitEls.forEach(u=>{
-      u.style.cursor='pointer';
-      u.style.outline = '2px solid var(--brass)';
-      u.onclick = (ev)=>{
-        ev.stopPropagation();
-        castHealSpell(parseInt(u.dataset.lane,10), parseInt(u.dataset.depth,10));
-      };
-    });
+  function frontUnit(board, laneIdx){
+    if(board[laneIdx][0]) return {unit:board[laneIdx][0], depth:0};
+    if(board[laneIdx][1]) return {unit:board[laneIdx][1], depth:1};
+    return null;
   }
 
   function pvpSendAction(obj){
@@ -1403,104 +1451,13 @@
     return true;
   }
 
-  function placeSelectedCard(laneIdx, depthIdx){
-    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || card.type!=='creature') return;
-    if(state.playerBoard[laneIdx][depthIdx]) return;
-    if(card.cost > state.mana) return;
-    state.selectedCardUid = null;
-    if(state.mode==='pvp'){
-      pvpSendAction({ type:'place_card', uid: card.uid, lane: laneIdx, depth: depthIdx });
-      renderAll();
-      return;
-    }
-    state.mana -= card.cost;
-    state.playerBoard[laneIdx][depthIdx] = {name:card.name, atk:card.atk, hp:card.hp, maxHp:card.hp, art:card.art};
-    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
-    log(`Ты выставил «${card.name}» в бой.`);
-    renderAll();
-  }
-
-  function castDamageSpell(laneIdx){
-    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !card.dmg) return;
-    if(card.cost > state.mana) return;
-    state.selectedCardUid = null;
-    clearLaneHandlers();
-    if(state.mode==='pvp'){
-      pvpSendAction({ type:'cast_spell', uid: card.uid, lane: laneIdx });
-      renderAll();
-      return;
-    }
-    state.mana -= card.cost;
-    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
-    state.pendingSpells.push({side:'player', kind:'damage', laneIdx, dmg:card.dmg, name:card.name});
-    log(`«${card.name}» готово — сработает перед боем, в начале следующего хода.`);
-    renderAll();
-  }
-
-  function castHealSpell(laneIdx, depthIdx){
-    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !card.heal) return;
-    if(card.cost > state.mana) return;
-    const unit = state.playerBoard[laneIdx][depthIdx];
-    if(!unit) return;
-    state.selectedCardUid = null;
-    clearLaneHandlers();
-    if(state.mode==='pvp'){
-      pvpSendAction({ type:'cast_spell', uid: card.uid, lane: laneIdx, depth: depthIdx });
-      renderAll();
-      return;
-    }
-    state.mana -= card.cost;
-    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
-    state.pendingSpells.push({side:'player', kind:'heal', laneIdx, depthIdx, heal:card.heal, name:card.name});
-    log(`«${card.name}» готово для ${unit.name} — сработает перед боем.`);
-    renderAll();
-  }
-
-  function clearLaneHandlers(){
-    el.battlefield.querySelectorAll('.enemy-side').forEach(s=>{ s.onclick=null; s.style.cursor=''; });
-    el.battlefield.querySelectorAll('.slot.spell-target').forEach(s=>s.classList.remove('spell-target'));
-  }
-
-  // The "effective front" of a lane is whichever slot is occupied, front first —
-  // a lone back-row unit still fights (and blocks hero damage) if the front is empty.
-  function frontUnit(board, laneIdx){
-    if(board[laneIdx][0]) return {unit:board[laneIdx][0], depth:0};
-    if(board[laneIdx][1]) return {unit:board[laneIdx][1], depth:1};
-    return null;
-  }
-
-  el.sacBtn.addEventListener('click', ()=>{
-    if(state.phase!=='player') return;
-    if((state.sacrificesThisRound||0) >= 1){
-      log('В этом раунде уже принесена жертва — можно только один раз за ход.');
-      return;
-    }
-    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card) return; // requires an explicit card selection — no more "pick whatever's last"
-    state.selectedCardUid = null;
-    if(state.mode==='pvp'){
-      pvpSendAction({ type:'sacrifice', uid: card.uid });
-      renderAll();
-      return;
-    }
-    state.playerHand = state.playerHand.filter(c=>c.uid!==card.uid);
-    state.mana += 1; // sacrifice grants bonus mana for this round only, can exceed max
-    state.sacrificesThisRound = (state.sacrificesThisRound||0) + 1;
-    log(`Ты пожертвовал «${card.name}» ради +1 маны.`);
-    renderAll();
-  });
-
   // ---------- AI ----------
   function aiTakeTurn(){
     let guard = 0;
-    let aiMana = state.maxMana; // AI gets its own pool equal to the round's max mana
+    let aiMana = state.maxMana;
     while(guard++<20){
       const affordable = state.enemyHand.filter(c=>c.cost<=aiMana);
       if(affordable.length===0) break;
-      // prefer creatures into empty slots, occasionally spells
       const creature = affordable.filter(c=>c.type==='creature');
       const openSlots = [];
       for(let l=0;l<LANES;l++) for(let d=0;d<DEPTH;d++) if(!state.enemyBoard[l][d]) openSlots.push([l,d]);
@@ -1514,7 +1471,6 @@
       }
       const dmgSpell = affordable.find(c=>c.dmg);
       if(dmgSpell){
-        // pick the lane with the strongest current threat, else any lane (will hit hero directly)
         let bestLane=-1, bestAtk=-1;
         for(let l=0;l<LANES;l++){
           const info = frontUnit(state.playerBoard, l);
@@ -1650,11 +1606,6 @@
     nextLane();
   }
 
-  // A lane fights in up to two waves. Each side's first available unit — the front-line
-  // one if it exists, otherwise the back-line unit standing in for it — acts in the first
-  // wave. If a side placed both a front and a back unit, the back unit gets a second,
-  // later wave of its own. Every attack hits whatever unit is currently first in the
-  // opposing row, or the hero directly if that row is empty.
   function actingOrder(board, laneIdx){
     const order = [];
     if(board[laneIdx][0]) order.push({unit:board[laneIdx][0], depth:0});
@@ -1676,7 +1627,6 @@
   }
 
   function runWave(l, aInfo, bInfo, done){
-    // Defensive: skip an actor that already died earlier this lane's combat.
     if(aInfo && state.playerBoard[l][aInfo.depth] !== aInfo.unit) aInfo = null;
     if(bInfo && state.enemyBoard[l][bInfo.depth] !== bInfo.unit) bInfo = null;
     if(!aInfo && !bInfo){ done(); return; }
@@ -1731,40 +1681,79 @@
     return false;
   }
 
-  function showOverlay(result){
-    // Accepts 'win' | 'lose' | 'draw' (kept tolerant of legacy booleans too).
-    if(result===true) result='win';
-    if(result===false) result='lose';
-    const title = result==='win' ? 'ПОБЕДА' : result==='draw' ? 'НИЧЬЯ' : 'ПОРАЖЕНИЕ';
-    const cls = result==='win' ? 'win' : result==='draw' ? 'draw' : 'lose';
-    const sub = result==='win' ? 'Кулак соперника сломлен.' : result==='draw' ? 'Оба кулака сломлены одновременно.' : 'Твой кулак не выдержал.';
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    overlay.innerHTML = `
-      <div class="overlay-box">
-        <div class="overlay-title ${cls}">${title}</div>
-        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">${sub}</div>
-        <div class="overlay-actions">
-          <button class="btn" id="restartBtn">Новая дуэль</button>
-          <button class="btn ghost" id="exitBtn">Выход</button>
-        </div>
-      </div>`;
-    document.body.appendChild(overlay);
-    document.getElementById('restartBtn').addEventListener('click', ()=>{
-      overlay.remove();
-      if(state.mode==='pvp'){
-        showScreen('mode');
-      } else {
-        initGame({ mode:'pve' });
-      }
-    });
-    document.getElementById('exitBtn').addEventListener('click', ()=>{
-      overlay.remove();
-      showScreen('menu');
+  function runResolutionPhase(){
+    state.phase='resolving';
+    el.endTurnBtn.disabled=true;
+    log('Разрешение раунда…');
+    resolveSpells(()=>{
+      if(checkGameOver()) return;
+      resolveCombat(()=>{
+        if(checkGameOver()) return;
+        state.round++;
+        state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
+        state.mana = state.maxMana;
+        state.sacrificesThisRound = 0;
+        draw(state.playerDeck, state.playerHand, 1);
+        draw(state.enemyDeck, state.enemyHand, 1);
+        state.phase='player';
+        log(`Раунд ${state.round}: твой ход.`);
+        renderAll();
+      });
     });
   }
 
-  // ---------- Turn flow ----------
+  el.endTurnBtn.addEventListener('click', ()=>{
+    if(state.phase!=='player') return;
+    if(state.mode==='pvp'){
+      pvpSendAction({ type:'end_turn' });
+      state.phase='resolving';
+      renderAll();
+      log('Ожидание соперника…');
+      return;
+    }
+    aiTakeTurn();
+    runResolutionPhase();
+  });
+
+  function showOverlay(result){
+    state.gameOver=true;
+    const overlay = document.createElement('div');
+    overlay.className='overlay';
+    let title='Ничья', cls='draw', msg='Оба пали одновременно.';
+    if(result==='win'||result===true){ title='Победа'; cls='win'; msg='Соперник повержен!'; }
+    if(result==='lose'||result===false){ title='Поражение'; cls='lose'; msg='Ты проиграл бой.'; }
+    overlay.innerHTML=`<div class="overlay-box">
+      <div class="overlay-title ${cls}">${title}</div>
+      <div style="font-size:13px;color:var(--bone-dim);margin-bottom:20px;">${msg}</div>
+      <div class="overlay-actions">
+        <button class="btn" id="overlayMenuBtn">В меню</button>
+        <button class="btn ghost" id="overlayRematchBtn">Реванш</button>
+      </div>
+    </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('overlayMenuBtn').addEventListener('click', ()=>{
+      if(state.mode==='pvp') leavePvpMatchIfActive();
+      overlay.remove();
+      showScreen('menu');
+    });
+    document.getElementById('overlayRematchBtn').addEventListener('click', ()=>{
+      if(state.mode==='pvp') leavePvpMatchIfActive();
+      overlay.remove();
+      if(state.mode==='pvp'){ showScreen('mode'); }
+      else{ initGame(); showScreen('arena'); }
+    });
+  }
+
+  document.getElementById('surrenderBtn').addEventListener('click', ()=>{
+    if(!confirm('Ты уверен, что хочешь сдаться?')) return;
+    if(state.mode==='pvp' && state.matchId){
+      pvpSendAction({ type:'leave_match' });
+    }
+    state.phase='over';
+    state.gameOver=true;
+    showOverlay('lose');
+  });
+
   function runResolutionPhase(onRoundStart){
     const spellsQueued = state.pendingSpells.length>0;
     log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
@@ -1784,7 +1773,6 @@
 
   el.endTurnBtn.addEventListener('click', ()=>{
     if(state.phase!=='player') return;
-    state.selectedCardUid=null;
     clearLaneHandlers();
     if(state.mode==='pvp'){
       state.phase='resolving';
@@ -1804,15 +1792,7 @@
   });
 
   // ---------- PVP resolution replay ----------
-  // The server has already computed the entire outcome (see game-engine.js);
-  // this just plays it back visually, one event at a time, reusing the same
-  // lunge/flash/damage-number primitives the PVE combat uses — then applies
-  // the server's final snapshot to settle everything exactly (hand, mana,
-  // next round's draw, etc.).
   function playPvpResolution(preBoard, events, finalSnapshot){
-    // Step 1: reveal the board exactly as both sides placed it this round
-    // (the opponent's side was hidden until now) — units appear first,
-    // then spells animate, then combat plays out.
     if(preBoard){
       state.playerBoard = hydrateBoard(preBoard.myBoard);
       state.enemyBoard = hydrateBoard(preBoard.opponentBoard);
@@ -1913,6 +1893,7 @@
     state.round += 1;
     state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
     state.mana = state.maxMana;
+    state.sacrificesThisRound = 0;
     draw(state.playerDeck, state.playerHand, 1);
     draw(state.enemyDeck, state.enemyHand, 1);
     state.phase='player';
@@ -2045,7 +2026,7 @@
     }
   });
   document.getElementById('saveDeckBtn').addEventListener('click', async ()=>{
-    saveDeckCounts(editingDeckCounts); // instant local fallback for PVE
+    saveDeckCounts(editingDeckCounts);
     if(serverConfigured()){
       const session = loadSession();
       if(session && session.token){
@@ -2065,12 +2046,7 @@
   });
 
   // ---------- Game server connection ----------
-  // Connects to a small Node.js server you deploy yourself — see
-  // /server/README.md in the project for the server code and deploy steps.
-  // Fill in just the host (no protocol), e.g. 'your-app.onrender.com'.
-  // Both the online counter (wss://) and the login/register API (https://)
-  // are derived from this single value.
-  const GAME_SERVER_HOST = 'fist-of-truth-server-production-231f.up.railway.app';
+  const GAME_SERVER_HOST = 'YOUR-SERVER-URL-HERE';
 
   function serverConfigured(){
     return !!GAME_SERVER_HOST && !GAME_SERVER_HOST.includes('YOUR-SERVER-URL-HERE');
@@ -2196,7 +2172,6 @@
     }
   });
 
-  // Auto-login if a still-valid session is already stored locally.
   async function tryAutoLogin(){
     const session = loadSession();
     if(!session || !serverConfigured()){
@@ -2227,7 +2202,7 @@
     if(!onlineCountEl) return;
     if(!serverConfigured()){
       onlineCountEl.textContent = '—';
-      return; // no server configured yet
+      return;
     }
     try{
       onlineSocket = new WebSocket(wsUrl());
@@ -2242,7 +2217,7 @@
       });
       onlineSocket.addEventListener('close', ()=>{
         onlineCountEl.textContent = '—';
-        setTimeout(connectOnlineCounter, 4000); // retry connection
+        setTimeout(connectOnlineCounter, 4000);
       });
       onlineSocket.addEventListener('error', ()=>{
         onlineCountEl.textContent = '—';
@@ -2253,7 +2228,6 @@
   }
   connectOnlineCounter();
 
-  // ---------- Matchmaking (real, relayed through the same server) ----------
   let resumeAttempted = false;
   function maybeResumeMatch(){
     if(resumeAttempted) return;
@@ -2290,7 +2264,7 @@
       return;
     }
     if(data.type === 'state_update'){
-      if(state.mode!=='pvp') return; // stray message from a stale match
+      if(state.mode!=='pvp') return;
       applyPvpSnapshot(data.state);
       if(data.resumed) log(`Матч против ${state.opponentName} восстановлен — раунд ${state.round}.`);
       return;
@@ -2305,7 +2279,7 @@
         log('Соперник покинул матч.');
         state.phase = 'over';
         clearActiveMatch();
-        showOpponentLeftOverlay();
+        showOverlay('win');
       }
       return;
     }
@@ -2328,24 +2302,6 @@
       }
       return;
     }
-  }
-
-  function showOpponentLeftOverlay(){
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    overlay.innerHTML = `
-      <div class="overlay-box">
-        <div class="overlay-title win">ПОБЕДА</div>
-        <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">Соперник покинул матч (или сдался) — победа засчитана тебе.</div>
-        <div class="overlay-actions">
-          <button class="btn ghost" id="oppLeftExitBtn">Выход</button>
-        </div>
-      </div>`;
-    document.body.appendChild(overlay);
-    document.getElementById('oppLeftExitBtn').addEventListener('click', ()=>{
-      overlay.remove();
-      showScreen('menu');
-    });
   }
 
   function startMatchmaking(){
@@ -2380,7 +2336,7 @@
     if(state.phase==='over') return;
     if(!confirm('Сдаться? Тебе сразу засчитают поражение.')) return;
     if(state.mode==='pvp'){
-      leavePvpMatchIfActive(); // tells the server: forfeit — opponent wins
+      leavePvpMatchIfActive();
     }
     state.phase = 'over';
     renderAll();
@@ -2390,6 +2346,3 @@
   // ---------- init ----------
   tryAutoLogin();
 })();
-</script>
-</body>
-</html>
