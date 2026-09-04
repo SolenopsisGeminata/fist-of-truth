@@ -573,6 +573,7 @@
   }
   .stat-atk{color:var(--crimson-bright);}
   .stat-hp{color:#7fd68a;}
+  .stat-armor{color:var(--steel-bright);}
   .row-tag{
     position:absolute;
     top:2px; right:4px;
@@ -1013,8 +1014,8 @@
 
   // ---------- Card pool ----------
   const POOL = [
-    {id:'c1', name:'Забияка', type:'creature', cost:1, atk:1, hp:2, desc:'Дешёвый застрельщик.', art:'scrapper', faction:'empire'},
-    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, desc:'Держит удар в первой линии.', art:'shield', faction:'empire'},
+    {id:'c1', name:'Крестьянин', type:'creature', cost:1, atk:1, hp:3, desc:'Простой сельский житель — не боец, но упрямый и живучий.', art:'peasant', faction:'empire'},
+    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, armor:1, desc:'Держит удар в первой линии. Броня гасит часть входящего урона от каждого удара.', art:'shield', faction:'empire'},
     {id:'c3', name:'Костолом', type:'creature', cost:2, atk:3, hp:2, desc:'Бьёт больно, ломается быстро.', art:'bones', faction:'empire'},
     {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, desc:'Сбалансированный боец.', art:'dagger', faction:'empire'},
     {id:'c5', name:'Ветеран Ямы', type:'creature', cost:3, atk:2, hp:6, desc:'Живучий защитник тыла.', art:'veteran', faction:'empire'},
@@ -1022,6 +1023,7 @@
     {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, desc:'Почти не падает.', art:'wall', faction:'empire'},
     {id:'c8', name:'Чемпион Ринга', type:'creature', cost:5, atk:5, hp:6, desc:'Опасен с любой позиции.', art:'champion', faction:'empire'},
     {id:'c9', name:'Тяжеловес', type:'creature', cost:6, atk:7, hp:8, desc:'Финальный аргумент.', art:'anvil', faction:'empire'},
+    {id:'c10', name:'Ополченец', type:'creature', cost:1, atk:1, hp:1, desc:'Наскоро вооружённый крестьянин. Числом, а не умением.', art:'militia', faction:'empire'},
     {id:'s1', name:'Удар в челюсть', type:'spell', cost:2, dmg:3, desc:'3 урона переднему врагу в выбранной полосе.', art:'hook', faction:'empire'},
     {id:'s2', name:'Прямой в корпус', type:'spell', cost:4, dmg:5, desc:'5 урона переднему врагу в выбранной полосе.', art:'straight', faction:'empire'},
     {id:'s3', name:'Перевязка', type:'spell', cost:2, heal:4, desc:'Лечит своего бойца на 4.', art:'bandage', faction:'empire'},
@@ -1044,7 +1046,7 @@
 
   // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
   const ICONS = {
-    scrapper: `<svg viewBox="0 0 64 64"><circle cx="32" cy="20" r="9" fill="#e04a3f"/><path d="M20 52c1-11 6-17 12-17s11 6 12 17" stroke="#e04a3f" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M14 44l6-4M50 44l-6-4" stroke="#8a7020" stroke-width="3" stroke-linecap="round"/></svg>`,
+    peasant: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="26" ry="6" fill="#8a7020"/><path d="M18 40c0-11 6-19 14-19s14 8 14 19" fill="#c9a227"/><rect x="28" y="14" width="8" height="8" rx="2" fill="#8a7020"/></svg>`,
     shield: `<svg viewBox="0 0 64 64"><path d="M32 6l18 6v16c0 14-9 24-18 30-9-6-18-16-18-30V12z" fill="#3d5a73" stroke="#5c85a8" stroke-width="2.5"/><path d="M32 14v30M20 26h24" stroke="#e9e0cf" stroke-width="2" opacity=".5"/></svg>`,
     bones: `<svg viewBox="0 0 64 64"><g stroke="#e9e0cf" stroke-width="5" stroke-linecap="round"><path d="M14 20l36 24"/><path d="M50 20l-36 24"/></g><g fill="#c9a227"><circle cx="14" cy="20" r="5"/><circle cx="50" cy="20" r="5"/><circle cx="14" cy="44" r="5"/><circle cx="50" cy="44" r="5"/></g></svg>`,
     dagger: `<svg viewBox="0 0 64 64"><path d="M32 6l6 30h-12z" fill="#a89a84"/><rect x="29" y="34" width="6" height="16" fill="#8a7020"/><rect x="21" y="48" width="22" height="6" rx="2" fill="#a12c2c"/><rect x="30" y="52" width="4" height="8" fill="#3a2c22"/></svg>`,
@@ -1053,6 +1055,7 @@
     wall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#a89a84" stroke-width="2"><rect x="8" y="12" width="20" height="10"/><rect x="28" y="12" width="20" height="10"/><rect x="48" y="12" width="8" height="10"/><rect x="18" y="22" width="20" height="10"/><rect x="38" y="22" width="18" height="10"/><rect x="8" y="22" width="10" height="10"/><rect x="8" y="32" width="20" height="10"/><rect x="28" y="32" width="20" height="10"/><rect x="48" y="32" width="8" height="10"/><rect x="18" y="42" width="20" height="10"/><rect x="8" y="42" width="10" height="10"/><rect x="38" y="42" width="18" height="10"/></g></svg>`,
     champion: `<svg viewBox="0 0 64 64"><path d="M22 26c-6 0-10-4-10-10h10M42 26c6 0 10-4 10-10H42" fill="none" stroke="#c9a227" stroke-width="3"/><path d="M20 14h24v14c0 8-5 13-12 13s-12-5-12-13z" fill="#c9a227"/><rect x="26" y="41" width="12" height="6" fill="#8a7020"/><path d="M20 47h24l3 10H17z" fill="#8a7020"/></svg>`,
     anvil: `<svg viewBox="0 0 64 64"><path d="M14 40h14l4-6h16l6 6v4H14z" fill="#a89a84"/><rect x="28" y="44" width="8" height="10" fill="#5c4536"/><rect x="20" y="54" width="24" height="5" rx="1.5" fill="#3a2c22"/></svg>`,
+    militia: `<svg viewBox="0 0 64 64"><path d="M20 8v16M32 8v16M44 8v16" stroke="#a89a84" stroke-width="4" stroke-linecap="round"/><path d="M18 24h28v6H18z" fill="#8a7020"/><rect x="29" y="30" width="6" height="26" fill="#5c4536"/></svg>`,
     hook: `<svg viewBox="0 0 64 64"><path d="M14 32c4-10 12-16 20-16 10 0 18 8 18 16" fill="none" stroke="#e04a3f" stroke-width="3" stroke-dasharray="4 4"/><path d="M40 20c4-2 9-1 9 5 0 5-6 8-6 8" fill="#e04a3f"/><path d="M12 30l6 6-6 6" stroke="#c9a227" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     straight: `<svg viewBox="0 0 64 64"><rect x="10" y="27" width="26" height="10" rx="4" fill="#e04a3f"/><path d="M36 22c6 0 12 4 12 10s-6 10-12 10" fill="#e04a3f"/><g stroke="#c9a227" stroke-width="3" stroke-linecap="round"><path d="M46 14l6 6M50 32h8M46 50l6-6"/></g></svg>`,
     bandage: `<svg viewBox="0 0 64 64"><rect x="10" y="26" width="44" height="12" rx="3" fill="#e9e0cf"/><rect x="10" y="26" width="44" height="12" rx="3" fill="none" stroke="#8a7020" stroke-width="1.5" stroke-dasharray="3 3"/><rect x="27" y="16" width="4" height="32" fill="#4f8a5b"/><rect x="16" y="26" width="32" height="4" fill="#4f8a5b"/></svg>`
@@ -1131,7 +1134,7 @@
   function hydrateUnit(u){
     if(!u) return null;
     const card = cardDefById(u.id);
-    return { id:u.id, uid:u.uid, name: card?card.name:u.id, art: card?card.art:null, atk:u.atk, hp:u.hp, maxHp:u.maxHp };
+    return { id:u.id, uid:u.uid, name: card?card.name:u.id, art: card?card.art:null, atk:u.atk, hp:u.hp, maxHp:u.maxHp, armor:u.armor||0 };
   }
   function hydrateBoard(board){
     return (isValidBoard(board) ? board : freshBoard()).map(lane=>lane.map(hydrateUnit));
@@ -1237,7 +1240,7 @@
     return `<div class="unit-card ${cls}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name">${unit.name}</div>
       <div class="unit-art">${cardArt(unit.art)}</div>
-      <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span></div>
+      <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span>${unit.armor?`<span class="stat-armor">🛡 ${unit.armor}</span>`:''}</div>
     </div>`;
   }
 
@@ -1303,7 +1306,7 @@
       const div = document.createElement('div');
       div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable') + (state.selectedCardUid===card.uid ? ' selected':'');
       const statsHtml = card.type==='creature'
-        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span></div>`
+        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}</div>`
         : `<div class="cstats"><span style="color:var(--brass)">${card.dmg? '−'+card.dmg+' HP' : '+'+card.heal+' HP'}</span></div>`;
       div.innerHTML = `
         <div class="cost">${card.cost}</div>
@@ -1695,7 +1698,7 @@
   const deckCountLabelEl = document.getElementById('deckCountLabel');
 
   function cardStatsLine(card){
-    if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}`;
+    if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}`;
     if(card.dmg) return `−${card.dmg} урона`;
     return `+${card.heal} HP`;
   }
