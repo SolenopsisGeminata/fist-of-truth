@@ -445,6 +445,7 @@
   }
   .hero.player .hpbar{background:linear-gradient(90deg,var(--crimson),var(--crimson-bright));}
   .hero.enemy .hpbar{background:linear-gradient(90deg,var(--steel-bright),var(--steel));}
+  .hpbar.overheal{box-shadow:0 0 8px 1px var(--win) inset, 0 0 6px var(--win);}
   .hp-label{
     position:absolute;
     inset:0;
@@ -1021,9 +1022,9 @@
     {id:'c3', name:'Стражник', type:'creature', cost:2, atk:2, hp:1, desc:'Гвардеец на грани — бьёт вдвое сильнее, но падает от первого же ответа.', art:'guard', faction:'empire'},
     {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, desc:'Сбалансированный боец.', art:'dagger', faction:'empire'},
     {id:'c5', name:'Ветеран Ямы', type:'creature', cost:3, atk:2, hp:6, desc:'Живучий защитник тыла.', art:'veteran', faction:'empire'},
-    {id:'c6', name:'Берсерк', type:'creature', cost:4, atk:6, hp:2, desc:'Всё в атаку, ничего в защиту.', art:'berserk', faction:'empire'},
+    {id:'c6', name:'Молотобоец', type:'creature', cost:4, atk:5, hp:2, desc:'Один взмах молота сокрушает всё на пути — но брони на второй удар уже не остаётся.', art:'hammer', faction:'empire'},
     {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, desc:'Почти не падает.', art:'wall', faction:'empire'},
-    {id:'c8', name:'Чемпион Ринга', type:'creature', cost:5, atk:5, hp:6, desc:'Опасен с любой позиции.', art:'champion', faction:'empire'},
+    {id:'c8', name:'Паладин', type:'creature', cost:5, atk:4, hp:2, rallyBuff:true, desc:'Благословляет соратников при выходе на поле — все союзники, кроме него самого, получают +2 к атаке и здоровью.', art:'paladin', faction:'empire'},
     {id:'c9', name:'Тяжеловес', type:'creature', cost:6, atk:7, hp:8, desc:'Финальный аргумент.', art:'anvil', faction:'empire'},
     {id:'c10', name:'Ополченец', type:'creature', cost:1, atk:1, hp:1, desc:'Наскоро вооружённый крестьянин. Числом, а не умением.', art:'militia', faction:'empire'},
     {id:'c11', name:'Страж дворца', type:'creature', cost:2, atk:2, hp:2, lifesteal:true, desc:'Каждый пробитый удар по сопернику придаёт сил защитнику — исцеляет своего героя на значение атаки.', art:'palaceguard', faction:'empire'},
@@ -1055,9 +1056,9 @@
     guard: `<svg viewBox="0 0 64 64"><path d="M32 8c10 0 16 8 16 18v10c0 8-6 14-16 14s-16-6-16-14V26c0-10 6-18 16-18z" fill="#5c85a8" stroke="#3d5a73" stroke-width="2.5"/><rect x="23" y="30" width="18" height="6" rx="1" fill="#15100d"/><path d="M32 8v42" stroke="#3d5a73" stroke-width="2"/></svg>`,
     dagger: `<svg viewBox="0 0 64 64"><path d="M32 6l6 30h-12z" fill="#a89a84"/><rect x="29" y="34" width="6" height="16" fill="#8a7020"/><rect x="21" y="48" width="22" height="6" rx="2" fill="#a12c2c"/><rect x="30" y="52" width="4" height="8" fill="#3a2c22"/></svg>`,
     veteran: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="none" stroke="#8a7020" stroke-width="3"/><path d="M20 20l10 10M44 20L34 30M20 44l10-10M44 44L34 34" stroke="#e04a3f" stroke-width="3" stroke-linecap="round"/></svg>`,
-    berserk: `<svg viewBox="0 0 64 64"><path d="M32 8c-3 8 3 10 0 16-4-2-6 1-6 5 0 6 5 10 6 10s6-4 6-10c0-3-1-5-3-6 4-1 6-6 3-15z" fill="#e04a3f"/><path d="M22 50c4 4 16 4 20 0" stroke="#8a7020" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+    hammer: `<svg viewBox="0 0 64 64"><rect x="29" y="22" width="6" height="34" rx="2" fill="#5c4536"/><rect x="14" y="8" width="36" height="16" rx="3" fill="#e04a3f" stroke="#8a7020" stroke-width="2"/></svg>`,
     wall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#a89a84" stroke-width="2"><rect x="8" y="12" width="20" height="10"/><rect x="28" y="12" width="20" height="10"/><rect x="48" y="12" width="8" height="10"/><rect x="18" y="22" width="20" height="10"/><rect x="38" y="22" width="18" height="10"/><rect x="8" y="22" width="10" height="10"/><rect x="8" y="32" width="20" height="10"/><rect x="28" y="32" width="20" height="10"/><rect x="48" y="32" width="8" height="10"/><rect x="18" y="42" width="20" height="10"/><rect x="8" y="42" width="10" height="10"/><rect x="38" y="42" width="18" height="10"/></g></svg>`,
-    champion: `<svg viewBox="0 0 64 64"><path d="M22 26c-6 0-10-4-10-10h10M42 26c6 0 10-4 10-10H42" fill="none" stroke="#c9a227" stroke-width="3"/><path d="M20 14h24v14c0 8-5 13-12 13s-12-5-12-13z" fill="#c9a227"/><rect x="26" y="41" width="12" height="6" fill="#8a7020"/><path d="M20 47h24l3 10H17z" fill="#8a7020"/></svg>`,
+    paladin: `<svg viewBox="0 0 64 64"><path d="M32 6l16 6v16c0 14-9 24-16 30-7-6-16-16-16-30V12z" fill="#c9a227" stroke="#8a7020" stroke-width="2"/><rect x="29" y="16" width="6" height="24" fill="#e9e0cf"/><rect x="20" y="25" width="24" height="6" fill="#e9e0cf"/></svg>`,
     anvil: `<svg viewBox="0 0 64 64"><path d="M14 40h14l4-6h16l6 6v4H14z" fill="#a89a84"/><rect x="28" y="44" width="8" height="10" fill="#5c4536"/><rect x="20" y="54" width="24" height="5" rx="1.5" fill="#3a2c22"/></svg>`,
     militia: `<svg viewBox="0 0 64 64"><path d="M20 8v16M32 8v16M44 8v16" stroke="#a89a84" stroke-width="4" stroke-linecap="round"/><path d="M18 24h28v6H18z" fill="#8a7020"/><rect x="29" y="30" width="6" height="26" fill="#5c4536"/></svg>`,
     palaceguard: `<svg viewBox="0 0 64 64"><rect x="29" y="8" width="6" height="48" rx="1" fill="#8a7020"/><path d="M35 10l16 6-5 12-13-5z" fill="#c9a227"/><path d="M29 10l-14 8 6 9 8-7z" fill="#c9a227"/></svg>`,
@@ -1332,10 +1333,15 @@
   function renderTop(){
     el.manaOrb.textContent = `${state.mana}/${state.maxMana}`;
     el.roundLabel.textContent = `Раунд ${state.round}`;
-    const pPct = Math.max(0, state.playerHp/START_HP*100);
-    const ePct = Math.max(0, state.enemyHp/START_HP*100);
+    // HP itself is uncapped (healing can push it above START_HP) — only
+    // the bar's fill width is clamped to 100% so it doesn't overflow its
+    // track; the number shown next to it always reflects the real value.
+    const pPct = Math.max(0, Math.min(100, state.playerHp/START_HP*100));
+    const ePct = Math.max(0, Math.min(100, state.enemyHp/START_HP*100));
     el.playerHpBar.style.width = pPct+'%';
     el.enemyHpBar.style.width = ePct+'%';
+    el.playerHpBar.classList.toggle('overheal', state.playerHp>START_HP);
+    el.enemyHpBar.classList.toggle('overheal', state.enemyHp>START_HP);
     el.playerHpLabel.textContent = `${Math.max(0,state.playerHp)}/${START_HP}`;
     el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}/${START_HP}`;
     const enemyNameEl = document.querySelector('.hero.enemy .hero-name');
