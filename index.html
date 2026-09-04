@@ -1557,8 +1557,7 @@
       setTimeout(()=>{
         if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
         if(heroEl){ heroEl.classList.add('hero-hit'); spawnSpellBurst(heroEl,'dmg'); spawnDamageNumber(heroEl,'-'+ev.amount,'dmg'); }
-        renderAll();
-        setTimeout(done, 1300);
+        setTimeout(()=>{ renderAll(); done(); }, 1300);
       }, 300);
       return;
     }
@@ -1577,8 +1576,11 @@
           if(targetEl){ spawnSpellBurst(targetEl,'heal'); spawnDamageNumber(targetEl, '+'+ev.amount, 'heal'); }
         }
       }
-      renderAll();
-      setTimeout(done, ev.died ? 1300 : 900);
+      // IMPORTANT: renderAll() rebuilds every .unit-card element from
+      // scratch. Calling it immediately would destroy the classes/child
+      // elements we just added before the browser ever paints a frame —
+      // so it must wait exactly as long as the animation itself.
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1300 : 900);
     }, 300);
   }
 
