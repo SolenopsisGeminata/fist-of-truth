@@ -1935,6 +1935,7 @@
     state.round += 1;
     state.maxMana = Math.min(MAX_MANA, state.maxMana+1);
     state.mana = state.maxMana;
+    state.sacrificesThisRound = 0;
     draw(state.playerDeck, state.playerHand, 1);
     draw(state.enemyDeck, state.enemyHand, 1);
     state.phase='player';
