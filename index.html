@@ -300,6 +300,32 @@
     margin-bottom:8px;
     padding:0 2px;
   }
+  .faction-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .faction-tab{
+    width:36px;
+    height:36px;
+    padding:0;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .faction-tab svg{width:22px; height:22px;}
+  .faction-tab:hover{border-color:var(--brass-dim); transform:translateY(-1px);}
+  .faction-tab.active{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.16);
+    box-shadow:0 0 0 1px var(--brass) inset;
+  }
   .deck-row-list{
     display:flex;
     flex-direction:column;
@@ -918,6 +944,7 @@
   <div class="deck-builder-body">
     <div class="pool-panel">
       <div class="panel-title">Доступные карты</div>
+      <div class="faction-tabs" id="factionTabs"></div>
       <div class="deck-row-list" id="poolList"></div>
     </div>
     <div class="deck-panel-wrap">
@@ -986,19 +1013,34 @@
 
   // ---------- Card pool ----------
   const POOL = [
-    {id:'c1', name:'Забияка', type:'creature', cost:1, atk:1, hp:2, desc:'Дешёвый застрельщик.', art:'scrapper'},
-    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, desc:'Держит удар в первой линии.', art:'shield'},
-    {id:'c3', name:'Костолом', type:'creature', cost:2, atk:3, hp:2, desc:'Бьёт больно, ломается быстро.', art:'bones'},
-    {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, desc:'Сбалансированный боец.', art:'dagger'},
-    {id:'c5', name:'Ветеран Ямы', type:'creature', cost:3, atk:2, hp:6, desc:'Живучий защитник тыла.', art:'veteran'},
-    {id:'c6', name:'Берсерк', type:'creature', cost:4, atk:6, hp:2, desc:'Всё в атаку, ничего в защиту.', art:'berserk'},
-    {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, desc:'Почти не падает.', art:'wall'},
-    {id:'c8', name:'Чемпион Ринга', type:'creature', cost:5, atk:5, hp:6, desc:'Опасен с любой позиции.', art:'champion'},
-    {id:'c9', name:'Тяжеловес', type:'creature', cost:6, atk:7, hp:8, desc:'Финальный аргумент.', art:'anvil'},
-    {id:'s1', name:'Удар в челюсть', type:'spell', cost:2, dmg:3, desc:'3 урона переднему врагу в выбранной полосе.', art:'hook'},
-    {id:'s2', name:'Прямой в корпус', type:'spell', cost:4, dmg:5, desc:'5 урона переднему врагу в выбранной полосе.', art:'straight'},
-    {id:'s3', name:'Перевязка', type:'spell', cost:2, heal:4, desc:'Лечит своего бойца на 4.', art:'bandage'},
+    {id:'c1', name:'Забияка', type:'creature', cost:1, atk:1, hp:2, desc:'Дешёвый застрельщик.', art:'scrapper', faction:'empire'},
+    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, desc:'Держит удар в первой линии.', art:'shield', faction:'empire'},
+    {id:'c3', name:'Костолом', type:'creature', cost:2, atk:3, hp:2, desc:'Бьёт больно, ломается быстро.', art:'bones', faction:'empire'},
+    {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, desc:'Сбалансированный боец.', art:'dagger', faction:'empire'},
+    {id:'c5', name:'Ветеран Ямы', type:'creature', cost:3, atk:2, hp:6, desc:'Живучий защитник тыла.', art:'veteran', faction:'empire'},
+    {id:'c6', name:'Берсерк', type:'creature', cost:4, atk:6, hp:2, desc:'Всё в атаку, ничего в защиту.', art:'berserk', faction:'empire'},
+    {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, desc:'Почти не падает.', art:'wall', faction:'empire'},
+    {id:'c8', name:'Чемпион Ринга', type:'creature', cost:5, atk:5, hp:6, desc:'Опасен с любой позиции.', art:'champion', faction:'empire'},
+    {id:'c9', name:'Тяжеловес', type:'creature', cost:6, atk:7, hp:8, desc:'Финальный аргумент.', art:'anvil', faction:'empire'},
+    {id:'s1', name:'Удар в челюсть', type:'spell', cost:2, dmg:3, desc:'3 урона переднему врагу в выбранной полосе.', art:'hook', faction:'empire'},
+    {id:'s2', name:'Прямой в корпус', type:'spell', cost:4, dmg:5, desc:'5 урона переднему врагу в выбранной полосе.', art:'straight', faction:'empire'},
+    {id:'s3', name:'Перевязка', type:'spell', cost:2, heal:4, desc:'Лечит своего бойца на 4.', art:'bandage', faction:'empire'},
   ];
+
+  // ---------- Factions (deck-builder tabs) ----------
+  // Only "Империя" has cards right now — the rest are placeholders for
+  // future card sets, already wired up so adding cards to them later is
+  // just a matter of tagging POOL entries with the matching faction id.
+  const FACTIONS = [
+    { id:'empire', name:'Империя', icon:`<svg viewBox="0 0 64 64"><path d="M10 44l4-20 10 10 8-16 8 16 10-10 4 20z" fill="none" stroke="#c9a227" stroke-width="4" stroke-linejoin="round"/><rect x="10" y="44" width="44" height="6" rx="1.5" fill="#c9a227"/><circle cx="32" cy="14" r="3.5" fill="#c9a227"/><circle cx="14" cy="22" r="3" fill="#c9a227"/><circle cx="50" cy="22" r="3" fill="#c9a227"/></svg>` },
+    { id:'pirates', name:'Пираты', icon:`<svg viewBox="0 0 64 64"><circle cx="32" cy="26" r="14" fill="#e9e0cf"/><circle cx="26" cy="24" r="3.5" fill="#15100d"/><circle cx="38" cy="24" r="3.5" fill="#15100d"/><path d="M26 33c2 3 10 3 12 0" stroke="#15100d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M18 48l28 12M46 48l-28 12" stroke="#a89a84" stroke-width="4.5" stroke-linecap="round"/></svg>` },
+    { id:'savages', name:'Дикари', icon:`<svg viewBox="0 0 64 64"><path d="M32 6l7 12-7 4-7-4z" fill="#8a7020"/><path d="M17 20h30l-5 28H22z" fill="#a12c2c"/><circle cx="26" cy="31" r="3.2" fill="#15100d"/><circle cx="38" cy="31" r="3.2" fill="#15100d"/><path d="M23 42h18" stroke="#15100d" stroke-width="3" stroke-linecap="round"/></svg>` },
+    { id:'inferno', name:'Инферно', icon:`<svg viewBox="0 0 64 64"><path d="M32 6c-3 9 4 11 0 18-4-2-7 1-7 6 0 7 6 12 7 12s7-5 7-12c0-3-1-5-3-6 4-1 6-7 3-18z" fill="#e04a3f"/></svg>` },
+    { id:'frost', name:'Холод', icon:`<svg viewBox="0 0 64 64"><g stroke="#8fd6ff" stroke-width="3.5" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="56"/><line x1="10" y1="32" x2="54" y2="32"/><line x1="16" y1="16" x2="48" y2="48"/><line x1="48" y1="16" x2="16" y2="48"/></g><g stroke="#8fd6ff" stroke-width="2.5" stroke-linecap="round"><path d="M32 8l-6 7M32 8l6 7M32 56l-6-7M32 56l6-7M10 32l7-6M10 32l7 6M54 32l-7-6M54 32l-7 6"/></g></svg>` },
+    { id:'zen', name:'Дзен', icon:`<svg viewBox="0 0 64 64"><path d="M47 17A23 23 0 1 1 21 12" fill="none" stroke="#4f8a5b" stroke-width="4.5" stroke-linecap="round"/></svg>` },
+    { id:'mystery', name:'Мистерия', icon:`<svg viewBox="0 0 64 64"><path d="M5 32s11-15 27-15 27 15 27 15-11 15-27 15S5 32 5 32z" fill="none" stroke="#5c85a8" stroke-width="3.5"/><circle cx="32" cy="32" r="7.5" fill="#5c85a8"/><circle cx="32" cy="32" r="2.8" fill="#0f0b08"/></svg>` },
+  ];
+  let selectedFaction = 'empire';
 
   // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
   const ICONS = {
@@ -1658,12 +1700,27 @@
     return `+${card.heal} HP`;
   }
 
+  function renderFactionTabs(){
+    const tabsEl = document.getElementById('factionTabs');
+    tabsEl.innerHTML = FACTIONS.map(f=>
+      `<button class="faction-tab${f.id===selectedFaction?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
+    ).join('');
+    tabsEl.querySelectorAll('.faction-tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        selectedFaction = btn.dataset.faction;
+        renderDeckBuilder();
+      });
+    });
+  }
+
   function renderDeckBuilder(){
+    renderFactionTabs();
     const total = totalDeckCount(editingDeckCounts);
     deckCountLabelEl.textContent = `${total}/${MAX_DECK_SIZE}`;
     deckCountLabelEl.classList.toggle('full', total>=MAX_DECK_SIZE);
 
-    poolListEl.innerHTML = POOL.map(card=>{
+    const factionCards = POOL.filter(c=>c.faction===selectedFaction);
+    poolListEl.innerHTML = factionCards.length ? factionCards.map(card=>{
       const count = editingDeckCounts[card.id] || 0;
       const disabled = count>=MAX_COPIES_PER_CARD || total>=MAX_DECK_SIZE;
       return `<div class="deck-row">
@@ -1675,7 +1732,7 @@
         <div class="deck-row-count">${count}/${MAX_COPIES_PER_CARD}</div>
         <button class="deck-row-btn plus" data-id="${card.id}" ${disabled?'disabled':''}>+</button>
       </div>`;
-    }).join('');
+    }).join('') : `<div class="deck-empty-hint">В этой фракции пока нет доступных карт.</div>`;
 
     const deckCards = POOL.filter(c=> (editingDeckCounts[c.id]||0) > 0);
     deckListEl.innerHTML = deckCards.length ? deckCards.map(card=>{
