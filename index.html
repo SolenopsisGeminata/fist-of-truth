@@ -1578,8 +1578,8 @@
         }
         setTimeout(()=>{
           if(died){ defBoard[spell.laneIdx][info.depth] = null; log(`${info.unit.name} повержен!`); }
-          checkGameOver();
           renderAll();
+          if(checkGameOver()) return; // match already ended — stop resolving further spells/combat
           done();
         }, 1300);
       }, 300);
@@ -1730,6 +1730,7 @@
         if(aDied){ state.enemyBoard[l][aTarget.depth]=null; log(`${aTarget.unit.name} повержен!`); }
         if(bDied){ state.playerBoard[l][bTarget.depth]=null; log(`${bTarget.unit.name} повержен!`); }
         renderAll();
+        if(checkGameOver()) return; // match already ended — stop the remaining waves/lanes
         done();
       }, wrapUp);
     }, 570);
@@ -1836,6 +1837,13 @@
     log(spellsQueued ? 'Заклинания вступают в силу...' : 'Начинается обмен ударами!');
     let i = 0;
     function next(){
+      // The match's real outcome was already decided by the server —
+      // once either hero's HP would hit 0, stop animating the remaining
+      // queued events and settle immediately on the authoritative result.
+      if(state.playerHp<=0 || state.enemyHp<=0){
+        applyPvpSnapshot(finalSnapshot);
+        return;
+      }
       if(i>=(events||[]).length){
         applyPvpSnapshot(finalSnapshot);
         return;
