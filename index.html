@@ -1370,6 +1370,19 @@
     return true;
   }
 
+  el.sacBtn.addEventListener('click', ()=>{
+    if(state.phase!=='player') return;
+    if((state.sacrificesThisRound||0) >= 1){
+      log('В этом раунде уже принесена жертва — можно только один раз за ход.');
+      return;
+    }
+    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+    if(!card) return; // requires an explicit card selection — no more "pick whatever's last"
+    state.selectedCardUid = null;
+    pvpSendAction({ type:'sacrifice', uid: card.uid });
+    renderAll();
+  });
+
   function placeSelectedCard(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
     if(!card || card.type!=='creature') return;
