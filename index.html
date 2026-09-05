@@ -59,7 +59,7 @@
 
   .arena{
     width:100%;
-    max-width:760px;
+    max-width:920px;
     background:var(--bg-panel);
     border:1px solid var(--line);
     border-radius:10px;
@@ -487,19 +487,20 @@
     flex-direction:column;
     gap:8px;
     margin:10px 0;
+    overflow-x:auto; /* safety net on very narrow screens — rows shrink first (see .slot's min-width), this only kicks in if they still don't fit */
   }
   .lane-row{
     display:flex;
     align-items:center;
-    gap:6px;
+    gap:8px;
     background:rgba(0,0,0,0.18);
     border:1px solid var(--line);
     border-radius:8px;
-    padding:6px;
+    padding:8px;
   }
   .side-slots{
     display:flex;
-    gap:6px;
+    gap:8px;
     flex:1;
   }
   .side-slots.player-side{justify-content:flex-end;}
@@ -507,12 +508,12 @@
   .vs-marker{
     display:flex;
     align-items:center;
-    gap:3px;
+    gap:4px;
     flex:0 0 auto;
-    padding:0 2px;
+    padding:0 3px;
     opacity:.75;
   }
-  .vs-marker svg{width:16px;height:16px;}
+  .vs-marker svg{width:22px;height:22px;}
   .vs-marker .vs-fist-l{transform:scaleX(-1);}
   .lane-tag{
     position:absolute;
@@ -523,16 +524,16 @@
     color:#5a4c3c;
   }
   .slot{
-    height:74px;
-    width:64px;
-    flex:0 1 64px;
-    min-width:42px;
+    min-height:112px;
+    width:96px;
+    flex:0 1 96px;
+    min-width:64px;
     border-radius:6px;
     border:1px dashed #4a3a2c;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:10px;
+    font-size:14px;
     color:#5a4c3c;
     position:relative;
     cursor:default;
@@ -553,23 +554,23 @@
 
   .unit-card{
     width:100%;
-    height:100%;
+    min-height:100%;
     border-radius:6px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    padding:5px 6px;
+    padding:7px 8px;
     position:relative;
     border:1px solid;
   }
   .unit-card.mine{background:linear-gradient(160deg,#2c1414,#1c0f0f); border-color:var(--crimson);}
   .unit-card.theirs{background:linear-gradient(160deg,#131f28,#0d161c); border-color:var(--steel);}
-  .unit-name{font-size:10px; font-weight:700; line-height:1.15; text-align:center; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
+  .unit-name{font-size:15px; font-weight:700; line-height:1.15; text-align:center;}
   .unit-stats{
     display:flex;
     justify-content:space-between;
     font-family:'Oswald',sans-serif;
-    font-size:12px;
+    font-size:17px;
     font-weight:600;
   }
   .stat-atk{color:var(--crimson-bright);}
@@ -858,11 +859,11 @@
   }
 
   @media(max-width:480px){
-    .slot{height:56px; width:44px; flex-basis:44px; min-width:36px; font-size:8px;}
-    .lane-row{gap:3px; padding:4px;}
-    .side-slots{gap:2px;}
-    .unit-name{font-size:8px;}
-    .unit-stats{font-size:9px;}
+    .slot{min-height:84px; width:66px; flex-basis:66px; min-width:40px; font-size:11px;}
+    .lane-row{gap:4px; padding:5px;}
+    .side-slots{gap:3px;}
+    .unit-name{font-size:11px;}
+    .unit-stats{font-size:12px;}
     .unit-art svg{width:75%; height:75%;}
     .hand-card{flex:0 0 84px; height:158px;}
     .card-art{height:44px;}
