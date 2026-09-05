@@ -742,7 +742,7 @@
     from{ opacity:0; transform:translateY(-18px); }
     to{ opacity:1; transform:translateY(0); }
   }
-  .unit-appear{ animation:unit-appear .4s ease-out; }
+  .unit-appear{ animation:unit-appear .6s ease-out; }
   .placed-this-round{ opacity:.3; }
   .unit-card.move-selected{
     outline:2px solid var(--brass);
@@ -795,8 +795,8 @@
     60%{transform:translateX(-10px);}
     100%{transform:translateX(0);}
   }
-  .lunge-right{animation:lunge-right 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
-  .lunge-left{animation:lunge-left 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
+  .lunge-right{animation:lunge-right 2.07s cubic-bezier(.3,.9,.4,1); position:relative;}
+  .lunge-left{animation:lunge-left 2.07s cubic-bezier(.3,.9,.4,1); position:relative;}
 
   @keyframes hero-shake{
     0%,100%{transform:translateX(0);}
@@ -805,7 +805,7 @@
     55%{transform:translateX(-4px);}
     75%{transform:translateX(3px);}
   }
-  .hero-hit{animation:hero-shake 1.35s ease;}
+  .hero-hit{animation:hero-shake 2.025s ease;}
   .hero-hit .hpbar-wrap{box-shadow:0 0 0 2px var(--crimson-bright);}
 
   .dmg-pop{
@@ -813,12 +813,12 @@
     top:38%; left:50%;
     transform:translate(-50%,-50%);
     font-family:'Bebas Neue',cursive;
-    font-size:20px;
+    font-size:40px;
     letter-spacing:1px;
     text-shadow:0 2px 4px rgba(0,0,0,0.7), 0 0 10px currentColor;
     pointer-events:none;
     z-index:10;
-    animation:dmg-float 2.25s ease-out forwards;
+    animation:dmg-float 3.375s ease-out forwards;
     white-space:nowrap;
   }
   @keyframes dmg-float{
@@ -843,19 +843,19 @@
     overflow:visible;
   }
   .sb-ring{transform-origin:50px 50px; opacity:0;}
-  .sb-ring1{animation:sb-ring-expand 1.05s ease-out forwards;}
-  .sb-ring2{animation:sb-ring-expand 1.05s ease-out .18s forwards;}
+  .sb-ring1{animation:sb-ring-expand 1.575s ease-out forwards;}
+  .sb-ring2{animation:sb-ring-expand 1.575s ease-out .27s forwards;}
   @keyframes sb-ring-expand{
     0%{transform:scale(.25); opacity:.95;}
     65%{opacity:.5;}
     100%{transform:scale(2.3); opacity:0;}
   }
-  .sb-spikes{transform-origin:50px 50px; animation:sb-spikes-burst .8s ease-out forwards;}
+  .sb-spikes{transform-origin:50px 50px; animation:sb-spikes-burst 1.2s ease-out forwards;}
   @keyframes sb-spikes-burst{
     0%{transform:scale(.3) rotate(0deg); opacity:1;}
     100%{transform:scale(1.5) rotate(8deg); opacity:0;}
   }
-  .sb-sparks{transform-origin:50px 50px; animation:sb-sparks-rise 1.2s ease-out forwards;}
+  .sb-sparks{transform-origin:50px 50px; animation:sb-sparks-rise 1.8s ease-out forwards;}
   @keyframes sb-sparks-rise{
     0%{transform:scale(.4) translateY(0); opacity:1;}
     100%{transform:scale(1.15) translateY(-14px); opacity:0;}
@@ -1924,7 +1924,7 @@
     span.textContent = text;
     span.style.color = kind==='heal' ? 'var(--win)' : 'var(--crimson-bright)';
     container.appendChild(span);
-    setTimeout(()=>{ span.remove(); }, 2280);
+    setTimeout(()=>{ span.remove(); }, 3420);
   }
 
   const SPELL_BURST_DMG = `<svg viewBox="0 0 100 100">
@@ -1957,7 +1957,7 @@
     wrap.className = 'spell-burst';
     wrap.innerHTML = kind==='heal' ? SPELL_BURST_HEAL : SPELL_BURST_DMG;
     container.appendChild(wrap);
-    setTimeout(()=>{ wrap.remove(); }, 1300);
+    setTimeout(()=>{ wrap.remove(); }, 1950);
   }
 
   function findUnitEl(laneIdx, mine, depth=0){
@@ -2057,7 +2057,7 @@
       else if(ev.type==='rallyBuff') playPvpRallyBuffEvent(ev, next);
       else next();
     }
-    setTimeout(next, 700);
+    setTimeout(next, 1050);
   }
 
   function playPvpSpellEvent(ev, done){
@@ -2070,8 +2070,8 @@
       setTimeout(()=>{
         if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
         if(heroEl){ heroEl.classList.add('hero-hit'); spawnSpellBurst(heroEl,'dmg'); spawnDamageNumber(heroEl,'-'+ev.amount,'dmg'); }
-        setTimeout(()=>{ renderAll(); done(); }, 1300);
-      }, 300);
+        setTimeout(()=>{ renderAll(); done(); }, 1950);
+      }, 450);
       return;
     }
     const board = targetMine ? state.playerBoard : state.enemyBoard;
@@ -2097,8 +2097,8 @@
       // scratch. Calling it immediately would destroy the classes/child
       // elements we just added before the browser ever paints a frame —
       // so it must wait exactly as long as the animation itself.
-      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1300 : 900);
-    }, 300);
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1950 : 1350);
+    }, 450);
   }
 
   // A generic "at end of round, heal my own hero" trigger (e.g. Повар) —
@@ -2114,8 +2114,8 @@
     setTimeout(()=>{
       if(mine) state.playerHp += ev.amount; else state.enemyHp += ev.amount;
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
-      setTimeout(()=>{ renderAll(); done(); }, 900);
-    }, 300);
+      setTimeout(()=>{ renderAll(); done(); }, 1350);
+    }, 450);
   }
 
   // A rally-style "buff every ally already on the board" trigger (e.g.
@@ -2136,8 +2136,8 @@
         unit.maxHp += ev.buffHp;
         if(targetEl){ spawnSpellBurst(targetEl,'heal'); spawnDamageNumber(targetEl, `+${ev.buffAtk}⚔ +${ev.buffHp}♥`, 'heal'); }
       }
-      setTimeout(()=>{ renderAll(); done(); }, 900);
-    }, 300);
+      setTimeout(()=>{ renderAll(); done(); }, 1350);
+    }, 450);
   }
 
   function playPvpWaveEvent(ev, done){
@@ -2182,8 +2182,8 @@
         }
       });
       const anyDied = actions.some(a=>a.died);
-      setTimeout(()=>{ renderAll(); done(); }, anyDied ? 1290 : 780);
-    }, 570);
+      setTimeout(()=>{ renderAll(); done(); }, anyDied ? 1935 : 1170);
+    }, 855);
   }
 
   // ---------- Screens ----------
