@@ -265,7 +265,7 @@
   .league-stars svg{width:24px; height:24px;}
   .league-progress-row{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     gap:8px;
   }
   .league-progress-label{
@@ -274,9 +274,14 @@
     color:var(--bone-dim);
     min-width:18px;
     text-align:center;
+    padding-top:1px;
   }
   .league-progress-track{
     flex:1;
+    position:relative;
+    padding-bottom:16px;
+  }
+  .league-progress-track-inner{
     height:10px;
     background:rgba(0,0,0,0.35);
     border:1px solid var(--line);
@@ -287,6 +292,17 @@
     height:100%;
     background:linear-gradient(90deg,var(--brass-dim),var(--brass));
     transition:width .4s ease;
+  }
+  .league-progress-value{
+    position:absolute;
+    top:14px;
+    transform:translateX(-50%);
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    font-weight:600;
+    color:var(--brass);
+    white-space:nowrap;
+    transition:left .4s ease;
   }
   .tournament-note{
     text-align:center;
@@ -1018,7 +1034,10 @@
   <div class="league-stars" id="leagueStars"></div>
   <div class="league-progress-row" id="leagueProgressRow">
     <span class="league-progress-label">0</span>
-    <div class="league-progress-track"><div class="league-progress-fill" id="leagueProgressFill" style="width:0%"></div></div>
+    <div class="league-progress-track">
+      <div class="league-progress-track-inner"><div class="league-progress-fill" id="leagueProgressFill" style="width:0%"></div></div>
+      <span class="league-progress-value" id="leagueProgressValue" style="left:0%">0</span>
+    </div>
     <span class="league-progress-label">30</span>
   </div>
   <button class="btn btn-menu" id="tournamentStartBtn">Начать</button>
@@ -1199,6 +1218,9 @@
         STAR_ICON_ACTIVE.repeat(earned) + STAR_ICON.repeat(maxStars-earned);
       const pct = Math.max(0, Math.min(100, (tournamentStatus.progress||0)/30*100));
       document.getElementById('leagueProgressFill').style.width = pct+'%';
+      const valueEl = document.getElementById('leagueProgressValue');
+      valueEl.textContent = Math.max(0, Math.min(30, tournamentStatus.progress||0));
+      valueEl.style.left = Math.max(3, Math.min(97, pct))+'%'; // nudged in slightly so it never hangs off either edge
     }
   }
 
@@ -1267,8 +1289,8 @@
   }
 
   const ACTIVE_MATCH_KEY = 'fistDuelActiveMatch';
-  function saveActiveMatch(matchId, opponentName, mode){
-    try{ localStorage.setItem(ACTIVE_MATCH_KEY, JSON.stringify({matchId, opponentName, mode})); } catch(e){}
+  function saveActiveMatch(matchId, opponentName, mode, isTournament){
+    try{ localStorage.setItem(ACTIVE_MATCH_KEY, JSON.stringify({matchId, opponentName, mode, isTournament})); } catch(e){}
   }
   function loadActiveMatch(){
     try{
@@ -1311,7 +1333,7 @@
   // are functionally identical from here on: the server owns the decks,
   // hands, boards, and all combat math; the client just renders whatever
   // it's sent.
-  function initNetworkMatch(matchId, opponentName, mode){
+  function initNetworkMatch(matchId, opponentName, mode, isTournament){
     state = {
       round:1, mana:2, maxMana:2,
       playerHp:START_HP, enemyHp:START_HP,
@@ -1326,16 +1348,17 @@
       mode: mode || 'pvp',
       matchId,
       opponentName: opponentName || (mode==='pve' ? 'ИИ' : 'Соперник'),
-      myUsername: currentUser || 'Игрок'
+      myUsername: currentUser || 'Игрок',
+      isTournamentMatch: !!isTournament
     };
-    saveActiveMatch(matchId, state.opponentName, state.mode);
+    saveActiveMatch(matchId, state.opponentName, state.mode, state.isTournamentMatch);
     renderAll();
     log(`Матч против ${state.opponentName} начинается…`);
   }
 
   // Legacy name kept as an alias — some call sites still refer to it.
-  function initPvpMatch(matchId, opponentName, mode){
-    initNetworkMatch(matchId, opponentName, mode);
+  function initPvpMatch(matchId, opponentName, mode, isTournament){
+    initNetworkMatch(matchId, opponentName, mode, isTournament);
   }
 
   // Applies a full authoritative snapshot from the server. Used both for
@@ -1700,9 +1723,18 @@
         </div>
       </div>`;
     document.body.appendChild(overlay);
-    document.getElementById('restartBtn').addEventListener('click', ()=>{
+    document.getElementById('restartBtn').addEventListener('click', async ()=>{
       overlay.remove();
-      showScreen('mode'); // both PVE and PVP now start via the server — pick a mode again
+      if(state.isTournamentMatch){
+        // Tournament matches always return to the league screen, not the
+        // generic mode picker — refresh first so the just-earned points
+        // (or loss) are already reflected.
+        await fetchTournamentStatus();
+        renderTournamentScreen();
+        showScreen('tournament');
+      } else {
+        showScreen('mode'); // both PVE and PVP now start via the server — pick a mode again
+      }
     });
     document.getElementById('exitBtn').addEventListener('click', ()=>{
       overlay.remove();
@@ -2241,7 +2273,7 @@
     if(!active || !currentUser) return;
     if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
     resumeAttempted = true;
-    initNetworkMatch(active.matchId, active.opponentName, active.mode);
+    initNetworkMatch(active.matchId, active.opponentName, active.mode, active.isTournament);
     showScreen('arena');
     onlineSocket.send(JSON.stringify({
       type:'resume_match',
@@ -2265,7 +2297,7 @@
       return;
     }
     if(data.type === 'match_found'){
-      initNetworkMatch(data.matchId, data.opponent, data.mode);
+      initNetworkMatch(data.matchId, data.opponent, data.mode, searchMode==='tournament');
       showScreen('arena');
       return;
     }
@@ -2327,6 +2359,7 @@
   }
 
   function startPveMatch(){
+    searchMode = 'pvp'; // PVE isn't a search at all, but keeps the flag from leaking a stale 'tournament' value into this match
     if(!serverConfigured() || !onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
       log('Сервер не настроен или недоступен — PVE сейчас невозможен.');
       return;
