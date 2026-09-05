@@ -654,6 +654,11 @@
     position:relative;
     border:1px solid;
   }
+  @keyframes unit-appear{
+    from{ opacity:0; transform:translateY(-18px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .unit-appear{ animation:unit-appear .4s ease-out; }
   .unit-card.mine{background:linear-gradient(160deg,#2c1414,#1c0f0f); border-color:var(--crimson);}
   .unit-card.theirs{background:linear-gradient(160deg,#131f28,#0d161c); border-color:var(--steel);}
   .unit-name{font-size:15px; font-weight:700; line-height:1.15; text-align:center;}
@@ -1336,6 +1341,7 @@
   // hands, boards, and all combat math; the client just renders whatever
   // it's sent.
   function initNetworkMatch(matchId, opponentName, mode, isTournament){
+    seenUnitUids = new Set(); // fresh match — every unit should pop in the first time it's shown
     state = {
       round:1, mana:2, maxMana:2,
       playerHp:START_HP, enemyHp:START_HP,
@@ -1421,10 +1427,13 @@
   function log(msg){ el.logLine.textContent = msg; }
 
   // ---------- Rendering ----------
+  let seenUnitUids = new Set(); // tracks which units have already appeared at least once this match, so the pop-in animation plays only on genuine first appearance — not on every re-render
   function unitCardHtml(unit, mine, laneIdx, depthIdx){
     if(!unit) return '';
     const cls = mine ? 'mine' : 'theirs';
-    return `<div class="unit-card ${cls}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
+    const isNew = !!unit.uid && !seenUnitUids.has(unit.uid);
+    if(unit.uid) seenUnitUids.add(unit.uid);
+    return `<div class="unit-card ${cls}${isNew?' unit-appear':''}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name">${unit.name}</div>
       <div class="unit-art">${cardArt(unit.art)}</div>
       <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span>${unit.armor?`<span class="stat-armor">🛡 ${unit.armor}</span>`:''}${unit.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${unit.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}</div>
