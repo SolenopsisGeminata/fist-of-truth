@@ -219,6 +219,81 @@
     color:var(--brass);
     margin:0 0 6px;
   }
+  .screen-tournament{
+    width:100%;
+    max-width:340px;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:14px;
+    padding:36px 20px 20px;
+    margin:0 auto;
+  }
+  .league-icon-wrap{
+    position:relative;
+    width:128px;
+    height:128px;
+    margin:0 auto;
+    filter:drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+  }
+  .league-icon-wrap svg{width:100%; height:100%;}
+  .league-rank-badge{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Bebas Neue',cursive;
+    font-size:36px;
+    letter-spacing:1px;
+    color:#fff8e0;
+    text-shadow:0 2px 6px rgba(0,0,0,0.85);
+  }
+  .league-name{
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:17px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+  .league-stars{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+  }
+  .league-stars svg{width:24px; height:24px;}
+  .league-progress-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .league-progress-label{
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    color:var(--bone-dim);
+    min-width:18px;
+    text-align:center;
+  }
+  .league-progress-track{
+    flex:1;
+    height:10px;
+    background:rgba(0,0,0,0.35);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .league-progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--brass-dim),var(--brass));
+    transition:width .4s ease;
+  }
+  .tournament-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--bone-dim);
+    min-height:14px;
+  }
   .searching-note{
     text-align:center;
     font-family:'Oswald',sans-serif;
@@ -603,40 +678,6 @@
   .lunge-right{animation:lunge-right 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
   .lunge-left{animation:lunge-left 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
 
-  /* Ополченец's sword-figure icon: idle by default, swings on attack,
-     falls and drops the sword on death. Scoped to its own sub-elements
-     (.uf-arm / .uf-body / .uf-sword) so these rules do nothing for any
-     other card's icon. */
-  @keyframes uf-swing{
-    0%{ transform:rotate(0deg); }
-    35%{ transform:rotate(-80deg); }
-    65%{ transform:rotate(15deg); }
-    100%{ transform:rotate(0deg); }
-  }
-  @keyframes uf-fall{
-    to{ transform:rotate(80deg) translate(-3px,5px); opacity:.55; }
-  }
-  @keyframes uf-drop-sword{
-    to{ transform:translate(12px,20px) rotate(75deg); opacity:0; }
-  }
-  .militia-figure .uf-arm{
-    transform-box: view-box;
-    transform-origin: 34px 24.5px;
-  }
-  .unit-card.attacking .militia-figure .uf-arm{
-    animation: uf-swing 0.7s ease-in-out;
-  }
-  .unit-card.unit-dying .militia-figure .uf-body{
-    transform-box: view-box;
-    transform-origin: 28px 55px;
-    animation: uf-fall 0.9s ease-in forwards;
-  }
-  .unit-card.unit-dying .militia-figure .uf-sword{
-    transform-box: view-box;
-    transform-origin: 44px 24px;
-    animation: uf-drop-sword 0.9s ease-in forwards;
-  }
-
   @keyframes hero-shake{
     0%,100%{transform:translateX(0);}
     15%{transform:translateX(-6px) rotate(-1deg);}
@@ -963,7 +1004,26 @@
   <div class="mode-title">Выбери режим</div>
   <button class="btn btn-menu" id="pveBtn">PVE — против ИИ</button>
   <button class="btn ghost btn-menu" id="pvpBtn">PVP — против игрока</button>
+  <button class="btn ghost btn-menu" id="tournamentBtn">Турнир</button>
   <button class="btn ghost btn-menu" id="modeBackBtn">Назад</button>
+</div>
+
+<div class="screen-tournament" id="tournamentScreen" style="display:none;">
+  <div class="mode-title">Турнир</div>
+  <div class="league-icon-wrap" id="leagueIconWrap">
+    <div class="league-icon" id="leagueIcon"></div>
+    <div class="league-rank-badge" id="leagueRankBadge" style="display:none;"></div>
+  </div>
+  <div class="league-name" id="leagueName"></div>
+  <div class="league-stars" id="leagueStars"></div>
+  <div class="league-progress-row" id="leagueProgressRow">
+    <span class="league-progress-label">0</span>
+    <div class="league-progress-track"><div class="league-progress-fill" id="leagueProgressFill" style="width:0%"></div></div>
+    <span class="league-progress-label">30</span>
+  </div>
+  <button class="btn btn-menu" id="tournamentStartBtn">Начать</button>
+  <div class="tournament-note" id="tournamentNote"></div>
+  <button class="btn ghost btn-menu" id="tournamentBackBtn">Назад</button>
 </div>
 
 <div class="screen-menu" id="searchingScreen" style="display:none;">
@@ -1084,6 +1144,50 @@
   ];
   let selectedFaction = 'empire';
 
+  // ---------- Tournament leagues (screen-only for now — no rating system
+  // wired up yet; this just renders the ladder's visual design) ----------
+  const STAR_ICON = `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l7.1-1.01z" fill="#5a5a5a"/></svg>`;
+  const LEAGUES = [
+    { id:'squire', name:'Оруженосец', stars:3,
+      icon:`<svg viewBox="0 0 64 64"><path d="M32 8l4 4v26l-4 5-4-5V12z" fill="#a89a84" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="46" width="16" height="6" rx="2" fill="#5c4536"/></svg>` },
+    { id:'warrior', name:'Воин', stars:3,
+      icon:`<svg viewBox="0 0 64 64"><g stroke="#c9c9c9" stroke-width="4.5" stroke-linecap="round"><path d="M14 14l36 36M50 14L14 50"/></g><g fill="#5c85a8"><path d="M13 13l7-1 1 7-4 4-8-8z"/><path d="M51 13l-7-1-1 7 4 4 8-8z"/></g></svg>` },
+    { id:'gladiator', name:'Гладиатор', stars:4,
+      icon:`<svg viewBox="0 0 64 64"><path d="M18 30c0-10 6-18 14-18s14 8 14 18v6c0 6-4 10-8 12h-4v-8h-4v8h-4c-4-2-8-6-8-12z" fill="#a89a84" stroke="#5c4536" stroke-width="2"/><rect x="30" y="2" width="4" height="16" fill="#e04a3f"/><circle cx="24" cy="28" r="2.5" fill="#3a2c22"/><circle cx="40" cy="28" r="2.5" fill="#3a2c22"/></svg>` },
+    { id:'elite', name:'Элита', stars:4,
+      icon:`<svg viewBox="0 0 64 64"><path d="M32 6l18 6v16c0 14-9 24-18 30-9-6-18-16-18-30V12z" fill="#5c85a8" stroke="#3d5a73" stroke-width="2.5"/><path d="M32 18l3 6.5 7 1-5 5 1.5 7-6.5-3.5-6.5 3.5 1.5-7-5-5 7-1z" fill="#e9e0cf"/></svg>` },
+    { id:'warlord', name:'Полководец', stars:5,
+      icon:`<svg viewBox="0 0 64 64"><rect x="29" y="6" width="5" height="50" rx="1.5" fill="#5c4536"/><path d="M34 8h20l-6 8 6 8H34z" fill="#c9a227" stroke="#8a7020" stroke-width="1.5"/></svg>` },
+    { id:'champion', name:'Чемпион', stars:5,
+      icon:`<svg viewBox="0 0 64 64"><circle cx="32" cy="24" r="15" fill="#c9a227" stroke="#8a7020" stroke-width="2.5"/><path d="M32 16l3.2 6.9 7.4 1-5.4 5.4 1.6 7.5-6.8-3.7-6.8 3.7 1.6-7.5-5.4-5.4 7.4-1z" fill="#fff8e0"/><path d="M23 42l9-6 9 6-4.5 14L32 50l-4.5 6z" fill="#a12c2c"/></svg>` },
+    { id:'king', name:'Король', stars:0,
+      icon:`<svg viewBox="0 0 64 64"><path d="M10 46l4-22 10 10 8-16 8 16 10-10 4 22z" fill="#c9a227" stroke="#8a7020" stroke-width="2"/><rect x="10" y="46" width="44" height="6" rx="1.5" fill="#c9a227"/><circle cx="32" cy="14" r="3.2" fill="#e04a3f"/><circle cx="14" cy="22" r="2.6" fill="#5c85a8"/><circle cx="50" cy="22" r="2.6" fill="#5c85a8"/></svg>` },
+  ];
+  // No rating system yet — always show the starting league (Оруженосец).
+  const currentLeagueIndex = 0;
+  const currentLeagueProgress = 0; // 0..30
+  const currentLeagueRank = null; // used only for the Король (king) league
+
+  function renderTournamentScreen(){
+    const league = LEAGUES[currentLeagueIndex];
+    document.getElementById('leagueIcon').innerHTML = league.icon;
+    document.getElementById('leagueName').textContent = league.name;
+
+    const isKing = league.stars === 0;
+    document.getElementById('leagueStars').style.display = isKing ? 'none' : 'flex';
+    document.getElementById('leagueProgressRow').style.display = isKing ? 'none' : 'flex';
+    const rankBadge = document.getElementById('leagueRankBadge');
+    rankBadge.style.display = isKing ? 'flex' : 'none';
+
+    if(isKing){
+      rankBadge.textContent = currentLeagueRank!=null ? ('#'+currentLeagueRank) : '—';
+    } else {
+      document.getElementById('leagueStars').innerHTML = STAR_ICON.repeat(league.stars);
+      const pct = Math.max(0, Math.min(100, currentLeagueProgress/30*100));
+      document.getElementById('leagueProgressFill').style.width = pct+'%';
+    }
+  }
+
   // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
   const ICONS = {
     peasant: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="26" ry="6" fill="#8a7020"/><path d="M18 40c0-11 6-19 14-19s14 8 14 19" fill="#c9a227"/><rect x="28" y="14" width="8" height="8" rx="2" fill="#8a7020"/></svg>`,
@@ -1093,7 +1197,7 @@
     hammer: `<svg viewBox="0 0 64 64"><rect x="29" y="22" width="6" height="34" rx="2" fill="#5c4536"/><rect x="14" y="8" width="36" height="16" rx="3" fill="#e04a3f" stroke="#8a7020" stroke-width="2"/></svg>`,
     wall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#a89a84" stroke-width="2"><rect x="8" y="12" width="20" height="10"/><rect x="28" y="12" width="20" height="10"/><rect x="48" y="12" width="8" height="10"/><rect x="18" y="22" width="20" height="10"/><rect x="38" y="22" width="18" height="10"/><rect x="8" y="22" width="10" height="10"/><rect x="8" y="32" width="20" height="10"/><rect x="28" y="32" width="20" height="10"/><rect x="48" y="32" width="8" height="10"/><rect x="18" y="42" width="20" height="10"/><rect x="8" y="42" width="10" height="10"/><rect x="38" y="42" width="18" height="10"/></g></svg>`,
     paladin: `<svg viewBox="0 0 64 64"><path d="M32 6l16 6v16c0 14-9 24-16 30-7-6-16-16-16-30V12z" fill="#c9a227" stroke="#8a7020" stroke-width="2"/><rect x="29" y="16" width="6" height="24" fill="#e9e0cf"/><rect x="20" y="25" width="24" height="6" fill="#e9e0cf"/></svg>`,
-    militia: `<svg viewBox="0 0 64 64" class="militia-figure"><g class="uf-body"><circle cx="28" cy="16" r="7" fill="#c9a882"/><rect x="22" y="22" width="14" height="18" rx="4" fill="#8a7020"/><rect x="20" y="40" width="6" height="15" rx="2" fill="#5c4536"/><rect x="30" y="40" width="6" height="15" rx="2" fill="#5c4536"/></g><g class="uf-arm"><rect x="34" y="22" width="13" height="5" rx="2.5" fill="#c9a882"/><g class="uf-sword"><rect x="44" y="6" width="4" height="20" rx="1" fill="#a89a84"/><rect x="40" y="24" width="12" height="4" rx="1" fill="#5c4536"/></g></g></svg>`,
+    militia: `<svg viewBox="0 0 64 64"><path d="M20 8v16M32 8v16M44 8v16" stroke="#a89a84" stroke-width="4" stroke-linecap="round"/><path d="M18 24h28v6H18z" fill="#8a7020"/><rect x="29" y="30" width="6" height="26" fill="#5c4536"/></svg>`,
     palaceguard: `<svg viewBox="0 0 64 64"><rect x="29" y="8" width="6" height="48" rx="1" fill="#8a7020"/><path d="M35 10l16 6-5 12-13-5z" fill="#c9a227"/><path d="M29 10l-14 8 6 9 8-7z" fill="#c9a227"/></svg>`,
     legion: `<svg viewBox="0 0 64 64"><path d="M14 46c4-18 10-30 18-32M50 46c-4-18-10-30-18-32" stroke="#c9a227" stroke-width="3" fill="none" stroke-linecap="round"/><g fill="#c9a227"><ellipse cx="20" cy="18" rx="4" ry="7"/><ellipse cx="16" cy="28" rx="4" ry="7"/><ellipse cx="14" cy="40" rx="4" ry="7"/><ellipse cx="44" cy="18" rx="4" ry="7"/><ellipse cx="48" cy="28" rx="4" ry="7"/><ellipse cx="50" cy="40" rx="4" ry="7"/></g></svg>`,
     chainmail: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#8fa3ad" stroke-width="2.5"><circle cx="20" cy="18" r="7"/><circle cx="36" cy="18" r="7"/><circle cx="52" cy="18" r="7"/><circle cx="12" cy="32" r="7"/><circle cx="28" cy="32" r="7"/><circle cx="44" cy="32" r="7"/><circle cx="20" cy="46" r="7"/><circle cx="36" cy="46" r="7"/></g></svg>`,
@@ -1713,7 +1817,7 @@
       const targetBoard = a.isMe ? state.enemyBoard : state.playerBoard;
       const targetName = a.targetHero ? (a.isMe?'кулак соперника':'твой кулак') : ((targetBoard[ev.lane][a.targetDepth]||{}).name || '???');
       const unitEl = findUnitEl(ev.lane, a.isMe, a.depth);
-      if(unitEl) unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left', 'attacking');
+      if(unitEl) unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left');
       parts.push(`${atkUnit? atkUnit.name : '???'} → ${targetName}`);
     });
     log(`Полоса ${ev.lane+1}: ` + parts.join(' · '));
@@ -1755,6 +1859,7 @@
     searching: document.getElementById('searchingScreen'),
     deck: document.getElementById('deckBuilder'),
     arena: document.getElementById('arena'),
+    tournament: document.getElementById('tournamentScreen'),
   };
   const registerNavBtn = document.getElementById('registerNavBtn');
   function showScreen(name){
@@ -1765,6 +1870,7 @@
     screens.searching.style.display = name==='searching' ? 'flex' : 'none';
     screens.deck.style.display = name==='deck' ? 'block' : 'none';
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
+    screens.tournament.style.display = name==='tournament' ? 'flex' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
   }
 
@@ -1867,6 +1973,17 @@
   });
   document.getElementById('pvpBtn').addEventListener('click', ()=>{
     startMatchmaking();
+  });
+  document.getElementById('tournamentBtn').addEventListener('click', ()=>{
+    renderTournamentScreen();
+    document.getElementById('tournamentNote').textContent = '';
+    showScreen('tournament');
+  });
+  document.getElementById('tournamentBackBtn').addEventListener('click', ()=>{
+    showScreen('mode');
+  });
+  document.getElementById('tournamentStartBtn').addEventListener('click', ()=>{
+    document.getElementById('tournamentNote').textContent = 'Турнирные бои скоро откроются — рейтинговая система в разработке.';
   });
   document.getElementById('cancelSearchBtn').addEventListener('click', ()=>{
     cancelMatchmaking();
