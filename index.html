@@ -310,6 +310,90 @@
     color:var(--bone-dim);
     min-height:14px;
   }
+  .screen-library{
+    width:100%;
+    max-width:420px;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+    padding:36px 16px 20px;
+    margin:0 auto;
+  }
+  .library-faction-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+  }
+  .library-mana-filters{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+  }
+  .mana-filter-btn{
+    width:30px;
+    height:30px;
+    padding:0;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+  }
+  .mana-filter-btn:hover{border-color:var(--brass-dim);}
+  .mana-filter-btn.active{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.22);
+    color:var(--brass);
+    box-shadow:0 0 0 1px var(--brass) inset;
+  }
+  .library-cards-nav{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .library-page-arrow{
+    flex:0 0 auto;
+    width:32px;
+    height:32px;
+    padding:0;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .library-page-arrow svg{width:18px; height:18px;}
+  .library-page-arrow:hover:not(:disabled){border-color:var(--brass-dim); color:var(--brass);}
+  .library-page-arrow:disabled{opacity:.25; cursor:default;}
+  .library-cards-grid{
+    flex:1;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    min-height:172px;
+  }
+  .library-empty-hint{
+    width:100%;
+    text-align:center;
+    font-size:12px;
+    color:var(--bone-dim);
+    padding:40px 10px;
+  }
+  .library-page-label{
+    text-align:center;
+    font-size:11px;
+    color:var(--bone-dim);
+  }
   .searching-note{
     text-align:center;
     font-family:'Oswald',sans-serif;
@@ -1016,6 +1100,7 @@
   <div class="logged-in-as" id="loggedInAs"></div>
   <button class="btn btn-menu" id="newGameBtn">Новая игра</button>
   <button class="btn ghost btn-menu" id="deckBtn">Колода</button>
+  <button class="btn ghost btn-menu" id="libraryBtn">Библиотека</button>
   <button class="btn ghost btn-menu" id="logoutBtn">Выйти из аккаунта</button>
   <div class="online-counter">Сейчас онлайн: <span id="onlineCount">—</span></div>
 </div>
@@ -1050,6 +1135,23 @@
   <button class="btn btn-menu" id="tournamentStartBtn">Начать</button>
   <div class="tournament-note" id="tournamentNote"></div>
   <button class="btn ghost btn-menu" id="tournamentBackBtn">Назад</button>
+</div>
+
+<div class="screen-library" id="libraryScreen" style="display:none;">
+  <div class="mode-title">Библиотека</div>
+  <div class="library-faction-tabs" id="libraryFactionTabs"></div>
+  <div class="library-mana-filters" id="libraryManaFilters"></div>
+  <div class="library-cards-nav">
+    <button class="library-page-arrow" id="libraryPrevBtn" aria-label="Предыдущая страница" title="Предыдущая страница">
+      <svg viewBox="0 0 24 24"><path d="M15 4l-9 8 9 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="library-cards-grid" id="libraryCardsGrid"></div>
+    <button class="library-page-arrow" id="libraryNextBtn" aria-label="Следующая страница" title="Следующая страница">
+      <svg viewBox="0 0 24 24"><path d="M9 4l9 8-9 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="library-page-label" id="libraryPageLabel"></div>
+  <button class="btn ghost btn-menu" id="libraryBackBtn">Назад</button>
 </div>
 
 <div class="screen-menu" id="searchingScreen" style="display:none;">
@@ -1169,6 +1271,87 @@
     { id:'mystery', name:'Мистерия', icon:`<svg viewBox="0 0 64 64"><path d="M5 32s11-15 27-15 27 15 27 15-11 15-27 15S5 32 5 32z" fill="none" stroke="#5c85a8" stroke-width="3.5"/><circle cx="32" cy="32" r="7.5" fill="#5c85a8"/><circle cx="32" cy="32" r="2.8" fill="#0f0b08"/></svg>` },
   ];
   let selectedFaction = 'empire';
+
+  // ---------- Library screen ----------
+  const ALL_FACTIONS_TAB = { id:'all', name:'Все фракции', icon:`<svg viewBox="0 0 64 64"><rect x="14" y="20" width="30" height="40" rx="3" fill="#3d5a73" stroke="#5c85a8" stroke-width="2" transform="rotate(-8 29 40)"/><rect x="18" y="14" width="30" height="40" rx="3" fill="#8a7020" stroke="#c9a227" stroke-width="2" transform="rotate(4 33 34)"/><rect x="20" y="12" width="28" height="38" rx="3" fill="#241b14" stroke="#e9e0cf" stroke-width="2"/></svg>` };
+  const LIBRARY_PAGE_SIZE = 6;
+  let libraryFaction = 'all';
+  let libraryManaFilters = new Set();
+  let libraryPage = 0;
+
+  function getLibraryFilteredCards(){
+    let cards = libraryFaction==='all' ? POOL.slice() : POOL.filter(c=>c.faction===libraryFaction);
+    if(libraryManaFilters.size>0){
+      cards = cards.filter(c=>libraryManaFilters.has(c.cost));
+      // grouped by mana ascending — "press 2 then 5" shows all 2-cost cards, then all 5-cost cards
+      cards.sort((a,b)=>a.cost-b.cost);
+    }
+    return cards;
+  }
+
+  function libraryCardHtml(card){
+    const statsHtml = card.type==='creature'
+      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}</div>`
+      : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
+    return `<div class="hand-card affordable">
+      <div class="cost">${card.cost}</div>
+      <div class="card-art">${cardArt(card.art)}</div>
+      <div>
+        <div class="cname">${card.name}</div>
+        <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'}</div>
+      </div>
+      ${statsHtml}
+      <div class="cdesc">${card.desc}</div>
+    </div>`;
+  }
+
+  function renderLibraryFactionTabs(){
+    const tabsEl = document.getElementById('libraryFactionTabs');
+    const all = [ALL_FACTIONS_TAB, ...FACTIONS];
+    tabsEl.innerHTML = all.map(f=>
+      `<button class="faction-tab${f.id===libraryFaction?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
+    ).join('');
+    tabsEl.querySelectorAll('.faction-tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        libraryFaction = btn.dataset.faction;
+        libraryPage = 0;
+        renderLibraryScreen();
+      });
+    });
+  }
+
+  function renderLibraryManaFilters(){
+    const wrap = document.getElementById('libraryManaFilters');
+    wrap.innerHTML = Array.from({length:9}, (_,i)=>i+1).map(n=>
+      `<button class="mana-filter-btn${libraryManaFilters.has(n)?' active':''}" data-mana="${n}">${n}</button>`
+    ).join('');
+    wrap.querySelectorAll('.mana-filter-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const n = parseInt(btn.dataset.mana,10);
+        if(libraryManaFilters.has(n)) libraryManaFilters.delete(n); else libraryManaFilters.add(n);
+        libraryPage = 0;
+        renderLibraryScreen();
+      });
+    });
+  }
+
+  function renderLibraryScreen(){
+    renderLibraryFactionTabs();
+    renderLibraryManaFilters();
+    const cards = getLibraryFilteredCards();
+    const totalPages = Math.max(1, Math.ceil(cards.length/LIBRARY_PAGE_SIZE));
+    libraryPage = Math.max(0, Math.min(libraryPage, totalPages-1));
+    const pageCards = cards.slice(libraryPage*LIBRARY_PAGE_SIZE, libraryPage*LIBRARY_PAGE_SIZE+LIBRARY_PAGE_SIZE);
+
+    const grid = document.getElementById('libraryCardsGrid');
+    grid.innerHTML = pageCards.length
+      ? pageCards.map(libraryCardHtml).join('')
+      : `<div class="library-empty-hint">В этой фракции пока нет карт.</div>`;
+
+    document.getElementById('libraryPrevBtn').disabled = libraryPage<=0;
+    document.getElementById('libraryNextBtn').disabled = libraryPage>=totalPages-1;
+    document.getElementById('libraryPageLabel').textContent = cards.length ? `Страница ${libraryPage+1} из ${totalPages}` : '';
+  }
 
   // ---------- Tournament leagues ----------
   const STAR_ICON = `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l7.1-1.01z" fill="#5a5a5a"/></svg>`;
@@ -1946,6 +2129,7 @@
     deck: document.getElementById('deckBuilder'),
     arena: document.getElementById('arena'),
     tournament: document.getElementById('tournamentScreen'),
+    library: document.getElementById('libraryScreen'),
   };
   const registerNavBtn = document.getElementById('registerNavBtn');
   function showScreen(name){
@@ -1957,6 +2141,7 @@
     screens.deck.style.display = name==='deck' ? 'block' : 'none';
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
     screens.tournament.style.display = name==='tournament' ? 'flex' : 'none';
+    screens.library.style.display = name==='library' ? 'flex' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
     document.getElementById('appHeader').style.display = name==='arena' ? 'none' : 'block';
   }
@@ -2096,6 +2281,24 @@
         } catch(e){ /* keep the local copy if the server isn't reachable */ }
       }
     }
+  });
+  document.getElementById('libraryBtn').addEventListener('click', ()=>{
+    libraryFaction = 'all';
+    libraryManaFilters = new Set();
+    libraryPage = 0;
+    renderLibraryScreen();
+    showScreen('library');
+  });
+  document.getElementById('libraryBackBtn').addEventListener('click', ()=>{
+    showScreen('menu');
+  });
+  document.getElementById('libraryPrevBtn').addEventListener('click', ()=>{
+    libraryPage = Math.max(0, libraryPage-1);
+    renderLibraryScreen();
+  });
+  document.getElementById('libraryNextBtn').addEventListener('click', ()=>{
+    libraryPage += 1;
+    renderLibraryScreen();
   });
   document.getElementById('saveDeckBtn').addEventListener('click', async ()=>{
     saveDeckCounts(editingDeckCounts); // instant local fallback for PVE
