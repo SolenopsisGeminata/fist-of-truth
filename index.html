@@ -964,8 +964,10 @@
 </head>
 <body>
 
-<h1>Хватка</h1>
-<div class="subtitle">Дуэль кулаков · карточная тактика</div>
+<div class="app-header" id="appHeader">
+  <h1>Хватка</h1>
+  <div class="subtitle">Дуэль кулаков · карточная тактика</div>
+</div>
 
 <button class="btn ghost btn-corner" id="registerNavBtn">Регистрация</button>
 
@@ -1918,6 +1920,7 @@
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
     screens.tournament.style.display = name==='tournament' ? 'flex' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
+    document.getElementById('appHeader').style.display = name==='arena' ? 'none' : 'block';
   }
 
   // ---------- Deck builder screen ----------
