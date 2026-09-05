@@ -1067,7 +1067,7 @@
   // ---------- State ----------
   const LANES = 3, DEPTH = 3; // front(0)/mid(1)/back(2)
   const MAX_MANA = 10, MAX_HAND = 7, START_HP = 30;
-  const MAX_DECK_SIZE = 30, MAX_COPIES_PER_CARD = 4;
+  const MAX_DECK_SIZE = 30, MAX_COPIES_PER_CARD = 3;
   const DECK_STORAGE_KEY = 'fistDuelPlayerDeck';
 
   function freshBoard(){
@@ -1083,11 +1083,10 @@
   // server (see game-engine.js); the client never shuffles or deals
   // cards itself.
   function defaultDeckCounts(){
-    // A full 30-card starting deck (max 4 copies of any single card) given
-    // to every new account. The 7 creature cards are maxed at 4 copies
-    // each (28), plus 2 copies of Кольчуга (the one basic spell) — 30
-    // total. Kept in sync with the server's copy of this same function.
-    return {c1:4, c2:4, c3:4, c4:4, c6:4, c7:4, c8:4, s1:2};
+    // A starting deck given to every new account, respecting the max-3-
+    // copies-per-card rule. Kept in sync with the server's copy of this
+    // same function (23 cards — short of 30, see server-side comment).
+    return {c1:3, c2:3, c3:3, c4:3, c6:3, c7:3, c8:3, s1:2};
   }
 
   function loadSavedDeckCounts(){
