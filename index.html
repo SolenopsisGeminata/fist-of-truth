@@ -1144,9 +1144,9 @@
   ];
   let selectedFaction = 'empire';
 
-  // ---------- Tournament leagues (screen-only for now — no rating system
-  // wired up yet; this just renders the ladder's visual design) ----------
+  // ---------- Tournament leagues ----------
   const STAR_ICON = `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l7.1-1.01z" fill="#5a5a5a"/></svg>`;
+  const STAR_ICON_ACTIVE = `<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l7.1-1.01z" fill="#c9a227"/></svg>`;
   const LEAGUES = [
     { id:'squire', name:'Оруженосец', stars:3,
       icon:`<svg viewBox="0 0 64 64"><path d="M32 8l4 4v26l-4 5-4-5V12z" fill="#a89a84" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="46" width="16" height="6" rx="2" fill="#5c4536"/></svg>` },
@@ -1163,27 +1163,41 @@
     { id:'king', name:'Король', stars:0,
       icon:`<svg viewBox="0 0 64 64"><path d="M10 46l4-22 10 10 8-16 8 16 10-10 4 22z" fill="#c9a227" stroke="#8a7020" stroke-width="2"/><rect x="10" y="46" width="44" height="6" rx="1.5" fill="#c9a227"/><circle cx="32" cy="14" r="3.2" fill="#e04a3f"/><circle cx="14" cy="22" r="2.6" fill="#5c85a8"/><circle cx="50" cy="22" r="2.6" fill="#5c85a8"/></svg>` },
   ];
-  // No rating system yet — always show the starting league (Оруженосец).
-  const currentLeagueIndex = 0;
-  const currentLeagueProgress = 0; // 0..30
-  const currentLeagueRank = null; // used only for the Король (king) league
+  // Populated from GET /api/tournament each time the screen is opened —
+  // this is the account's real ladder standing, not a placeholder.
+  let tournamentStatus = { league:'squire', stars:0, maxStars:3, progress:0, kingRank:null };
+
+  async function fetchTournamentStatus(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/tournament'), { headers: { 'Authorization': 'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      tournamentStatus = data;
+    } catch(e){ /* keep last known / default status */ }
+  }
 
   function renderTournamentScreen(){
-    const league = LEAGUES[currentLeagueIndex];
-    document.getElementById('leagueIcon').innerHTML = league.icon;
-    document.getElementById('leagueName').textContent = league.name;
+    const leagueDef = LEAGUES.find(l=>l.id===tournamentStatus.league) || LEAGUES[0];
+    document.getElementById('leagueIcon').innerHTML = leagueDef.icon;
+    document.getElementById('leagueName').textContent = leagueDef.name;
 
-    const isKing = league.stars === 0;
+    const isKing = leagueDef.id==='king';
     document.getElementById('leagueStars').style.display = isKing ? 'none' : 'flex';
     document.getElementById('leagueProgressRow').style.display = isKing ? 'none' : 'flex';
     const rankBadge = document.getElementById('leagueRankBadge');
     rankBadge.style.display = isKing ? 'flex' : 'none';
 
     if(isKing){
-      rankBadge.textContent = currentLeagueRank!=null ? ('#'+currentLeagueRank) : '—';
+      rankBadge.textContent = tournamentStatus.kingRank!=null ? ('#'+tournamentStatus.kingRank) : '—';
     } else {
-      document.getElementById('leagueStars').innerHTML = STAR_ICON.repeat(league.stars);
-      const pct = Math.max(0, Math.min(100, currentLeagueProgress/30*100));
+      const maxStars = tournamentStatus.maxStars ?? leagueDef.stars;
+      const earned = Math.max(0, Math.min(maxStars, tournamentStatus.stars||0));
+      document.getElementById('leagueStars').innerHTML =
+        STAR_ICON_ACTIVE.repeat(earned) + STAR_ICON.repeat(maxStars-earned);
+      const pct = Math.max(0, Math.min(100, (tournamentStatus.progress||0)/30*100));
       document.getElementById('leagueProgressFill').style.width = pct+'%';
     }
   }
@@ -1974,16 +1988,17 @@
   document.getElementById('pvpBtn').addEventListener('click', ()=>{
     startMatchmaking();
   });
-  document.getElementById('tournamentBtn').addEventListener('click', ()=>{
-    renderTournamentScreen();
+  document.getElementById('tournamentBtn').addEventListener('click', async ()=>{
     document.getElementById('tournamentNote').textContent = '';
+    await fetchTournamentStatus();
+    renderTournamentScreen();
     showScreen('tournament');
   });
   document.getElementById('tournamentBackBtn').addEventListener('click', ()=>{
     showScreen('mode');
   });
   document.getElementById('tournamentStartBtn').addEventListener('click', ()=>{
-    document.getElementById('tournamentNote').textContent = 'Турнирные бои скоро откроются — рейтинговая система в разработке.';
+    startTournamentSearch();
   });
   document.getElementById('cancelSearchBtn').addEventListener('click', ()=>{
     cancelMatchmaking();
@@ -2322,8 +2337,11 @@
     }));
   }
 
+  let searchMode = 'pvp'; // 'pvp' | 'tournament' — decides what Cancel actually sends
+
   function startMatchmaking(){
     const note = document.getElementById('searchingNote');
+    searchMode = 'pvp';
     if(!serverConfigured() || !onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
       if(note) note.textContent = 'Сервер не настроен или недоступен — PVP сейчас невозможен.';
       showScreen('searching');
@@ -2337,9 +2355,25 @@
     }));
   }
 
+  function startTournamentSearch(){
+    const note = document.getElementById('searchingNote');
+    searchMode = 'tournament';
+    if(!serverConfigured() || !onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
+      if(note) note.textContent = 'Сервер не настроен или недоступен — турнир сейчас невозможен.';
+      showScreen('searching');
+      return;
+    }
+    if(note) note.textContent = 'Ищем соперника для турнирного боя…';
+    showScreen('searching');
+    onlineSocket.send(JSON.stringify({
+      type:'start_tournament_search',
+      username: currentUser || 'Игрок'
+    }));
+  }
+
   function cancelMatchmaking(){
     if(onlineSocket && onlineSocket.readyState===WebSocket.OPEN){
-      onlineSocket.send(JSON.stringify({ type:'cancel_search' }));
+      onlineSocket.send(JSON.stringify({ type: searchMode==='tournament' ? 'cancel_tournament_search' : 'cancel_search' }));
     }
   }
 
