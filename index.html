@@ -524,9 +524,9 @@
     color:#5a4c3c;
   }
   .slot{
-    min-height:112px;
-    width:96px;
-    flex:0 1 96px;
+    aspect-ratio: 1 / 1;
+    width:104px;
+    flex:0 1 104px;
     min-width:64px;
     border-radius:6px;
     border:1px dashed #4a3a2c;
@@ -602,6 +602,40 @@
   }
   .lunge-right{animation:lunge-right 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
   .lunge-left{animation:lunge-left 1.38s cubic-bezier(.3,.9,.4,1); position:relative;}
+
+  /* Ополченец's sword-figure icon: idle by default, swings on attack,
+     falls and drops the sword on death. Scoped to its own sub-elements
+     (.uf-arm / .uf-body / .uf-sword) so these rules do nothing for any
+     other card's icon. */
+  @keyframes uf-swing{
+    0%{ transform:rotate(0deg); }
+    35%{ transform:rotate(-80deg); }
+    65%{ transform:rotate(15deg); }
+    100%{ transform:rotate(0deg); }
+  }
+  @keyframes uf-fall{
+    to{ transform:rotate(80deg) translate(-3px,5px); opacity:.55; }
+  }
+  @keyframes uf-drop-sword{
+    to{ transform:translate(12px,20px) rotate(75deg); opacity:0; }
+  }
+  .militia-figure .uf-arm{
+    transform-box: view-box;
+    transform-origin: 34px 24.5px;
+  }
+  .unit-card.attacking .militia-figure .uf-arm{
+    animation: uf-swing 0.7s ease-in-out;
+  }
+  .unit-card.unit-dying .militia-figure .uf-body{
+    transform-box: view-box;
+    transform-origin: 28px 55px;
+    animation: uf-fall 0.9s ease-in forwards;
+  }
+  .unit-card.unit-dying .militia-figure .uf-sword{
+    transform-box: view-box;
+    transform-origin: 44px 24px;
+    animation: uf-drop-sword 0.9s ease-in forwards;
+  }
 
   @keyframes hero-shake{
     0%,100%{transform:translateX(0);}
@@ -859,7 +893,7 @@
   }
 
   @media(max-width:480px){
-    .slot{min-height:84px; width:66px; flex-basis:66px; min-width:40px; font-size:11px;}
+    .slot{width:76px; flex-basis:76px; min-width:44px; font-size:11px;}
     .lane-row{gap:4px; padding:5px;}
     .side-slots{gap:3px;}
     .unit-name{font-size:11px;}
@@ -1059,7 +1093,7 @@
     hammer: `<svg viewBox="0 0 64 64"><rect x="29" y="22" width="6" height="34" rx="2" fill="#5c4536"/><rect x="14" y="8" width="36" height="16" rx="3" fill="#e04a3f" stroke="#8a7020" stroke-width="2"/></svg>`,
     wall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#a89a84" stroke-width="2"><rect x="8" y="12" width="20" height="10"/><rect x="28" y="12" width="20" height="10"/><rect x="48" y="12" width="8" height="10"/><rect x="18" y="22" width="20" height="10"/><rect x="38" y="22" width="18" height="10"/><rect x="8" y="22" width="10" height="10"/><rect x="8" y="32" width="20" height="10"/><rect x="28" y="32" width="20" height="10"/><rect x="48" y="32" width="8" height="10"/><rect x="18" y="42" width="20" height="10"/><rect x="8" y="42" width="10" height="10"/><rect x="38" y="42" width="18" height="10"/></g></svg>`,
     paladin: `<svg viewBox="0 0 64 64"><path d="M32 6l16 6v16c0 14-9 24-16 30-7-6-16-16-16-30V12z" fill="#c9a227" stroke="#8a7020" stroke-width="2"/><rect x="29" y="16" width="6" height="24" fill="#e9e0cf"/><rect x="20" y="25" width="24" height="6" fill="#e9e0cf"/></svg>`,
-    militia: `<svg viewBox="0 0 64 64"><path d="M20 8v16M32 8v16M44 8v16" stroke="#a89a84" stroke-width="4" stroke-linecap="round"/><path d="M18 24h28v6H18z" fill="#8a7020"/><rect x="29" y="30" width="6" height="26" fill="#5c4536"/></svg>`,
+    militia: `<svg viewBox="0 0 64 64" class="militia-figure"><g class="uf-body"><circle cx="28" cy="16" r="7" fill="#c9a882"/><rect x="22" y="22" width="14" height="18" rx="4" fill="#8a7020"/><rect x="20" y="40" width="6" height="15" rx="2" fill="#5c4536"/><rect x="30" y="40" width="6" height="15" rx="2" fill="#5c4536"/></g><g class="uf-arm"><rect x="34" y="22" width="13" height="5" rx="2.5" fill="#c9a882"/><g class="uf-sword"><rect x="44" y="6" width="4" height="20" rx="1" fill="#a89a84"/><rect x="40" y="24" width="12" height="4" rx="1" fill="#5c4536"/></g></g></svg>`,
     palaceguard: `<svg viewBox="0 0 64 64"><rect x="29" y="8" width="6" height="48" rx="1" fill="#8a7020"/><path d="M35 10l16 6-5 12-13-5z" fill="#c9a227"/><path d="M29 10l-14 8 6 9 8-7z" fill="#c9a227"/></svg>`,
     legion: `<svg viewBox="0 0 64 64"><path d="M14 46c4-18 10-30 18-32M50 46c-4-18-10-30-18-32" stroke="#c9a227" stroke-width="3" fill="none" stroke-linecap="round"/><g fill="#c9a227"><ellipse cx="20" cy="18" rx="4" ry="7"/><ellipse cx="16" cy="28" rx="4" ry="7"/><ellipse cx="14" cy="40" rx="4" ry="7"/><ellipse cx="44" cy="18" rx="4" ry="7"/><ellipse cx="48" cy="28" rx="4" ry="7"/><ellipse cx="50" cy="40" rx="4" ry="7"/></g></svg>`,
     chainmail: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#8fa3ad" stroke-width="2.5"><circle cx="20" cy="18" r="7"/><circle cx="36" cy="18" r="7"/><circle cx="52" cy="18" r="7"/><circle cx="12" cy="32" r="7"/><circle cx="28" cy="32" r="7"/><circle cx="44" cy="32" r="7"/><circle cx="20" cy="46" r="7"/><circle cx="36" cy="46" r="7"/></g></svg>`,
@@ -1679,7 +1713,7 @@
       const targetBoard = a.isMe ? state.enemyBoard : state.playerBoard;
       const targetName = a.targetHero ? (a.isMe?'кулак соперника':'твой кулак') : ((targetBoard[ev.lane][a.targetDepth]||{}).name || '???');
       const unitEl = findUnitEl(ev.lane, a.isMe, a.depth);
-      if(unitEl) unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left');
+      if(unitEl) unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left', 'attacking');
       parts.push(`${atkUnit? atkUnit.name : '???'} → ${targetName}`);
     });
     log(`Полоса ${ev.lane+1}: ` + parts.join(' · '));
