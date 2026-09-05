@@ -1738,9 +1738,15 @@
         showScreen('mode'); // both PVE and PVP now start via the server — pick a mode again
       }
     });
-    document.getElementById('exitBtn').addEventListener('click', ()=>{
+    document.getElementById('exitBtn').addEventListener('click', async ()=>{
       overlay.remove();
-      showScreen('menu');
+      if(state.isTournamentMatch){
+        await fetchTournamentStatus();
+        renderTournamentScreen();
+        showScreen('tournament');
+      } else {
+        showScreen('menu');
+      }
     });
   }
 
@@ -1789,6 +1795,7 @@
       if(ev.type==='spell') playPvpSpellEvent(ev, next);
       else if(ev.type==='wave') playPvpWaveEvent(ev, next);
       else if(ev.type==='endOfRound') playEndOfRoundEvent(ev, next);
+      else if(ev.type==='rallyBuff') playPvpRallyBuffEvent(ev, next);
       else next();
     }
     setTimeout(next, 700);
@@ -1848,6 +1855,28 @@
     setTimeout(()=>{
       if(mine) state.playerHp += ev.amount; else state.enemyHp += ev.amount;
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    }, 300);
+  }
+
+  // A rally-style "buff every ally already on the board" trigger (e.g.
+  // Паладин) — fires at the very start of round resolution, before spells
+  // or combat, once per affected unit. Timed identically to the ordinary
+  // damage animation (300ms reaction + 900ms hold) per explicit request,
+  // so the stat increase reads as smoothly as taking a hit does.
+  function playPvpRallyBuffEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+    const targetEl = findUnitEl(ev.laneIdx, mine, ev.targetDepth);
+    log(`Союзник${mine?' твой':' соперника'}${unit? ' — '+unit.name:''} получает подкрепление: +${ev.buffAtk} атаки, +${ev.buffHp} здоровья.`);
+    setTimeout(()=>{
+      if(unit){
+        unit.atk += ev.buffAtk;
+        unit.hp += ev.buffHp;
+        unit.maxHp += ev.buffHp;
+        if(targetEl){ spawnSpellBurst(targetEl,'heal'); spawnDamageNumber(targetEl, `+${ev.buffAtk}⚔ +${ev.buffHp}♥`, 'heal'); }
+      }
       setTimeout(()=>{ renderAll(); done(); }, 900);
     }, 300);
   }
