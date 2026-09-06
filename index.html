@@ -1242,6 +1242,7 @@
     <div class="hand-header">
       <span id="handCount">Рука: 3</span>
       <div style="display:flex; gap:8px;">
+        <button class="btn ghost" id="returnToHandBtn" style="display:none;">Вернуть в руку</button>
         <button class="btn ghost" id="sacBtn">Пожертвовать (+1 мана)</button>
         <button class="btn" id="endTurnBtn">Завершить ход</button>
       </div>
@@ -1629,6 +1630,7 @@
     hint: document.getElementById('hint'),
     endTurnBtn: document.getElementById('endTurnBtn'),
     sacBtn: document.getElementById('sacBtn'),
+    returnToHandBtn: document.getElementById('returnToHandBtn'),
     arena: document.getElementById('arena'),
     battlefield: document.getElementById('battlefield'),
   };
@@ -1698,6 +1700,11 @@
     } else {
       selectedMoveUnit = { lane: laneIdx, depth: depthIdx };
     }
+    if(selectedMoveUnit){
+      el.hint.textContent = 'Выбери свободную позицию, чтобы переставить бойца, или верни его в руку.';
+    } else {
+      el.hint.textContent = 'Выбери карту, затем свободную позицию на своей стороне.';
+    }
     renderAll();
   }
 
@@ -1707,6 +1714,16 @@
     selectedMoveUnit = null;
     if(!unit) { renderAll(); return; }
     pvpSendAction({ type:'move_unit', uid: unit.uid, lane: laneIdx, depth: depthIdx });
+    renderAll();
+  }
+
+  function returnSelectedUnitToHand(){
+    if(!selectedMoveUnit) return;
+    const unit = state.playerBoard[selectedMoveUnit.lane][selectedMoveUnit.depth];
+    selectedMoveUnit = null;
+    if(!unit) { renderAll(); return; }
+    pvpSendAction({ type:'return_to_hand', uid: unit.uid });
+    el.hint.textContent = 'Выбери карту, затем свободную позицию на своей стороне.';
     renderAll();
   }
 
@@ -1803,6 +1820,8 @@
     renderPendingSpells();
     el.endTurnBtn.disabled = state.phase!=='player';
     el.sacBtn.disabled = state.phase!=='player' || !state.selectedCardUid || (state.sacrificesThisRound||0)>=1;
+    const showReturnBtn = state.phase==='player' && !!selectedMoveUnit;
+    el.returnToHandBtn.style.display = showReturnBtn ? '' : 'none';
   }
 
   // ---------- Player actions ----------
@@ -1864,6 +1883,11 @@
     onlineSocket.send(JSON.stringify({ matchId: state.matchId, username: state.myUsername, ...obj }));
     return true;
   }
+
+  el.returnToHandBtn.addEventListener('click', ()=>{
+    if(state.phase!=='player') return;
+    returnSelectedUnitToHand();
+  });
 
   el.sacBtn.addEventListener('click', ()=>{
     if(state.phase!=='player') return;
