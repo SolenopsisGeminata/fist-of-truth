@@ -1482,8 +1482,16 @@
   // ---------- State ----------
   const LANES = 3, DEPTH = 3; // front(0)/mid(1)/back(2)
   const MAX_MANA = 10, MAX_HAND = 7, START_HP = 30;
-  const MAX_DECK_SIZE = 30, MAX_COPIES_PER_CARD = 3;
+  const MAX_DECK_SIZE = 30;
   const DECK_STORAGE_KEY = 'fistDuelPlayerDeck';
+
+  // Max copies of a single card allowed in a deck, by rarity — mirrors
+  // maxCopiesForCard() in the server's game-engine.js. Common/Rare/Epic
+  // can go up to 3 copies; Legendary/Mythic are singles (at most 1 copy).
+  function maxCopiesForCard(card){
+    if(card && (card.rarity==='legendary' || card.rarity==='mythic')) return 1;
+    return 3;
+  }
 
   function freshBoard(){
     return Array.from({length:LANES}, ()=>Array(DEPTH).fill(null));
@@ -2322,14 +2330,15 @@
     const factionCards = POOL.filter(c=>c.faction===selectedFaction);
     poolListEl.innerHTML = factionCards.length ? factionCards.map(card=>{
       const count = editingDeckCounts[card.id] || 0;
-      const disabled = count>=MAX_COPIES_PER_CARD || total>=MAX_DECK_SIZE;
+      const cap = maxCopiesForCard(card);
+      const disabled = count>=cap || total>=MAX_DECK_SIZE;
       return `<div class="deck-row">
         <div class="deck-row-art">${cardArt(card.art)}</div>
         <div class="deck-row-info">
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
           <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
-        <div class="deck-row-count">${count}/${MAX_COPIES_PER_CARD}</div>
+        <div class="deck-row-count">${count}/${cap}</div>
         <button class="deck-row-btn plus" data-id="${card.id}" ${disabled?'disabled':''}>+</button>
       </div>`;
     }).join('') : `<div class="deck-empty-hint">В этой фракции пока нет доступных карт.</div>`;
@@ -2346,14 +2355,15 @@
         <div class="deck-row-count">×${count}</div>
         <button class="deck-row-btn minus" data-id="${card.id}">−</button>
       </div>`;
-    }).join('') : `<div class="deck-empty-hint">Добавляй карты слева, чтобы собрать колоду (максимум ${MAX_DECK_SIZE} карт, до ${MAX_COPIES_PER_CARD} копий каждой).</div>`;
+    }).join('') : `<div class="deck-empty-hint">Добавляй карты слева, чтобы собрать колоду (максимум ${MAX_DECK_SIZE} карт; до 3 копий обычной/редкой/эпической карты, максимум 1 копия легендарной или мистической).</div>`;
 
     poolListEl.querySelectorAll('.deck-row-btn.plus').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const id = btn.dataset.id;
+        const card = cardDefById(id);
         const total = totalDeckCount(editingDeckCounts);
         const cur = editingDeckCounts[id] || 0;
-        if(total>=MAX_DECK_SIZE || cur>=MAX_COPIES_PER_CARD) return;
+        if(total>=MAX_DECK_SIZE || cur>=maxCopiesForCard(card)) return;
         editingDeckCounts[id] = cur+1;
         renderDeckBuilder();
       });
