@@ -663,6 +663,7 @@
     gap:8px;
     margin:10px 0;
     overflow-x:auto; /* safety net on very narrow screens — rows shrink first (see .slot's min-width), this only kicks in if they still don't fit */
+    overflow-y:hidden; /* prevents a stray vertical scrollbar: transformed elements (dmg-pop float-up, buff numbers) count toward scrollable overflow even though they don't affect layout, and per the CSS overflow spec, leaving this axis unset here would force it to 'auto' too (since overflow-x isn't 'visible') the moment anything pokes past the top/bottom edge */
   }
   .lane-row{
     display:flex;
