@@ -1014,6 +1014,7 @@
   }
   .hand-card .cname{font-size:10.5px; font-weight:700; line-height:1.2; margin-top:6px;}
   .hand-card .ctype{font-size:8px; color:var(--bone-dim); text-transform:uppercase; letter-spacing:1px;}
+  .rarity-label{font-weight:600;}
   .hand-card .cstats{
     display:flex; justify-content:space-between;
     font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
@@ -1266,22 +1267,25 @@
   "use strict";
 
   // ---------- Card pool ----------
+  // rarity is display-only right now (no effect on gameplay or deck
+  // building rules). Two tiers above Epic exist in the design (Legendary,
+  // Mythic) but no card uses them yet — see RARITY below for their colors.
   const POOL = [
-    {id:'c1', name:'Крестьянин', type:'creature', cost:2, atk:1, hp:3, desc:'Простой сельский житель — не боец, но упрямый и живучий.', art:'peasant', faction:'empire'},
-    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, armor:1, desc:'Держит удар в первой линии. Броня гасит часть входящего урона от каждого удара.', art:'shield', faction:'empire'},
-    {id:'c3', name:'Стражник', type:'creature', cost:2, atk:2, hp:1, desc:'Гвардеец на грани — бьёт вдвое сильнее, но падает от первого же ответа.', art:'guard', faction:'empire'},
-    {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, desc:'Сбалансированный боец.', art:'dagger', faction:'empire'},
-    {id:'c6', name:'Молотобоец', type:'creature', cost:4, atk:5, hp:2, desc:'Один взмах молота сокрушает всё на пути — но брони на второй удар уже не остаётся.', art:'hammer', faction:'empire'},
-    {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, desc:'Почти не падает.', art:'wall', faction:'empire'},
-    {id:'c8', name:'Паладин', type:'creature', cost:5, atk:4, hp:2, rallyBuff:true, desc:'Благословляет соратников при выходе на поле — все союзники, кроме него самого, получают +2 к атаке и здоровью.', art:'paladin', faction:'empire'},
-    {id:'c10', name:'Ополченец', type:'creature', cost:1, atk:1, hp:1, desc:'Наскоро вооружённый крестьянин. Числом, а не умением.', art:'militia', faction:'empire'},
-    {id:'c11', name:'Страж дворца', type:'creature', cost:2, atk:2, hp:2, lifesteal:true, desc:'Каждый пробитый удар по сопернику придаёт сил защитнику — исцеляет своего героя на значение атаки.', art:'palaceguard', faction:'empire'},
-    {id:'c12', name:'Легионер', type:'creature', cost:3, atk:2, hp:3, lifesteal:true, synergy:true, desc:'Крадёт здоровье при ударе по герою соперника. В строю с другими бойцами бьёт сильнее — +1 к атаке за каждого союзника по соседству (сверху, снизу, слева, справа).', art:'legion', faction:'empire'},
-    {id:'s1', name:'Кольчуга', type:'spell', cost:2, buffHp:3, buffAtk:1, desc:'Плетение колец укрепляет бойца — навсегда добавляет +3 к здоровью и +1 к атаке.', art:'chainmail', faction:'empire'},
-    {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
-    {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
-    {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
-    {id:'c16', name:'Родная тетушка', type:'creature', cost:3, atk:1, hp:2, auntBuff:true, desc:'Всегда найдёт особое угощение для того, кто рядом — при выходе на поле выбирает случайного соседнего союзника (сверху, снизу, слева или справа) и даёт ему +1 к атаке и здоровью.', art:'auntie', faction:'empire'},
+    {id:'c1', name:'Крестьянин', type:'creature', cost:2, atk:1, hp:3, rarity:'common', desc:'Простой сельский житель — не боец, но упрямый и живучий.', art:'peasant', faction:'empire'},
+    {id:'c2', name:'Щитоносец', type:'creature', cost:2, atk:1, hp:5, armor:1, rarity:'common', desc:'Держит удар в первой линии. Броня гасит часть входящего урона от каждого удара.', art:'shield', faction:'empire'},
+    {id:'c3', name:'Стражник', type:'creature', cost:2, atk:2, hp:1, rarity:'common', desc:'Гвардеец на грани — бьёт вдвое сильнее, но падает от первого же ответа.', art:'guard', faction:'empire'},
+    {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, rarity:'common', desc:'Сбалансированный боец.', art:'dagger', faction:'empire'},
+    {id:'c6', name:'Молотобоец', type:'creature', cost:4, atk:5, hp:2, rarity:'common', desc:'Один взмах молота сокрушает всё на пути — но брони на второй удар уже не остаётся.', art:'hammer', faction:'empire'},
+    {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, rarity:'rare', desc:'Почти не падает.', art:'wall', faction:'empire'},
+    {id:'c8', name:'Паладин', type:'creature', cost:5, atk:4, hp:2, rallyBuff:true, rarity:'rare', desc:'Благословляет соратников при выходе на поле — все союзники, кроме него самого, получают +2 к атаке и здоровью.', art:'paladin', faction:'empire'},
+    {id:'c10', name:'Ополченец', type:'creature', cost:1, atk:1, hp:1, rarity:'common', desc:'Наскоро вооружённый крестьянин. Числом, а не умением.', art:'militia', faction:'empire'},
+    {id:'c11', name:'Страж дворца', type:'creature', cost:2, atk:2, hp:2, lifesteal:true, rarity:'rare', desc:'Каждый пробитый удар по сопернику придаёт сил защитнику — исцеляет своего героя на значение атаки.', art:'palaceguard', faction:'empire'},
+    {id:'c12', name:'Легионер', type:'creature', cost:3, atk:2, hp:3, lifesteal:true, synergy:true, rarity:'epic', desc:'Крадёт здоровье при ударе по герою соперника. В строю с другими бойцами бьёт сильнее — +1 к атаке за каждого союзника по соседству (сверху, снизу, слева, справа).', art:'legion', faction:'empire'},
+    {id:'s1', name:'Кольчуга', type:'spell', cost:2, buffHp:3, buffAtk:1, rarity:'common', desc:'Плетение колец укрепляет бойца — навсегда добавляет +3 к здоровью и +1 к атаке.', art:'chainmail', faction:'empire'},
+    {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
+    {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
+    {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
+    {id:'c16', name:'Родная тетушка', type:'creature', cost:3, atk:1, hp:2, auntBuff:true, rarity:'common', desc:'Всегда найдёт особое угощение для того, кто рядом — при выходе на поле выбирает случайного соседнего союзника (сверху, снизу, слева или справа) и даёт ему +1 к атаке и здоровью.', art:'auntie', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -1325,7 +1329,7 @@
       <div class="card-art">${cardArt(card.art)}</div>
       <div>
         <div class="cname">${card.name}</div>
-        <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'}</div>
+        <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'} · ${rarityLabelHtml(card)}</div>
       </div>
       ${statsHtml}
       <div class="cdesc" title="${card.desc}">${card.desc}</div>
@@ -1460,6 +1464,20 @@
     auntie: `<svg viewBox="0 0 64 64"><path d="M10 20c8-8 36-8 44 0l-6 8c-10-6-22-6-32 0z" fill="#a12c2c"/><circle cx="22" cy="18" r="2" fill="#e9e0cf"/><circle cx="32" cy="15" r="2" fill="#e9e0cf"/><circle cx="42" cy="18" r="2" fill="#e9e0cf"/><path d="M14 24c6 10 30 10 36 0l4 6c-8 14-36 14-44 0z" fill="#a12c2c" opacity=".85"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
+
+  // ---------- Rarity (display only — no effect on gameplay or deck rules) ----------
+  const RARITY = {
+    common: { name: 'Обычная', color: '#a89a84' },
+    rare: { name: 'Редкая', color: '#5c85a8' },
+    epic: { name: 'Эпическая', color: '#a15cc9' },
+    legendary: { name: 'Легендарная', color: '#c9a227' },
+    mythic: { name: 'Мистическая', color: '#e04a3f' },
+  };
+  function rarityInfo(card){ return RARITY[card && card.rarity] || RARITY.common; }
+  function rarityLabelHtml(card){
+    const r = rarityInfo(card);
+    return `<span class="rarity-label" style="color:${r.color}">${r.name}</span>`;
+  }
 
   // ---------- State ----------
   const LANES = 3, DEPTH = 3; // front(0)/mid(1)/back(2)
@@ -1775,7 +1793,7 @@
         <div class="card-art">${cardArt(card.art)}</div>
         <div>
           <div class="cname">${card.name}</div>
-          <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'}</div>
+          <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'} · ${rarityLabelHtml(card)}</div>
         </div>
         ${statsHtml}
         <div class="cdesc" title="${card.desc}">${card.desc}</div>
@@ -2309,7 +2327,7 @@
         <div class="deck-row-art">${cardArt(card.art)}</div>
         <div class="deck-row-info">
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
-          <div class="deck-row-sub">${cardStatsLine(card)}</div>
+          <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
         <div class="deck-row-count">${count}/${MAX_COPIES_PER_CARD}</div>
         <button class="deck-row-btn plus" data-id="${card.id}" ${disabled?'disabled':''}>+</button>
@@ -2323,7 +2341,7 @@
         <div class="deck-row-art">${cardArt(card.art)}</div>
         <div class="deck-row-info">
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
-          <div class="deck-row-sub">${cardStatsLine(card)}</div>
+          <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
         <div class="deck-row-count">×${count}</div>
         <button class="deck-row-btn minus" data-id="${card.id}">−</button>
