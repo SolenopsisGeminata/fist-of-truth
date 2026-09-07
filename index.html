@@ -2475,6 +2475,26 @@
   const deckListEl = document.getElementById('deckList');
   const deckCountLabelEl = document.getElementById('deckCountLabel');
 
+  // Which card ids this account actually owns and can use in a deck.
+  // Falls back to the starter set (mirrors the server's default) until
+  // the real list arrives — new accounts and this fallback agree exactly,
+  // so there's no flash of the wrong cards while it loads. There's no
+  // purchase mechanic yet (a later step), so for now this just hides
+  // cards the account doesn't have rather than showing them as buyable.
+  let ownedCardIds = new Set(Object.keys(defaultDeckCounts()));
+
+  async function fetchOwnedCards(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/owned-cards'), { headers: { 'Authorization': 'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data && Array.isArray(data.cardIds)) ownedCardIds = new Set(data.cardIds);
+    } catch(e){ /* keep last known / default set */ }
+  }
+
   function spellStatsText(card){
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.heal) return '+'+card.heal+' HP';
@@ -2508,7 +2528,7 @@
     deckCountLabelEl.textContent = `${total}/${MAX_DECK_SIZE}`;
     deckCountLabelEl.classList.toggle('full', total>=MAX_DECK_SIZE);
 
-    const factionCards = POOL.filter(c=>c.faction===selectedFaction);
+    const factionCards = POOL.filter(c=>c.faction===selectedFaction && ownedCardIds.has(c.id));
     poolListEl.innerHTML = factionCards.length ? factionCards.map(card=>{
       const count = editingDeckCounts[card.id] || 0;
       const cap = maxCopiesForCard(card);
@@ -2599,6 +2619,8 @@
     editingDeckCounts = {...(loadSavedDeckCounts() || defaultDeckCounts())};
     renderDeckBuilder();
     showScreen('deck');
+    await fetchOwnedCards();
+    renderDeckBuilder();
     if(serverConfigured()){
       const session = loadSession();
       if(session && session.token){
