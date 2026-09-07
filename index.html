@@ -805,11 +805,24 @@
     overflow:hidden;
     cursor:help;
   }
+  .unit-stats-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
   .unit-stats{
     display:flex;
     justify-content:space-between;
     font-family:'Oswald',sans-serif;
     font-size:17px;
+    font-weight:600;
+  }
+  .unit-stats-extra{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
     font-weight:600;
   }
   .stat-atk{color:var(--crimson-bright);}
@@ -1114,6 +1127,7 @@
     .side-slots{gap:3px;}
     .unit-name{font-size:11px;}
     .unit-stats{font-size:12px;}
+    .unit-stats-extra{font-size:10px; gap:5px;}
     .unit-art svg{width:75%; height:75%;}
     .hand-card{flex:0 0 84px; height:158px;}
     .card-art{height:44px;}
@@ -1821,10 +1835,23 @@
     const appearClass = (isNew && !isPlacing) ? ' unit-appear' : '';
     const placingClass = isPlacing ? ' placed-this-round' : '';
     const isPicked = mine && selectedMoveUnit && selectedMoveUnit.lane===laneIdx && selectedMoveUnit.depth===depthIdx;
+    // Row 1 is always just the core numbers (attack/health/armor) — kept
+    // short and fixed-shape so it never wraps. Everything else (lifesteal,
+    // synergy, and any future buff/debuff icon) goes in row 2 instead of
+    // being crammed into row 1, which used to push .unit-art out of room
+    // and clip the icon for units with several bonus icons (e.g. Легионер,
+    // who has both lifesteal and synergy).
+    const extras = [];
+    if(unit.lifesteal) extras.push(`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`);
+    if(unit.synergy) extras.push(`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`);
+    const extraRow = extras.length ? `<div class="unit-stats-extra">${extras.join('')}</div>` : '';
     return `<div class="unit-card ${cls}${appearClass}${placingClass}${isPicked?' move-selected':''}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name" title="${unit.name}">${unit.name}</div>
       <div class="unit-art">${cardArt(unit.art)}</div>
-      <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span>${unit.armor?`<span class="stat-armor">🛡 ${unit.armor}</span>`:''}${unit.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${unit.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}</div>
+      <div class="unit-stats-wrap">
+        <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span>${unit.armor?`<span class="stat-armor">🛡 ${unit.armor}</span>`:''}</div>
+        ${extraRow}
+      </div>
     </div>`;
   }
 
