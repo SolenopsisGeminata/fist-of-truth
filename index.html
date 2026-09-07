@@ -798,6 +798,8 @@
   .unit-card.mine{background:linear-gradient(160deg,#2c1414,#1c0f0f); border-color:var(--crimson);}
   .unit-card.theirs{background:linear-gradient(160deg,#131f28,#0d161c); border-color:var(--steel);}
   .unit-name{
+    height:2.3em; /* always reserves 2 lines' worth of space, even for a 1-line name — so unit-art below never gets more or less room depending on name length */
+    flex-shrink:0;
     font-size:15px;
     font-weight:700;
     line-height:1.15;
@@ -812,17 +814,25 @@
     display:flex;
     flex-direction:column;
     gap:1px;
+    flex-shrink:0;
   }
   .unit-stats{
+    height:1.2em; /* fixed like the other rows — different glyph metrics (🛡 vs 🔗/🩸) could otherwise make this row's natural line-box height vary slightly between units with baseline alignment, throwing off unit-art's uniform remaining space */
+    flex-shrink:0;
     display:flex;
-    justify-content:space-between;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
     font-family:'Oswald',sans-serif;
     font-size:17px;
     font-weight:600;
   }
   .unit-stats-extra{
+    height:1.2em; /* always reserved, even with zero icons — see unit-name's comment: this keeps unit-art's remaining space identical whether a unit has 0, 1, or 2 extra icons */
+    flex-shrink:0;
     display:flex;
     justify-content:center;
+    align-items:center;
     gap:8px;
     font-family:'Oswald',sans-serif;
     font-size:14px;
@@ -1848,7 +1858,12 @@
     const extras = [];
     if(unit.lifesteal) extras.push(`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`);
     if(unit.synergy) extras.push(`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`);
-    const extraRow = extras.length ? `<div class="unit-stats-extra">${extras.join('')}</div>` : '';
+    // Always rendered (even with zero extras) so its reserved height (see
+    // .unit-stats-extra CSS) applies the same to every unit — otherwise a
+    // unit with no bonus icons would hand its .unit-art extra room that a
+    // unit with one/two icons doesn't get, making icons inconsistently
+    // sized across units.
+    const extraRow = `<div class="unit-stats-extra">${extras.join('')}</div>`;
     return `<div class="unit-card ${cls}${appearClass}${placingClass}${isPicked?' move-selected':''}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name" title="${unit.name}">${unit.name}</div>
       <div class="unit-art">${cardArt(unit.art)}</div>
