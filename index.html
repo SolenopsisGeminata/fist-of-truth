@@ -2176,6 +2176,12 @@
         </div>
       </div>`;
     document.body.appendChild(overlay);
+    // A match ending is the only place account gold can currently change
+    // (a won PVE match may have just paid out a reward) — refresh the
+    // header's resource display right away so the new balance is visible
+    // immediately, whichever button the player clicks next.
+    const session = loadSession();
+    if(session && session.token) fetchResources(session.token);
     document.getElementById('restartBtn').addEventListener('click', async ()=>{
       overlay.remove();
       if(state.isTournamentMatch){
@@ -2195,6 +2201,13 @@
         await fetchTournamentStatus();
         renderTournamentScreen();
         showScreen('tournament');
+      } else if(state.mode==='pve'){
+        // Back to the PVE progress screen (where "Начать" lives), not the
+        // main menu — refresh first so a just-earned reward/advanced
+        // iteration is already reflected.
+        await fetchPveStatus();
+        renderPveScreen();
+        showScreen('pve');
       } else {
         showScreen('menu');
       }
