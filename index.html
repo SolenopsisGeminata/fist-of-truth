@@ -516,6 +516,30 @@
     color:var(--brass);
   }
   .shop-card-price svg{width:16px; height:16px;}
+  .shop-buy-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    padding:6px 8px;
+    border-radius:8px;
+    border:1px solid var(--brass-dim);
+    background:rgba(201,162,39,0.14);
+    color:var(--brass);
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+  }
+  .shop-buy-btn svg{width:16px; height:16px; flex:0 0 auto;}
+  .shop-buy-btn:hover:not(:disabled){border-color:var(--brass); background:rgba(201,162,39,0.24);}
+  .shop-buy-btn.owned{
+    border-color:var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    cursor:default;
+  }
   .shop-note{
     text-align:center;
     font-size:11.5px;
@@ -1564,7 +1588,8 @@
       <div class="card-art">${cardArt(card.art)}</div>
       <div>
         <div class="cname">${card.name}</div>
-        <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'} · ${rarityLabelHtml(card)}</div>
+        <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'}</div>
+        <div class="ctype">${rarityLabelHtml(card)}</div>
       </div>
       ${statsHtml}
       <div class="cdesc" title="${card.desc}">${card.desc}</div>
@@ -1713,12 +1738,47 @@
     });
   }
 
-  function shopCardHtml(card, currency){
+  function shopCardHtml(card, currency, index){
     const price = shopPriceForCard(card, currency);
+    const owned = ownedCardIds.has(card.id);
+    const btnLabel = owned
+      ? 'Куплено'
+      : `${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span>`;
     return `<div class="shop-card-wrap">
       ${libraryCardHtml(card)}
-      <div class="shop-card-price">${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span></div>
+      <button class="shop-buy-btn${owned?' owned':''}" data-tab="${currency}" data-index="${index}" ${owned?'disabled':''}>${btnLabel}</button>
     </div>`;
+  }
+
+  async function buyShopCard(tab, index){
+    const note = document.getElementById('shopNote');
+    note.textContent = '';
+    if(!serverConfigured()){
+      note.textContent = 'Сервер не настроен.';
+      return;
+    }
+    const session = loadSession();
+    if(!session || !session.token){
+      note.textContent = 'Нужно войти в аккаунт.';
+      return;
+    }
+    try{
+      const res = await fetch(apiUrl('/api/shop/buy'), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
+        body: JSON.stringify({ tab, index })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok){
+        note.textContent = data.error || 'Не удалось купить карту.';
+        return;
+      }
+      ownedCardIds.add(data.cardId); // same set the deck builder reads — the new card is immediately buildable into a deck too
+      renderShopScreen();
+      fetchResources(session.token); // currency was just spent — refresh the header balance
+    } catch(e){
+      note.textContent = 'Не удалось связаться с сервером.';
+    }
   }
 
   function renderShopScreen(){
@@ -1726,15 +1786,23 @@
     renderShopFactionTabs();
     renderShopManaFilters();
     const currency = shopActiveCurrency;
-    let cards = (shopCardIds[currency]||[]).map(id=>cardDefById(id)).filter(Boolean);
+    // Keep each card's original slot index (needed by the buy request to
+    // tell apart duplicate copies of the same card in the 6-slot list)
+    // through the faction/mana filtering below.
+    let entries = (shopCardIds[currency]||[]).map((id,index)=>({ card: cardDefById(id), index })).filter(e=>e.card);
     const faction = shopFaction[currency];
-    if(faction!=='all') cards = cards.filter(c=>c.faction===faction);
+    if(faction!=='all') entries = entries.filter(e=>e.card.faction===faction);
     const manaSet = shopManaFilters[currency];
-    if(manaSet.size>0) cards = cards.filter(c=>manaSet.has(c.cost));
+    if(manaSet.size>0) entries = entries.filter(e=>manaSet.has(e.card.cost));
     const grid = document.getElementById('shopCardsGrid');
-    grid.innerHTML = cards.length
-      ? cards.map(c=>shopCardHtml(c, currency)).join('')
+    grid.innerHTML = entries.length
+      ? entries.map(e=>shopCardHtml(e.card, currency, e.index)).join('')
       : `<div class="library-empty-hint">Нет карт по заданным фильтрам.</div>`;
+    grid.querySelectorAll('.shop-buy-btn:not(.owned)').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        buyShopCard(btn.dataset.tab, parseInt(btn.dataset.index,10));
+      });
+    });
   }
 
   // ---------- Tournament leagues ----------
@@ -2210,7 +2278,8 @@
         <div class="card-art">${cardArt(card.art)}</div>
         <div>
           <div class="cname">${card.name}</div>
-          <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'} · ${rarityLabelHtml(card)}</div>
+          <div class="ctype">${card.type==='creature'?'Боец':'Заклинание'}</div>
+          <div class="ctype">${rarityLabelHtml(card)}</div>
         </div>
         ${statsHtml}
         <div class="cdesc" title="${card.desc}">${card.desc}</div>
@@ -2920,7 +2989,7 @@
     document.getElementById('shopNote').textContent = '';
     renderShopScreen();
     showScreen('shop');
-    await fetchShop();
+    await Promise.all([fetchShop(), fetchOwnedCards()]);
     renderShopScreen();
   });
   document.getElementById('shopBackBtn').addEventListener('click', ()=>{
@@ -3036,7 +3105,7 @@
   async function fetchResources(token){
     if(!serverConfigured() || !token) return;
     try{
-      const res = await fetch(apiUrl('/api/resources'), { headers:{ 'Authorization':'Bearer '+token } });
+      const res = await fetch(apiUrl('/api/resources'), { headers:{ 'Authorization':'Bearer '+token }, cache:'no-store' });
       if(res.ok){
         const data = await res.json();
         resourceState = { dust:data.dust||0, gold:data.gold||0, crystals:data.crystals||0 };
