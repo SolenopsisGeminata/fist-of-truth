@@ -483,29 +483,6 @@
     background:var(--bg-panel);
     padding:12px;
   }
-  .shop-faction-tabs-vertical{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .shop-faction-tab{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px;
-    border-radius:8px;
-    border:1px solid var(--line);
-    background:rgba(0,0,0,0.22);
-    color:var(--bone-dim);
-    cursor:pointer;
-  }
-  .shop-faction-tab svg{width:22px; height:22px; flex:0 0 auto;}
-  .shop-faction-tab:hover{border-color:var(--brass-dim);}
-  .shop-faction-tab.active{
-    border-color:var(--brass);
-    background:rgba(201,162,39,0.16);
-    color:var(--brass);
-  }
   .shop-card-wrap{
     flex:0 0 116px;
     display:flex;
@@ -540,13 +517,7 @@
     cursor:pointer;
   }
   .shop-buy-btn svg{width:16px; height:16px; flex:0 0 auto;}
-  .shop-buy-btn:hover:not(:disabled){border-color:var(--brass); background:rgba(201,162,39,0.24);}
-  .shop-buy-btn.owned{
-    border-color:var(--line);
-    background:rgba(0,0,0,0.22);
-    color:var(--bone-dim);
-    cursor:default;
-  }
+  .shop-buy-btn:hover{border-color:var(--brass); background:rgba(201,162,39,0.24);}
   .shop-note{
     text-align:center;
     font-size:11.5px;
@@ -705,6 +676,13 @@
     min-width:34px;
     text-align:center;
     flex-shrink:0;
+    white-space:nowrap;
+  }
+  .deck-row-owned{
+    color:var(--bone-dim);
+  }
+  .deck-row-fraction{
+    margin-left:6px;
   }
   .deck-row-btn{
     width:26px; height:26px;
@@ -1414,7 +1392,7 @@
   <div class="mode-title">Магазин</div>
   <div class="shop-currency-tabs" id="shopCurrencyTabs"></div>
   <div class="shop-tab-body">
-    <div class="shop-faction-tabs-vertical" id="shopFactionTabs"></div>
+    <div class="library-faction-tabs" id="shopFactionTabs"></div>
     <div class="library-mana-filters" id="shopManaFilters"></div>
     <div class="library-cards-grid" id="shopCardsGrid"></div>
   </div>
@@ -1720,9 +1698,9 @@
     const all = [ALL_FACTIONS_TAB, ...FACTIONS];
     const current = shopFaction[shopActiveCurrency];
     tabsEl.innerHTML = all.map(f=>
-      `<button class="shop-faction-tab${f.id===current?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
+      `<button class="faction-tab${f.id===current?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
     ).join('');
-    tabsEl.querySelectorAll('.shop-faction-tab').forEach(btn=>{
+    tabsEl.querySelectorAll('.faction-tab').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         shopFaction[shopActiveCurrency] = btn.dataset.faction;
         renderShopScreen();
@@ -1747,13 +1725,9 @@
 
   function shopCardHtml(card, currency, index){
     const price = shopPriceForCard(card, currency);
-    const owned = ownedCardIds.has(card.id);
-    const btnLabel = owned
-      ? 'Куплено'
-      : `${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span>`;
     return `<div class="shop-card-wrap">
       ${libraryCardHtml(card)}
-      <button class="shop-buy-btn${owned?' owned':''}" data-tab="${currency}" data-index="${index}" ${owned?'disabled':''}>${btnLabel}</button>
+      <button class="shop-buy-btn" data-tab="${currency}" data-index="${index}">${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span></button>
     </div>`;
   }
 
@@ -1780,7 +1754,9 @@
         note.textContent = data.error || 'Не удалось купить карту.';
         return;
       }
-      ownedCardIds.add(data.cardId); // same set the deck builder reads — the new card is immediately buildable into a deck too
+      // Same object the deck builder reads — the new copy is immediately
+      // reflected there too, right down to the updated owned count.
+      ownedCounts[data.cardId] = data.ownedCount!=null ? data.ownedCount : (ownedCounts[data.cardId]||0)+1;
       renderShopScreen();
       fetchResources(session.token); // currency was just spent — refresh the header balance
     } catch(e){
@@ -1805,7 +1781,7 @@
     grid.innerHTML = entries.length
       ? entries.map(e=>shopCardHtml(e.card, currency, e.index)).join('')
       : `<div class="library-empty-hint">Нет карт по заданным фильтрам.</div>`;
-    grid.querySelectorAll('.shop-buy-btn:not(.owned)').forEach(btn=>{
+    grid.querySelectorAll('.shop-buy-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         buyShopCard(btn.dataset.tab, parseInt(btn.dataset.index,10));
       });
@@ -1957,6 +1933,14 @@
     const effectiveRarity = card.rarity==='mythic' ? (card.baseRarity || 'rare') : card.rarity;
     if(effectiveRarity==='legendary') return 1;
     return 3;
+  }
+  // The actual number of copies of this card a deck can use right now —
+  // mirrors deckSlotCapForCard() in the server's game-engine.js. Never
+  // more than the rarity ceiling, and never more than however many
+  // copies the account has actually bought (owning 1 caps the slot at 1,
+  // owning 3+ caps it at the rarity ceiling).
+  function deckSlotCapForCard(card, ownedCount){
+    return Math.min(maxCopiesForCard(card), Math.max(0, ownedCount||0));
   }
 
   function freshBoard(){
@@ -2820,13 +2804,13 @@
   const deckListEl = document.getElementById('deckList');
   const deckCountLabelEl = document.getElementById('deckCountLabel');
 
-  // Which card ids this account actually owns and can use in a deck.
-  // Falls back to the starter set (mirrors the server's default) until
-  // the real list arrives — new accounts and this fallback agree exactly,
-  // so there's no flash of the wrong cards while it loads. There's no
-  // purchase mechanic yet (a later step), so for now this just hides
-  // cards the account doesn't have rather than showing them as buyable.
-  let ownedCardIds = new Set(Object.keys(defaultDeckCounts()));
+  // How many copies of each card this account owns (cardId -> count).
+  // Falls back to the starter deck's own counts (mirrors the server's
+  // default) until the real data arrives — new accounts and this
+  // fallback agree exactly, so there's no flash of the wrong numbers
+  // while it loads. Buying more copies in the shop only ever increases
+  // these — there's no upper limit.
+  let ownedCounts = { ...defaultDeckCounts() };
 
   async function fetchOwnedCards(){
     if(!serverConfigured()) return;
@@ -2836,7 +2820,7 @@
       const res = await fetch(apiUrl('/api/owned-cards'), { headers: { 'Authorization': 'Bearer '+session.token } });
       if(!res.ok) return;
       const data = await res.json();
-      if(data && Array.isArray(data.cardIds)) ownedCardIds = new Set(data.cardIds);
+      if(data && data.counts && typeof data.counts==='object') ownedCounts = data.counts;
     } catch(e){ /* keep last known / default set */ }
   }
 
@@ -2873,10 +2857,10 @@
     deckCountLabelEl.textContent = `${total}/${MAX_DECK_SIZE}`;
     deckCountLabelEl.classList.toggle('full', total>=MAX_DECK_SIZE);
 
-    const factionCards = POOL.filter(c=>c.faction===selectedFaction && ownedCardIds.has(c.id));
+    const factionCards = POOL.filter(c=>c.faction===selectedFaction && (ownedCounts[c.id]||0) > 0);
     poolListEl.innerHTML = factionCards.length ? factionCards.map(card=>{
       const count = editingDeckCounts[card.id] || 0;
-      const cap = maxCopiesForCard(card);
+      const cap = deckSlotCapForCard(card, ownedCounts[card.id]);
       const disabled = count>=cap || total>=MAX_DECK_SIZE;
       return `<div class="deck-row">
         <div class="deck-row-art">${cardArt(card.art)}</div>
@@ -2884,7 +2868,7 @@
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
           <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
-        <div class="deck-row-count">${count}/${cap}</div>
+        <div class="deck-row-count"><span class="deck-row-owned" title="Копий этой карты на аккаунте">${ownedCounts[card.id]||0}</span><span class="deck-row-fraction">${count}/${cap}</span></div>
         <button class="deck-row-btn plus" data-id="${card.id}" ${disabled?'disabled':''}>+</button>
       </div>`;
     }).join('') : `<div class="deck-empty-hint">В этой фракции пока нет доступных карт.</div>`;
@@ -2909,7 +2893,7 @@
         const card = cardDefById(id);
         const total = totalDeckCount(editingDeckCounts);
         const cur = editingDeckCounts[id] || 0;
-        if(total>=MAX_DECK_SIZE || cur>=maxCopiesForCard(card)) return;
+        if(total>=MAX_DECK_SIZE || cur>=deckSlotCapForCard(card, ownedCounts[id])) return;
         editingDeckCounts[id] = cur+1;
         renderDeckBuilder();
       });
