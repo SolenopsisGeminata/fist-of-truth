@@ -1465,7 +1465,12 @@
   };
   function cardArt(id){ return ICONS[id] || ''; }
 
-  // ---------- Rarity (display only — no effect on gameplay or deck rules) ----------
+  // ---------- Rarity (display only, except deck copy limits — see maxCopiesForCard below) ----------
+  // Mythic isn't an independent tier: it's a skin — a reskinned, slightly
+  // re-tuned variant of an existing Rare/Epic/Legendary card. A mythic
+  // card's deck copy limit always comes from the rarity it's skinning
+  // (`baseRarity`), never a fixed mythic-specific number. No skins exist
+  // yet, so no card currently sets `baseRarity` — this is scaffolding.
   const RARITY = {
     common: { name: 'Обычная', color: '#a89a84' },
     rare: { name: 'Редкая', color: '#5c85a8' },
@@ -1487,9 +1492,14 @@
 
   // Max copies of a single card allowed in a deck, by rarity — mirrors
   // maxCopiesForCard() in the server's game-engine.js. Common/Rare/Epic
-  // can go up to 3 copies; Legendary/Mythic are singles (at most 1 copy).
+  // can go up to 3 copies; Legendary is a single (at most 1 copy). Mythic
+  // isn't its own tier for this purpose — it inherits the limit of
+  // whichever rarity it's a skin of (`card.baseRarity`), defaulting to
+  // 'rare' only as a defensive fallback if that's ever missing.
   function maxCopiesForCard(card){
-    if(card && (card.rarity==='legendary' || card.rarity==='mythic')) return 1;
+    if(!card) return 3;
+    const effectiveRarity = card.rarity==='mythic' ? (card.baseRarity || 'rare') : card.rarity;
+    if(effectiveRarity==='legendary') return 1;
     return 3;
   }
 
