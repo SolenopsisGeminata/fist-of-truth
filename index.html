@@ -57,6 +57,31 @@
     margin-bottom:16px;
   }
 
+  .resource-bar{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin:0 0 16px;
+  }
+  .resource-chip{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:4px 12px 4px 6px;
+  }
+  .resource-chip svg{width:18px; height:18px; display:block; flex:0 0 auto;}
+  .resource-value{
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    color:var(--bone);
+    letter-spacing:.5px;
+  }
+
   .arena{
     width:100%;
     max-width:920px;
@@ -1083,6 +1108,40 @@
 <div class="app-header" id="appHeader">
   <h1>Хватка</h1>
   <div class="subtitle">Дуэль кулаков · карточная тактика</div>
+</div>
+
+<div class="resource-bar" id="resourceBar" style="display:none;">
+  <div class="resource-chip" title="Пыль">
+    <svg viewBox="0 0 64 64">
+      <g fill="#a89a84" opacity=".85">
+        <circle cx="18" cy="36" r="3"/>
+        <circle cx="28" cy="46" r="2.5"/>
+        <circle cx="40" cy="42" r="3.5"/>
+        <circle cx="48" cy="30" r="2"/>
+      </g>
+      <path d="M32 10l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#c9a227"/>
+      <path d="M46 16l1.2 3.4 3.4 1.2-3.4 1.2-1.2 3.4-1.2-3.4-3.4-1.2 3.4-1.2z" fill="#e9e0cf" opacity=".8"/>
+    </svg>
+    <span class="resource-value" id="resDust">0</span>
+  </div>
+  <div class="resource-chip" title="Золото">
+    <svg viewBox="0 0 64 64">
+      <ellipse cx="32" cy="46" rx="20" ry="7" fill="#8a7020"/>
+      <ellipse cx="32" cy="38" rx="20" ry="7" fill="#c9a227"/>
+      <ellipse cx="32" cy="30" rx="20" ry="7" fill="#e0b93a"/>
+      <ellipse cx="32" cy="22" rx="20" ry="7" fill="#c9a227" stroke="#8a7020" stroke-width="2"/>
+      <circle cx="32" cy="22" r="7" fill="none" stroke="#8a7020" stroke-width="1.5" opacity=".6"/>
+    </svg>
+    <span class="resource-value" id="resGold">0</span>
+  </div>
+  <div class="resource-chip" title="Кристаллы">
+    <svg viewBox="0 0 64 64">
+      <path d="M32 6L48 20 40 56 24 56 16 20Z" fill="#a15cc9" stroke="#6b3d8a" stroke-width="2.5"/>
+      <path d="M32 6L24 20 40 20Z" fill="#c98be0"/>
+      <path d="M24 20L16 20 24 56M40 20L48 20 40 56" stroke="#6b3d8a" stroke-width="1.2" opacity=".5" fill="none"/>
+    </svg>
+    <span class="resource-value" id="resCrystals">0</span>
+  </div>
 </div>
 
 <button class="btn ghost btn-corner" id="registerNavBtn">Регистрация</button>
@@ -2296,6 +2355,12 @@
     screens.library.style.display = name==='library' ? 'flex' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
     document.getElementById('appHeader').style.display = name==='arena' ? 'none' : 'block';
+    // Resources belong to a logged-in account, so they're hidden on the
+    // whole pre-authentication flow (login + register — neither has a
+    // session/token to fetch a balance with) and on the match screen
+    // itself (arena), same as the header. Shown everywhere else.
+    const resourceBar = document.getElementById('resourceBar');
+    if(resourceBar) resourceBar.style.display = (name==='login' || name==='register' || name==='arena') ? 'none' : 'flex';
   }
 
   // ---------- Deck builder screen ----------
@@ -2510,11 +2575,38 @@
     badge.textContent = currentUser ? `Ты вошёл как: ${currentUser}` : '';
   }
 
+  // ---------- Resources (пыль/золото/кристаллы) ----------
+  // Read-only display for now — nothing awards these yet (that's a later
+  // step), this just shows whatever balance the account actually has on
+  // the server (starts at 0 for every account).
+  let resourceState = { dust:0, gold:0, crystals:0 };
+  function updateResourceBarUI(){
+    const d = document.getElementById('resDust');
+    const g = document.getElementById('resGold');
+    const c = document.getElementById('resCrystals');
+    if(d) d.textContent = resourceState.dust;
+    if(g) g.textContent = resourceState.gold;
+    if(c) c.textContent = resourceState.crystals;
+  }
+  async function fetchResources(token){
+    if(!serverConfigured() || !token) return;
+    try{
+      const res = await fetch(apiUrl('/api/resources'), { headers:{ 'Authorization':'Bearer '+token } });
+      if(res.ok){
+        const data = await res.json();
+        resourceState = { dust:data.dust||0, gold:data.gold||0, crystals:data.crystals||0 };
+        updateResourceBarUI();
+      }
+    } catch(e){ /* leave whatever was last shown */ }
+  }
+
   document.getElementById('logoutBtn').addEventListener('click', async ()=>{
     const session = loadSession();
     clearSession();
     currentUser = null;
     updateUserBadge();
+    resourceState = { dust:0, gold:0, crystals:0 };
+    updateResourceBarUI();
     if(serverConfigured() && session && session.token){
       try{
         await fetch(apiUrl('/api/logout'), {
@@ -2555,6 +2647,7 @@
       saveSession(data.token, data.username);
       currentUser = data.username;
       updateUserBadge();
+      fetchResources(data.token);
       hint.textContent = '';
       document.getElementById('loginPassword').value = '';
       showScreen('menu');
@@ -2621,6 +2714,7 @@
         const data = await res.json();
         currentUser = data.username;
         updateUserBadge();
+        fetchResources(session.token);
         showScreen('menu');
         maybeResumeMatch();
         return;
