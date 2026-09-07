@@ -401,7 +401,8 @@
   .library-cards-nav{
     display:flex;
     align-items:center;
-    gap:6px;
+    justify-content:center;
+    gap:10px;
   }
   .library-page-arrow{
     flex:0 0 auto;
@@ -421,7 +422,6 @@
   .library-page-arrow:hover:not(:disabled){border-color:var(--brass-dim); color:var(--brass);}
   .library-page-arrow:disabled{opacity:.25; cursor:default;}
   .library-cards-grid{
-    flex:1;
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
@@ -442,36 +442,46 @@
   }
   .shop-currency-tabs{
     display:flex;
-    gap:8px;
-    justify-content:center;
-    flex-wrap:wrap;
+    gap:2px;
+    margin-bottom:-1px; /* seam disappears: this pulls the tab strip's bottom edge to overlap the panel's top border by 1px */
+    position:relative;
+    z-index:1;
   }
   .shop-currency-tab{
+    flex:1;
     display:flex;
     align-items:center;
+    justify-content:center;
     gap:6px;
-    padding:7px 14px;
-    border-radius:20px;
+    padding:8px 10px 9px;
+    border-radius:8px 8px 0 0;
     border:1px solid var(--line);
+    border-bottom:1px solid var(--line);
     background:rgba(0,0,0,0.22);
     color:var(--bone-dim);
     cursor:pointer;
     font-family:'Oswald',sans-serif;
     font-weight:600;
-    font-size:12.5px;
+    font-size:12px;
   }
   .shop-currency-tab svg{width:18px; height:18px; flex:0 0 auto;}
-  .shop-currency-tab:hover{border-color:var(--brass-dim);}
+  .shop-currency-tab:hover{color:var(--brass);}
   .shop-currency-tab.active{
-    border-color:var(--brass);
-    background:rgba(201,162,39,0.16);
+    border-color:var(--brass-dim);
+    border-bottom-color:var(--bg-panel);
+    background:var(--bg-panel);
     color:var(--brass);
-    box-shadow:0 0 0 1px var(--brass) inset;
   }
   .shop-tab-body{
     display:flex;
     flex-direction:column;
     gap:10px;
+    position:relative;
+    z-index:0;
+    border:1px solid var(--brass-dim);
+    border-radius:0 0 8px 8px;
+    background:var(--bg-panel);
+    padding:12px;
   }
   .shop-faction-tabs-vertical{
     display:flex;
@@ -481,18 +491,15 @@
   .shop-faction-tab{
     display:flex;
     align-items:center;
-    gap:8px;
-    padding:6px 10px;
+    justify-content:center;
+    padding:8px;
     border-radius:8px;
     border:1px solid var(--line);
     background:rgba(0,0,0,0.22);
     color:var(--bone-dim);
     cursor:pointer;
-    font-family:'Oswald',sans-serif;
-    font-size:12px;
-    text-align:left;
   }
-  .shop-faction-tab svg{width:20px; height:20px; flex:0 0 auto;}
+  .shop-faction-tab svg{width:22px; height:22px; flex:0 0 auto;}
   .shop-faction-tab:hover{border-color:var(--brass-dim);}
   .shop-faction-tab.active{
     border-color:var(--brass);
@@ -1427,16 +1434,16 @@
   <div class="mode-title">Библиотека</div>
   <div class="library-faction-tabs" id="libraryFactionTabs"></div>
   <div class="library-mana-filters" id="libraryManaFilters"></div>
+  <div class="library-cards-grid" id="libraryCardsGrid"></div>
   <div class="library-cards-nav">
     <button class="library-page-arrow" id="libraryPrevBtn" aria-label="Предыдущая страница" title="Предыдущая страница">
       <svg viewBox="0 0 24 24"><path d="M15 4l-9 8 9 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <div class="library-cards-grid" id="libraryCardsGrid"></div>
+    <div class="library-page-label" id="libraryPageLabel"></div>
     <button class="library-page-arrow" id="libraryNextBtn" aria-label="Следующая страница" title="Следующая страница">
       <svg viewBox="0 0 24 24"><path d="M9 4l9 8-9 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
-  <div class="library-page-label" id="libraryPageLabel"></div>
   <button class="btn ghost btn-menu" id="libraryBackBtn">Назад</button>
 </div>
 
@@ -1713,7 +1720,7 @@
     const all = [ALL_FACTIONS_TAB, ...FACTIONS];
     const current = shopFaction[shopActiveCurrency];
     tabsEl.innerHTML = all.map(f=>
-      `<button class="shop-faction-tab${f.id===current?' active':''}" data-faction="${f.id}">${f.icon}<span>${f.name}</span></button>`
+      `<button class="shop-faction-tab${f.id===current?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
     ).join('');
     tabsEl.querySelectorAll('.shop-faction-tab').forEach(btn=>{
       btn.addEventListener('click', ()=>{
