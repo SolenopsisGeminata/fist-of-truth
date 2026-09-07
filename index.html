@@ -518,6 +518,21 @@
   }
   .shop-buy-btn svg{width:16px; height:16px; flex:0 0 auto;}
   .shop-buy-btn:hover{border-color:var(--brass); background:rgba(201,162,39,0.24);}
+  .shop-bought-label{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:6px 8px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    box-sizing:border-box;
+  }
   .shop-note{
     text-align:center;
     font-size:11.5px;
@@ -1664,6 +1679,12 @@
   let shopCardIds = { gold:[], dust:[], crystals:[] };
   let shopFaction = { gold:'all', dust:'all', crystals:'all' };
   let shopManaFilters = { gold:new Set(), dust:new Set(), crystals:new Set() };
+  // Which SLOT indices (not card ids — the same card can sit in several
+  // slots) have already been bought this viewing of the shop. Purely a
+  // client-side "just bought this" marker: the server only tracks total
+  // owned counts, not which specific slot a purchase came from, so this
+  // naturally resets whenever the list is freshly (re)loaded.
+  let shopPurchasedSlots = { gold:new Set(), dust:new Set(), crystals:new Set() };
 
   async function fetchShop(){
     if(!serverConfigured()) return;
@@ -1674,7 +1695,10 @@
       if(!res.ok) return;
       const data = await res.json();
       SHOP_CURRENCY_TABS.forEach(t=>{
-        if(data[t.id] && Array.isArray(data[t.id].cardIds)) shopCardIds[t.id] = data[t.id].cardIds;
+        if(data[t.id] && Array.isArray(data[t.id].cardIds)){
+          shopCardIds[t.id] = data[t.id].cardIds;
+          shopPurchasedSlots[t.id] = new Set();
+        }
       });
     } catch(e){ /* keep last known / empty */ }
   }
@@ -1725,9 +1749,13 @@
 
   function shopCardHtml(card, currency, index){
     const price = shopPriceForCard(card, currency);
+    const justBought = shopPurchasedSlots[currency].has(index);
+    const bottomHtml = justBought
+      ? `<div class="shop-bought-label">Куплена</div>`
+      : `<button class="shop-buy-btn" data-tab="${currency}" data-index="${index}">${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span></button>`;
     return `<div class="shop-card-wrap">
       ${libraryCardHtml(card)}
-      <button class="shop-buy-btn" data-tab="${currency}" data-index="${index}">${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span></button>
+      ${bottomHtml}
     </div>`;
   }
 
@@ -1757,6 +1785,10 @@
       // Same object the deck builder reads — the new copy is immediately
       // reflected there too, right down to the updated owned count.
       ownedCounts[data.cardId] = data.ownedCount!=null ? data.ownedCount : (ownedCounts[data.cardId]||0)+1;
+      // Marks only THIS slot as bought — other slots showing the same
+      // card (there can be several, since the daily list is drawn with
+      // replacement) are untouched and stay buyable.
+      shopPurchasedSlots[tab].add(index);
       renderShopScreen();
       fetchResources(session.token); // currency was just spent — refresh the header balance
     } catch(e){
@@ -3010,6 +3042,7 @@
         return;
       }
       shopCardIds[shopActiveCurrency] = data.cardIds || [];
+      shopPurchasedSlots[shopActiveCurrency] = new Set();
       renderShopScreen();
       fetchResources(session.token); // crystals were just spent — refresh the header balance
     } catch(e){
