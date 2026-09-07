@@ -747,9 +747,9 @@
   }
   .slot{
     aspect-ratio: 1 / 1;
-    width:104px;
-    flex:0 1 104px;
-    min-width:64px;
+    width:128px;
+    flex:0 1 128px;
+    min-width:92px; /* raised floor — below this, a unit's icon starts getting squeezed by its name+stats text; the battlefield scrolls horizontally instead of shrinking past this point (see .battlefield's overflow-x) */
     border-radius:6px;
     border:1px dashed #4a3a2c;
     display:flex;
@@ -1126,13 +1126,13 @@
   }
 
   @media(max-width:480px){
-    .slot{width:76px; flex-basis:76px; min-width:44px; font-size:11px;}
+    .slot{width:104px; flex-basis:104px; min-width:92px; font-size:12px;}
     .lane-row{gap:4px; padding:5px;}
     .side-slots{gap:3px;}
-    .unit-name{font-size:11px;}
-    .unit-stats{font-size:12px;}
-    .unit-stats-extra{font-size:10px; gap:5px;}
-    .unit-art svg{width:75%; height:75%;}
+    .unit-name{font-size:12px;}
+    .unit-stats{font-size:13px;}
+    .unit-stats-extra{font-size:11px; gap:6px;}
+    .unit-art svg{width:78%; height:78%;}
     .hand-card{flex:0 0 100px; height:188px;}
     .card-art{height:52px;}
     .card-art svg{width:32px; height:32px;}
