@@ -85,6 +85,9 @@
   .arena{
     width:100%;
     max-width:920px;
+    min-height:calc(100vh - 58px); /* fills the viewport below body's own 18px+40px top/bottom padding */
+    display:flex;
+    flex-direction:column;
     background:var(--bg-panel);
     border:1px solid var(--line);
     border-radius:10px;
@@ -965,7 +968,7 @@
   }
 
   .hand-area{
-    margin-top:6px;
+    margin-top:auto; /* soaks up leftover vertical space so the hand/controls stay anchored to the bottom of the now full-height arena */
     padding-top:10px;
     border-top:1px solid var(--line);
   }
@@ -1009,18 +1012,18 @@
 
   .hand{
     display:flex;
-    gap:8px;
+    gap:9px;
     overflow-x:auto;
-    padding-bottom:4px;
-    min-height:176px;
+    padding:18px 2px 4px; /* top padding gives the cost circle (which pokes above the card, more so once lifted on hover/selection) room so it never gets clipped by the scroll container's edge */
+    min-height:222px;
   }
   .hand-card{
-    flex:0 0 98px;
-    height:172px;
-    border-radius:8px;
+    flex:0 0 116px;
+    height:204px;
+    border-radius:9px;
     border:2px solid var(--line);
     background:linear-gradient(160deg,#241b14,#1a130d);
-    padding:7px 7px 8px;
+    padding:8px 8px 9px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -1030,7 +1033,7 @@
   }
   .card-art{
     width:100%;
-    height:52px;
+    height:62px;
     flex-shrink:0;
     border-radius:5px;
     background:radial-gradient(ellipse at 50% 30%, rgba(201,162,39,0.14), transparent 70%), #0f0b08;
@@ -1040,7 +1043,7 @@
     justify-content:center;
     overflow:hidden;
   }
-  .card-art svg{width:34px; height:34px;}
+  .card-art svg{width:40px; height:40px;}
   .unit-art{
     flex:1;
     min-height:0;
@@ -1059,24 +1062,25 @@
   }
   .hand-card.unaffordable{opacity:.4;}
   .hand-card .cost{
-    position:absolute; top:-8px; left:-8px;
-    width:22px;height:22px;border-radius:50%;
+    position:absolute; top:-9px; left:-9px;
+    width:26px;height:26px;border-radius:50%;
     background:var(--brass);
     color:#1a1206;
     font-family:'Bebas Neue',cursive;
-    font-size:13px;
+    font-size:15px;
     display:flex;align-items:center;justify-content:center;
     box-shadow:0 2px 4px rgba(0,0,0,0.5);
+    z-index:1;
   }
-  .hand-card .cname{font-size:10.5px; font-weight:700; line-height:1.2; margin-top:6px;}
-  .hand-card .ctype{font-size:8px; color:var(--bone-dim); text-transform:uppercase; letter-spacing:1px;}
+  .hand-card .cname{font-size:12px; font-weight:700; line-height:1.2; margin-top:6px;}
+  .hand-card .ctype{font-size:9px; color:var(--bone-dim); text-transform:uppercase; letter-spacing:1px;}
   .rarity-label{font-weight:600;}
   .hand-card .cstats{
     display:flex; justify-content:space-between;
-    font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+    font-family:'Oswald',sans-serif; font-size:15px; font-weight:600;
   }
   .hand-card .cdesc{
-    font-size:8.5px;
+    font-size:9.5px;
     color:var(--bone-dim);
     line-height:1.25;
     display:-webkit-box;
@@ -1129,9 +1133,9 @@
     .unit-stats{font-size:12px;}
     .unit-stats-extra{font-size:10px; gap:5px;}
     .unit-art svg{width:75%; height:75%;}
-    .hand-card{flex:0 0 84px; height:158px;}
-    .card-art{height:44px;}
-    .card-art svg{width:28px; height:28px;}
+    .hand-card{flex:0 0 100px; height:188px;}
+    .card-art{height:52px;}
+    .card-art svg{width:32px; height:32px;}
   }
 </style>
 </head>
