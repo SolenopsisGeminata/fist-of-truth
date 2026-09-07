@@ -440,6 +440,88 @@
     font-size:11px;
     color:var(--bone-dim);
   }
+  .shop-currency-tabs{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .shop-currency-tab{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 14px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    cursor:pointer;
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:12.5px;
+  }
+  .shop-currency-tab svg{width:18px; height:18px; flex:0 0 auto;}
+  .shop-currency-tab:hover{border-color:var(--brass-dim);}
+  .shop-currency-tab.active{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.16);
+    color:var(--brass);
+    box-shadow:0 0 0 1px var(--brass) inset;
+  }
+  .shop-tab-body{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .shop-faction-tabs-vertical{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .shop-faction-tab{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    cursor:pointer;
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    text-align:left;
+  }
+  .shop-faction-tab svg{width:20px; height:20px; flex:0 0 auto;}
+  .shop-faction-tab:hover{border-color:var(--brass-dim);}
+  .shop-faction-tab.active{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.16);
+    color:var(--brass);
+  }
+  .shop-card-wrap{
+    flex:0 0 116px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+  }
+  .shop-card-price{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--brass);
+  }
+  .shop-card-price svg{width:16px; height:16px;}
+  .shop-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--crimson-bright);
+    min-height:14px;
+  }
   .searching-note{
     text-align:center;
     font-family:'Oswald',sans-serif;
@@ -1232,6 +1314,7 @@
   <div class="logged-in-as" id="loggedInAs"></div>
   <button class="btn btn-menu" id="newGameBtn">Новая игра</button>
   <button class="btn ghost btn-menu" id="deckBtn">Колода</button>
+  <button class="btn ghost btn-menu" id="shopBtn">Магазин</button>
   <button class="btn ghost btn-menu" id="libraryBtn">Библиотека</button>
   <button class="btn ghost btn-menu" id="logoutBtn">Выйти из аккаунта</button>
   <div class="online-counter">Сейчас онлайн: <span id="onlineCount">—</span></div>
@@ -1294,6 +1377,26 @@
   </div>
   <button class="btn btn-menu" id="pveStartBtn">Начать</button>
   <button class="btn ghost btn-menu" id="pveBackBtn">Назад</button>
+</div>
+
+<div class="screen-library" id="shopScreen" style="display:none;">
+  <div class="mode-title">Магазин</div>
+  <div class="shop-currency-tabs" id="shopCurrencyTabs"></div>
+  <div class="shop-tab-body">
+    <div class="shop-faction-tabs-vertical" id="shopFactionTabs"></div>
+    <div class="library-mana-filters" id="shopManaFilters"></div>
+    <div class="library-cards-grid" id="shopCardsGrid"></div>
+  </div>
+  <button class="btn ghost btn-menu" id="shopRefreshBtn">
+    Обновить список — 12
+    <svg viewBox="0 0 64 64" style="width:16px;height:16px;vertical-align:-3px;">
+      <path d="M32 6L48 20 40 56 24 56 16 20Z" fill="#a15cc9" stroke="#6b3d8a" stroke-width="2.5"/>
+      <path d="M32 6L24 20 40 20Z" fill="#c98be0"/>
+      <path d="M24 20L16 20 24 56M40 20L48 20 40 56" stroke="#6b3d8a" stroke-width="1.2" opacity=".5" fill="none"/>
+    </svg>
+  </button>
+  <div class="shop-note" id="shopNote"></div>
+  <button class="btn ghost btn-menu" id="shopBackBtn">Назад</button>
 </div>
 
 <div class="screen-library" id="libraryScreen" style="display:none;">
@@ -1514,6 +1617,124 @@
     document.getElementById('libraryPrevBtn').disabled = libraryPage<=0;
     document.getElementById('libraryNextBtn').disabled = libraryPage>=totalPages-1;
     document.getElementById('libraryPageLabel').textContent = cards.length ? `Страница ${libraryPage+1} из ${totalPages}` : '';
+  }
+
+  // ---------- Shop ----------
+  // Card acquisition itself (spending currency to actually buy a listed
+  // card) isn't wired up yet — same "later step" as the rest of card
+  // ownership/purchase. This screen only browses today's lists and pays
+  // to re-roll one early.
+  const SHOP_PRICES = {
+    gold: { rare: 60, epic: 400, legendary: 1500 },
+    dust: { rare: 120, epic: 600, legendary: 3000 },
+    crystals: { rare: 12, epic: 60, legendary: 300 },
+  };
+  function shopPriceForCard(card, currency){
+    const table = SHOP_PRICES[currency];
+    if(!table || !card) return null;
+    const r = card.rarity==='mythic' ? (card.baseRarity||'rare') : card.rarity;
+    return table[r] != null ? table[r] : null;
+  }
+  // Reuses the exact same icon art as the header's resource bar, just as
+  // JS strings so they can be dropped into dynamically-built card markup.
+  const CURRENCY_ICONS = {
+    dust: `<svg viewBox="0 0 64 64"><g fill="#a89a84" opacity=".85"><circle cx="18" cy="36" r="3"/><circle cx="28" cy="46" r="2.5"/><circle cx="40" cy="42" r="3.5"/><circle cx="48" cy="30" r="2"/></g><path d="M32 10l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#c9a227"/><path d="M46 16l1.2 3.4 3.4 1.2-3.4 1.2-1.2 3.4-1.2-3.4-3.4-1.2 3.4-1.2z" fill="#e9e0cf" opacity=".8"/></svg>`,
+    gold: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="46" rx="20" ry="7" fill="#8a7020"/><ellipse cx="32" cy="38" rx="20" ry="7" fill="#c9a227"/><ellipse cx="32" cy="30" rx="20" ry="7" fill="#e0b93a"/><ellipse cx="32" cy="22" rx="20" ry="7" fill="#c9a227" stroke="#8a7020" stroke-width="2"/><circle cx="32" cy="22" r="7" fill="none" stroke="#8a7020" stroke-width="1.5" opacity=".6"/></svg>`,
+    crystals: `<svg viewBox="0 0 64 64"><path d="M32 6L48 20 40 56 24 56 16 20Z" fill="#a15cc9" stroke="#6b3d8a" stroke-width="2.5"/><path d="M32 6L24 20 40 20Z" fill="#c98be0"/><path d="M24 20L16 20 24 56M40 20L48 20 40 56" stroke="#6b3d8a" stroke-width="1.2" opacity=".5" fill="none"/></svg>`,
+  };
+  const SHOP_CURRENCY_TABS = [
+    { id:'gold', name:'Золото' },
+    { id:'dust', name:'Пыль' },
+    { id:'crystals', name:'Кристаллы' },
+  ];
+  let shopActiveCurrency = 'gold';
+  // Each currency tab has its own independent daily list (from the
+  // server) and its own faction/mana filters — switching tabs doesn't
+  // reset the other tabs' filters or force a re-fetch.
+  let shopCardIds = { gold:[], dust:[], crystals:[] };
+  let shopFaction = { gold:'all', dust:'all', crystals:'all' };
+  let shopManaFilters = { gold:new Set(), dust:new Set(), crystals:new Set() };
+
+  async function fetchShop(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/shop'), { headers:{ 'Authorization':'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      SHOP_CURRENCY_TABS.forEach(t=>{
+        if(data[t.id] && Array.isArray(data[t.id].cardIds)) shopCardIds[t.id] = data[t.id].cardIds;
+      });
+    } catch(e){ /* keep last known / empty */ }
+  }
+
+  function renderShopCurrencyTabs(){
+    const wrap = document.getElementById('shopCurrencyTabs');
+    wrap.innerHTML = SHOP_CURRENCY_TABS.map(t=>
+      `<button class="shop-currency-tab${t.id===shopActiveCurrency?' active':''}" data-currency="${t.id}">${CURRENCY_ICONS[t.id]}<span>${t.name}</span></button>`
+    ).join('');
+    wrap.querySelectorAll('.shop-currency-tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        shopActiveCurrency = btn.dataset.currency;
+        document.getElementById('shopNote').textContent = '';
+        renderShopScreen();
+      });
+    });
+  }
+
+  function renderShopFactionTabs(){
+    const tabsEl = document.getElementById('shopFactionTabs');
+    const all = [ALL_FACTIONS_TAB, ...FACTIONS];
+    const current = shopFaction[shopActiveCurrency];
+    tabsEl.innerHTML = all.map(f=>
+      `<button class="shop-faction-tab${f.id===current?' active':''}" data-faction="${f.id}">${f.icon}<span>${f.name}</span></button>`
+    ).join('');
+    tabsEl.querySelectorAll('.shop-faction-tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        shopFaction[shopActiveCurrency] = btn.dataset.faction;
+        renderShopScreen();
+      });
+    });
+  }
+
+  function renderShopManaFilters(){
+    const wrap = document.getElementById('shopManaFilters');
+    const current = shopManaFilters[shopActiveCurrency];
+    wrap.innerHTML = Array.from({length:9}, (_,i)=>i+1).map(n=>
+      `<button class="mana-filter-btn${current.has(n)?' active':''}" data-mana="${n}">${n}</button>`
+    ).join('');
+    wrap.querySelectorAll('.mana-filter-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const n = parseInt(btn.dataset.mana,10);
+        if(current.has(n)) current.delete(n); else current.add(n);
+        renderShopScreen();
+      });
+    });
+  }
+
+  function shopCardHtml(card, currency){
+    const price = shopPriceForCard(card, currency);
+    return `<div class="shop-card-wrap">
+      ${libraryCardHtml(card)}
+      <div class="shop-card-price">${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span></div>
+    </div>`;
+  }
+
+  function renderShopScreen(){
+    renderShopCurrencyTabs();
+    renderShopFactionTabs();
+    renderShopManaFilters();
+    const currency = shopActiveCurrency;
+    let cards = (shopCardIds[currency]||[]).map(id=>cardDefById(id)).filter(Boolean);
+    const faction = shopFaction[currency];
+    if(faction!=='all') cards = cards.filter(c=>c.faction===faction);
+    const manaSet = shopManaFilters[currency];
+    if(manaSet.size>0) cards = cards.filter(c=>manaSet.has(c.cost));
+    const grid = document.getElementById('shopCardsGrid');
+    grid.innerHTML = cards.length
+      ? cards.map(c=>shopCardHtml(c, currency)).join('')
+      : `<div class="library-empty-hint">Нет карт по заданным фильтрам.</div>`;
   }
 
   // ---------- Tournament leagues ----------
@@ -2492,6 +2713,7 @@
     arena: document.getElementById('arena'),
     tournament: document.getElementById('tournamentScreen'),
     library: document.getElementById('libraryScreen'),
+    shop: document.getElementById('shopScreen'),
   };
   const registerNavBtn = document.getElementById('registerNavBtn');
   function showScreen(name){
@@ -2505,6 +2727,7 @@
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
     screens.tournament.style.display = name==='tournament' ? 'flex' : 'none';
     screens.library.style.display = name==='library' ? 'flex' : 'none';
+    screens.shop.style.display = name==='shop' ? 'flex' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
     document.getElementById('appHeader').style.display = name==='arena' ? 'none' : 'block';
     // Resources belong to a logged-in account, so they're hidden on the
@@ -2692,6 +2915,46 @@
   });
   document.getElementById('libraryBackBtn').addEventListener('click', ()=>{
     showScreen('menu');
+  });
+  document.getElementById('shopBtn').addEventListener('click', async ()=>{
+    document.getElementById('shopNote').textContent = '';
+    renderShopScreen();
+    showScreen('shop');
+    await fetchShop();
+    renderShopScreen();
+  });
+  document.getElementById('shopBackBtn').addEventListener('click', ()=>{
+    showScreen('menu');
+  });
+  document.getElementById('shopRefreshBtn').addEventListener('click', async ()=>{
+    const note = document.getElementById('shopNote');
+    note.textContent = '';
+    if(!serverConfigured()){
+      note.textContent = 'Сервер не настроен.';
+      return;
+    }
+    const session = loadSession();
+    if(!session || !session.token){
+      note.textContent = 'Нужно войти в аккаунт.';
+      return;
+    }
+    try{
+      const res = await fetch(apiUrl('/api/shop/refresh'), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
+        body: JSON.stringify({ tab: shopActiveCurrency })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok){
+        note.textContent = data.error || 'Не удалось обновить список.';
+        return;
+      }
+      shopCardIds[shopActiveCurrency] = data.cardIds || [];
+      renderShopScreen();
+      fetchResources(session.token); // crystals were just spent — refresh the header balance
+    } catch(e){
+      note.textContent = 'Не удалось связаться с сервером.';
+    }
   });
   document.getElementById('libraryPrevBtn').addEventListener('click', ()=>{
     libraryPage = Math.max(0, libraryPage-1);
