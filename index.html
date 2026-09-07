@@ -1988,11 +1988,11 @@
   // server (see game-engine.js); the client never shuffles or deals
   // cards itself.
   function defaultDeckCounts(){
-    // A starting deck given to every new account, respecting both the
-    // max-3-copies-per-card rule and the 30-card deck cap. Kept in sync
-    // with the server's copy of this same function — 30 cards exactly
-    // (Родная тетушка gets only 1 copy, not 3, to fit under the cap).
-    return {c1:3, c2:3, c3:3, c4:3, c6:3, c7:3, c8:3, s1:2, c14:3, c15:3, c16:1};
+    // A starting deck given to every new account: exactly 3 copies each
+    // of 10 cards (every Common creature, Кольчуга, Родная тетушка) —
+    // 10×3 = 30. Kept in sync with the server's copy of this same
+    // function. Паладин is deliberately NOT part of the starter set.
+    return {c1:3, c2:3, c3:3, c4:3, c6:3, c7:3, s1:3, c14:3, c15:3, c16:3};
   }
 
   function loadSavedDeckCounts(){
@@ -2908,13 +2908,14 @@
     const deckCards = POOL.filter(c=> (editingDeckCounts[c.id]||0) > 0);
     deckListEl.innerHTML = deckCards.length ? deckCards.map(card=>{
       const count = editingDeckCounts[card.id];
+      const cap = deckSlotCapForCard(card, ownedCounts[card.id]);
       return `<div class="deck-row">
         <div class="deck-row-art">${cardArt(card.art)}</div>
         <div class="deck-row-info">
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
           <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
-        <div class="deck-row-count">×${count}</div>
+        <div class="deck-row-count"><span class="deck-row-owned" title="Копий этой карты на аккаунте">${ownedCounts[card.id]||0}</span><span class="deck-row-fraction">${count}/${cap}</span></div>
         <button class="deck-row-btn minus" data-id="${card.id}">−</button>
       </div>`;
     }).join('') : `<div class="deck-empty-hint">Добавляй карты слева, чтобы собрать колоду (максимум ${MAX_DECK_SIZE} карт; до 3 копий обычной/редкой/эпической карты, максимум 1 копия легендарной или мистической).</div>`;
