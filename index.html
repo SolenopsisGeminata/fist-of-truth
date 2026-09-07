@@ -335,6 +335,24 @@
     color:var(--bone-dim);
     min-height:14px;
   }
+  .pve-reward-line{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    color:var(--bone-dim);
+    text-align:center;
+    flex-wrap:wrap;
+  }
+  .pve-reward-icon{width:20px; height:20px; flex:0 0 auto;}
+  .pve-reward-value{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--brass);
+  }
   .screen-library{
     width:100%;
     max-width:420px;
@@ -1223,6 +1241,33 @@
   <button class="btn ghost btn-menu" id="tournamentBackBtn">Назад</button>
 </div>
 
+<div class="screen-tournament" id="pveScreen" style="display:none;">
+  <div class="mode-title">PVE — против ИИ</div>
+  <div class="menu-fist">
+    <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+  </div>
+  <div class="league-progress-row" id="pveProgressRow">
+    <span class="league-progress-label" id="pveProgressLeft">0</span>
+    <div class="league-progress-track">
+      <div class="league-progress-track-inner"><div class="league-progress-fill" id="pveProgressFill" style="width:0%"></div></div>
+    </div>
+    <span class="league-progress-label" id="pveProgressRight">1</span>
+  </div>
+  <div class="pve-reward-line">
+    <span>Награда за завершение полосы:</span>
+    <svg class="pve-reward-icon" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="46" rx="20" ry="7" fill="#8a7020"/>
+      <ellipse cx="32" cy="38" rx="20" ry="7" fill="#c9a227"/>
+      <ellipse cx="32" cy="30" rx="20" ry="7" fill="#e0b93a"/>
+      <ellipse cx="32" cy="22" rx="20" ry="7" fill="#c9a227" stroke="#8a7020" stroke-width="2"/>
+      <circle cx="32" cy="22" r="7" fill="none" stroke="#8a7020" stroke-width="1.5" opacity=".6"/>
+    </svg>
+    <span class="pve-reward-value" id="pveRewardValue">100</span>
+  </div>
+  <button class="btn btn-menu" id="pveStartBtn">Начать</button>
+  <button class="btn ghost btn-menu" id="pveBackBtn">Назад</button>
+</div>
+
 <div class="screen-library" id="libraryScreen" style="display:none;">
   <div class="mode-title">Библиотека</div>
   <div class="library-faction-tabs" id="libraryFactionTabs"></div>
@@ -1502,6 +1547,34 @@
       valueEl.textContent = Math.max(0, Math.min(30, tournamentStatus.progress||0));
       valueEl.style.left = Math.max(3, Math.min(97, pct))+'%'; // nudged in slightly so it never hangs off either edge
     }
+  }
+
+  // ---------- PVE progress screen ----------
+  // Populated from GET /api/pve-progress each time the screen is opened —
+  // matchesPlayed/matchesRequired/reward are the account's real standing
+  // on the reward ladder, computed and owned entirely by the server.
+  let pveStatus = { iteration:1, matchesPlayed:0, matchesRequired:1, reward:100 };
+
+  async function fetchPveStatus(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/pve-progress'), { headers: { 'Authorization': 'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      pveStatus = data;
+    } catch(e){ /* keep last known / default status */ }
+  }
+
+  function renderPveScreen(){
+    const played = pveStatus.matchesPlayed||0;
+    const required = pveStatus.matchesRequired||1;
+    document.getElementById('pveProgressLeft').textContent = played;
+    document.getElementById('pveProgressRight').textContent = required;
+    const pct = Math.max(0, Math.min(100, played/required*100));
+    document.getElementById('pveProgressFill').style.width = pct+'%';
+    document.getElementById('pveRewardValue').textContent = pveStatus.reward||0;
   }
 
   // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
@@ -2336,6 +2409,7 @@
     register: document.getElementById('registerScreen'),
     menu: document.getElementById('mainMenu'),
     mode: document.getElementById('modeSelect'),
+    pve: document.getElementById('pveScreen'),
     searching: document.getElementById('searchingScreen'),
     deck: document.getElementById('deckBuilder'),
     arena: document.getElementById('arena'),
@@ -2348,6 +2422,7 @@
     screens.register.style.display = name==='register' ? 'flex' : 'none';
     screens.menu.style.display = name==='menu' ? 'flex' : 'none';
     screens.mode.style.display = name==='mode' ? 'flex' : 'none';
+    screens.pve.style.display = name==='pve' ? 'flex' : 'none';
     screens.searching.style.display = name==='searching' ? 'flex' : 'none';
     screens.deck.style.display = name==='deck' ? 'block' : 'none';
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
@@ -2459,8 +2534,16 @@
   document.getElementById('modeBackBtn').addEventListener('click', ()=>{
     showScreen('menu');
   });
-  document.getElementById('pveBtn').addEventListener('click', ()=>{
+  document.getElementById('pveBtn').addEventListener('click', async ()=>{
+    await fetchPveStatus();
+    renderPveScreen();
+    showScreen('pve');
+  });
+  document.getElementById('pveStartBtn').addEventListener('click', ()=>{
     startPveMatch();
+  });
+  document.getElementById('pveBackBtn').addEventListener('click', ()=>{
+    showScreen('mode');
   });
   document.getElementById('pvpBtn').addEventListener('click', ()=>{
     startMatchmaking();
