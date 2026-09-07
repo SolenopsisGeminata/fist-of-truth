@@ -696,9 +696,6 @@
   .deck-row-owned{
     color:var(--bone-dim);
   }
-  .deck-row-fraction{
-    margin-left:6px;
-  }
   .deck-row-btn{
     width:26px; height:26px;
     border-radius:6px;
@@ -2900,7 +2897,7 @@
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
           <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
-        <div class="deck-row-count"><span class="deck-row-owned" title="Копий этой карты на аккаунте">${ownedCounts[card.id]||0}</span><span class="deck-row-fraction">${count}/${cap}</span></div>
+        <div class="deck-row-count"><span class="deck-row-owned" title="Копий этой карты на аккаунте">${ownedCounts[card.id]||0}</span></div>
         <button class="deck-row-btn plus" data-id="${card.id}" ${disabled?'disabled':''}>+</button>
       </div>`;
     }).join('') : `<div class="deck-empty-hint">В этой фракции пока нет доступных карт.</div>`;
@@ -2915,7 +2912,7 @@
           <div class="deck-row-name">${card.name} <span class="deck-row-cost">◆${card.cost}</span></div>
           <div class="deck-row-sub">${cardStatsLine(card)} · ${rarityLabelHtml(card)}</div>
         </div>
-        <div class="deck-row-count"><span class="deck-row-owned" title="Копий этой карты на аккаунте">${ownedCounts[card.id]||0}</span><span class="deck-row-fraction">${count}/${cap}</span></div>
+        <div class="deck-row-count"><span class="deck-row-fraction">${count}/${cap}</span></div>
         <button class="deck-row-btn minus" data-id="${card.id}">−</button>
       </div>`;
     }).join('') : `<div class="deck-empty-hint">Добавляй карты слева, чтобы собрать колоду (максимум ${MAX_DECK_SIZE} карт; до 3 копий обычной/редкой/эпической карты, максимум 1 копия легендарной или мистической).</div>`;
