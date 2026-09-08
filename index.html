@@ -1204,6 +1204,43 @@
   }
   .unit-art svg{width:80%; height:80%;}
   .unit-art .unit-sprite{height:82%; aspect-ratio:1/1;}
+
+  /* Units with a sprite-sheet (see UNIT_SPRITES in JS) skip the usual
+     flex layout entirely: the sprite fills the ENTIRE card edge-to-edge
+     (not just the small .unit-art slice everyone else's icon gets), and
+     the name/stats — which would otherwise flow around it — are pulled
+     out of flow and pinned back to the exact same visual spots they
+     already occupied (top/bottom, at the card's old 7px/8px padding)
+     via absolute positioning, with a text-shadow so they stay readable
+     sitting directly on top of the artwork. */
+  .unit-card.has-sprite{ padding:0; }
+  .unit-card.has-sprite .unit-art{
+    position:absolute;
+    inset:0;
+    border-radius:5px;
+    overflow:hidden;
+  }
+  .unit-card.has-sprite .unit-art .unit-sprite{
+    width:100%;
+    height:100%;
+    aspect-ratio:auto;
+  }
+  .unit-card.has-sprite .unit-name{
+    position:absolute;
+    top:7px; left:8px; right:8px;
+    z-index:2;
+    text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 6px rgba(0,0,0,.7);
+  }
+  .unit-card.has-sprite .unit-stats-wrap{
+    position:absolute;
+    bottom:7px; left:8px; right:8px;
+    z-index:2;
+  }
+  .unit-card.has-sprite .unit-stats,
+  .unit-card.has-sprite .unit-stats-extra{
+    text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 6px rgba(0,0,0,.7);
+  }
+
   .hand-card:hover{transform:translateY(-4px);}
   .hand-card.affordable{border-color:var(--brass-dim);}
   .hand-card.selected{
@@ -2508,7 +2545,8 @@
     // unit with one/two icons doesn't get, making icons inconsistently
     // sized across units.
     const extraRow = `<div class="unit-stats-extra">${extras.join('')}</div>`;
-    return `<div class="unit-card ${cls}${appearClass}${placingClass}${isPicked?' move-selected':''}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
+    const spriteClass = UNIT_SPRITES[unit.id] ? ' has-sprite' : '';
+    return `<div class="unit-card ${cls}${appearClass}${placingClass}${isPicked?' move-selected':''}${spriteClass}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name" title="${unit.name}">${unit.name}</div>
       <div class="unit-art">${unitArtHtml(unit)}</div>
       <div class="unit-stats-wrap">
