@@ -1357,6 +1357,17 @@
     gap:10px;
     justify-content:center;
   }
+  .match-reward-line{
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    color:var(--brass);
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .match-reward-line.tier{
+    color:var(--win);
+    font-weight:600;
+  }
 
   @media(max-width:480px){
     .slot{width:104px; flex-basis:104px; min-width:92px; font-size:12px;}
@@ -1518,6 +1529,44 @@
   </div>
   <button class="btn btn-menu" id="pveStartBtn">Начать</button>
   <button class="btn ghost btn-menu" id="pveBackBtn">Назад</button>
+</div>
+
+<div class="screen-tournament" id="pvpScreen" style="display:none;">
+  <div class="mode-title">PVP — против игрока</div>
+  <div class="menu-fist">
+    <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
+  </div>
+  <div class="league-progress-row" id="pvpProgressRow">
+    <span class="league-progress-label" id="pvpProgressLeft">0</span>
+    <div class="league-progress-track">
+      <div class="league-progress-track-inner"><div class="league-progress-fill" id="pvpProgressFill" style="width:0%"></div></div>
+    </div>
+    <span class="league-progress-label" id="pvpProgressRight">1</span>
+  </div>
+  <div class="pve-reward-line">
+    <span>Награда за завершение полосы:</span>
+    <svg class="pve-reward-icon" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="46" rx="20" ry="7" fill="#8a7020"/>
+      <ellipse cx="32" cy="38" rx="20" ry="7" fill="#c9a227"/>
+      <ellipse cx="32" cy="30" rx="20" ry="7" fill="#e0b93a"/>
+      <ellipse cx="32" cy="22" rx="20" ry="7" fill="#c9a227" stroke="#8a7020" stroke-width="2"/>
+      <circle cx="32" cy="22" r="7" fill="none" stroke="#8a7020" stroke-width="1.5" opacity=".6"/>
+    </svg>
+    <span class="pve-reward-value" id="pvpRewardGoldValue">100</span>
+    <svg class="pve-reward-icon" viewBox="0 0 64 64">
+      <g fill="#a89a84" opacity=".85">
+        <circle cx="18" cy="36" r="3"/>
+        <circle cx="28" cy="46" r="2.5"/>
+        <circle cx="40" cy="42" r="3.5"/>
+        <circle cx="48" cy="30" r="2"/>
+      </g>
+      <path d="M32 10l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#c9a227"/>
+      <path d="M46 16l1.2 3.4 3.4 1.2-3.4 1.2-1.2 3.4-1.2-3.4-3.4-1.2 3.4-1.2z" fill="#e9e0cf" opacity=".8"/>
+    </svg>
+    <span class="pve-reward-value" id="pvpRewardDustValue">100</span>
+  </div>
+  <button class="btn btn-menu" id="pvpStartBtn">Начать</button>
+  <button class="btn ghost btn-menu" id="pvpBackBtn">Назад</button>
 </div>
 
 <div class="screen-library" id="shopScreen" style="display:none;">
@@ -2088,6 +2137,35 @@
     document.getElementById('pveRewardValue').textContent = pveStatus.reward||0;
   }
 
+  // ---------- PVP progress screen ----------
+  // Same idea as the PVE screen above, but tracked completely separately
+  // — the ladder tier reward pays out in BOTH gold and dust (equal
+  // amounts), unlike PVE's gold-only tier reward.
+  let pvpStatus = { iteration:1, matchesPlayed:0, matchesRequired:1, rewardGold:100, rewardDust:100 };
+
+  async function fetchPvpStatus(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/pvp-progress'), { headers: { 'Authorization': 'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      pvpStatus = data;
+    } catch(e){ /* keep last known / default status */ }
+  }
+
+  function renderPvpScreen(){
+    const played = pvpStatus.matchesPlayed||0;
+    const required = pvpStatus.matchesRequired||1;
+    document.getElementById('pvpProgressLeft').textContent = played;
+    document.getElementById('pvpProgressRight').textContent = required;
+    const pct = Math.max(0, Math.min(100, played/required*100));
+    document.getElementById('pvpProgressFill').style.width = pct+'%';
+    document.getElementById('pvpRewardGoldValue').textContent = pvpStatus.rewardGold||0;
+    document.getElementById('pvpRewardDustValue').textContent = pvpStatus.rewardDust||0;
+  }
+
   // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
   const ICONS = {
     peasant: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="26" ry="6" fill="#8a7020"/><path d="M18 40c0-11 6-19 14-19s14 8 14 19" fill="#c9a227"/><rect x="28" y="14" width="8" height="8" rx="2" fill="#8a7020"/></svg>`,
@@ -2159,6 +2237,12 @@
   }
 
   let state = {};
+  // Set from the server's 'resolution' message (see the WS handler below)
+  // right before the resolution animation plays; showOverlay() reads and
+  // clears it once the post-match screen actually appears. Only ever
+  // populated for real PVP matches (win/loss + any ladder-tier payout) —
+  // PVE and tournament don't send this.
+  let pendingMatchReward = null;
 
   // ---------- Deck building ----------
   // Note: these deck-count helpers are only for the deck-builder screen's
@@ -2702,12 +2786,31 @@
     const title = result==='win' ? 'ПОБЕДА' : result==='draw' ? 'НИЧЬЯ' : 'ПОРАЖЕНИЕ';
     const cls = result==='win' ? 'win' : result==='draw' ? 'draw' : 'lose';
     const sub = result==='win' ? 'Кулак соперника сломлен.' : result==='draw' ? 'Оба кулака сломлены одновременно.' : 'Твой кулак не выдержал.';
+    // PVP-only: the reward for THIS match (win/loss payout), plus a
+    // separate line if finishing it also completed a ladder tier —
+    // consumed once and cleared so a later PVE/tournament overlay never
+    // accidentally shows a stale PVP reward.
+    const reward = pendingMatchReward;
+    pendingMatchReward = null;
+    let rewardHtml = '';
+    if(reward){
+      const matchBits = [];
+      if(reward.matchGold) matchBits.push(`+${reward.matchGold} золота`);
+      if(reward.matchDust) matchBits.push(`+${reward.matchDust} пыли`);
+      if(matchBits.length){
+        rewardHtml += `<div class="match-reward-line">Награда за матч: ${matchBits.join(', ')}</div>`;
+      }
+      if(reward.tierCompleted){
+        rewardHtml += `<div class="match-reward-line tier">Этап полосы прогресса завершён: +${reward.tierGold} золота, +${reward.tierDust} пыли</div>`;
+      }
+    }
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
     overlay.innerHTML = `
       <div class="overlay-box">
         <div class="overlay-title ${cls}">${title}</div>
         <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">${sub}</div>
+        ${rewardHtml}
         <div class="overlay-actions">
           <button class="btn" id="restartBtn">Новая дуэль</button>
           <button class="btn ghost" id="exitBtn">Выход</button>
@@ -2715,7 +2818,7 @@
       </div>`;
     document.body.appendChild(overlay);
     // A match ending is the only place account gold can currently change
-    // (a won PVE match may have just paid out a reward) — refresh the
+    // (a won PVE/PVP match may have just paid out a reward) — refresh the
     // header's resource display right away so the new balance is visible
     // immediately, whichever button the player clicks next.
     const session = loadSession();
@@ -2729,8 +2832,19 @@
         await fetchTournamentStatus();
         renderTournamentScreen();
         showScreen('tournament');
+      } else if(state.mode==='pve'){
+        await fetchPveStatus();
+        renderPveScreen();
+        showScreen('pve');
+      } else if(state.mode==='pvp'){
+        // Back to the PVP progress screen (where "Начать" lives), not the
+        // generic mode picker — refresh first so the just-earned reward/
+        // advanced iteration is already reflected.
+        await fetchPvpStatus();
+        renderPvpScreen();
+        showScreen('pvp');
       } else {
-        showScreen('mode'); // both PVE and PVP now start via the server — pick a mode again
+        showScreen('mode');
       }
     });
     document.getElementById('exitBtn').addEventListener('click', async ()=>{
@@ -2746,6 +2860,10 @@
         await fetchPveStatus();
         renderPveScreen();
         showScreen('pve');
+      } else if(state.mode==='pvp'){
+        await fetchPvpStatus();
+        renderPvpScreen();
+        showScreen('pvp');
       } else {
         showScreen('menu');
       }
@@ -2979,6 +3097,7 @@
     menu: document.getElementById('mainMenu'),
     mode: document.getElementById('modeSelect'),
     pve: document.getElementById('pveScreen'),
+    pvp: document.getElementById('pvpScreen'),
     searching: document.getElementById('searchingScreen'),
     deck: document.getElementById('deckBuilder'),
     arena: document.getElementById('arena'),
@@ -2993,6 +3112,7 @@
     screens.menu.style.display = name==='menu' ? 'flex' : 'none';
     screens.mode.style.display = name==='mode' ? 'flex' : 'none';
     screens.pve.style.display = name==='pve' ? 'flex' : 'none';
+    screens.pvp.style.display = name==='pvp' ? 'flex' : 'none';
     screens.searching.style.display = name==='searching' ? 'flex' : 'none';
     screens.deck.style.display = name==='deck' ? 'block' : 'none';
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
@@ -3226,8 +3346,16 @@
   document.getElementById('pveBackBtn').addEventListener('click', ()=>{
     showScreen('mode');
   });
-  document.getElementById('pvpBtn').addEventListener('click', ()=>{
+  document.getElementById('pvpBtn').addEventListener('click', async ()=>{
+    await fetchPvpStatus();
+    renderPvpScreen();
+    showScreen('pvp');
+  });
+  document.getElementById('pvpStartBtn').addEventListener('click', ()=>{
     startMatchmaking();
+  });
+  document.getElementById('pvpBackBtn').addEventListener('click', ()=>{
+    showScreen('mode');
   });
   document.getElementById('tournamentBtn').addEventListener('click', async ()=>{
     document.getElementById('tournamentNote').textContent = '';
@@ -3610,6 +3738,7 @@
     }
     if(data.type === 'resolution'){
       if(state.mode!=='pvp' && state.mode!=='pve') return;
+      pendingMatchReward = data.reward || null;
       playPvpResolution(data.preBoard, data.events, data.state);
       return;
     }
