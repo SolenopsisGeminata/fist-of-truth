@@ -1347,6 +1347,7 @@
     color:var(--bone-dim);
     text-align:center;
   }
+  .card-popup-close{width:100%; margin-top:2px;}
 
   .overlay-title.win{color:var(--win);}
   .overlay-title.lose{color:var(--crimson-bright);}
@@ -1746,13 +1747,21 @@
       <div class="card-popup-meta">${card.type==='creature'?'Боец':'Заклинание'} · ${rarityLabelHtml(card)}</div>
       ${statsHtml}
       <div class="card-popup-desc">${card.desc}</div>
+      <button class="btn card-popup-close" id="cardPopupCloseBtn">Закрыть</button>
     `;
+    document.getElementById('cardPopupCloseBtn').addEventListener('click', hideCardPopup);
     document.getElementById('cardPopupOverlay').style.display = 'flex';
   }
   function hideCardPopup(){
     document.getElementById('cardPopupOverlay').style.display = 'none';
   }
-  document.getElementById('cardPopupOverlay').addEventListener('click', hideCardPopup);
+  // Only closes when the click lands on the dimmed background itself
+  // (e.target is the overlay) — clicks bubbling up from inside the card
+  // (e.g. on the description text) must NOT close it; that's what the
+  // Закрыть button is for.
+  document.getElementById('cardPopupOverlay').addEventListener('click', (e)=>{
+    if(e.target.id==='cardPopupOverlay') hideCardPopup();
+  });
   // Delegated (not per-card) listeners — survive every re-render of
   // either grid, since they're bound once to the container itself.
   document.getElementById('libraryCardsGrid').addEventListener('click', (e)=>{
