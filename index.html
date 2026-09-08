@@ -3144,6 +3144,7 @@
       if(ev.type==='spell') playPvpSpellEvent(ev, next);
       else if(ev.type==='wave') playPvpWaveEvent(ev, next);
       else if(ev.type==='endOfRound') playEndOfRoundEvent(ev, next);
+      else if(ev.type==='heroHeal') playHeroHealEvent(ev, next);
       else next();
     }
     setTimeout(next, 1050);
@@ -3219,6 +3220,18 @@
   // though the ally ends up hit twice. Timed identically to the ordinary
   // damage animation (450ms reaction + 1350ms hold) per explicit request,
   // so the stat increase reads as smoothly as taking a hit does.
+  function playHeroHealEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    log(`${mine?'Твой':'Кулак соперника'} герой исцеляется на ${ev.amount}.`);
+    setTimeout(()=>{
+      if(mine) state.playerHp = Math.min(START_HP, state.playerHp + ev.amount);
+      else state.enemyHp = Math.min(START_HP, state.enemyHp + ev.amount);
+      if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
+      setTimeout(()=>{ renderAll(); done(); }, 1350);
+    }, 450);
+  }
+
   function playPvpRallyBuffEvent(ev, batchSize, done){
     const mine = ev.side === state.myUsername;
     const board = mine ? state.playerBoard : state.enemyBoard;
