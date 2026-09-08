@@ -1387,6 +1387,46 @@
   }
   .card-popup-close{width:100%; margin-top:2px;}
 
+  .confirm-popup-overlay{
+    position:fixed; inset:0;
+    background:rgba(10,7,5,0.82);
+    display:flex; align-items:center; justify-content:center;
+    z-index:300;
+    padding:24px;
+    animation:fade-in .2s ease;
+  }
+  .confirm-popup{
+    width:100%;
+    max-width:300px;
+    background:linear-gradient(160deg,#241b14,#1a130d);
+    border:2px solid var(--brass-dim);
+    border-radius:16px;
+    padding:24px 20px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.65);
+    text-align:center;
+  }
+  .confirm-popup-title{
+    font-family:'Bebas Neue',cursive;
+    font-size:26px;
+    letter-spacing:2px;
+    color:var(--brass);
+  }
+  .confirm-popup-text{
+    font-family:'Oswald',sans-serif;
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--bone-dim);
+  }
+  .confirm-popup-actions{
+    display:flex;
+    gap:10px;
+    margin-top:4px;
+  }
+  .confirm-popup-actions .btn{flex:1;}
+
   .overlay-title.win{color:var(--win);}
   .overlay-title.lose{color:var(--crimson-bright);}
   .overlay-title.draw{color:var(--brass);}
@@ -1743,6 +1783,17 @@
   <div class="card-popup" id="cardPopupBody"></div>
 </div>
 
+<div class="confirm-popup-overlay" id="confirmPopupOverlay" style="display:none;">
+  <div class="confirm-popup">
+    <div class="confirm-popup-title" id="confirmPopupTitle"></div>
+    <div class="confirm-popup-text" id="confirmPopupText"></div>
+    <div class="confirm-popup-actions">
+      <button class="btn" id="confirmPopupYesBtn">Да</button>
+      <button class="btn ghost" id="confirmPopupNoBtn">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -1862,6 +1913,33 @@
     if(!cardEl) return;
     showCardPopup(cardDefById(cardEl.dataset.cardId));
   });
+
+  // ---------- In-game confirmation popup ----------
+  // Replaces the browser's native confirm() (which looks completely out
+  // of place next to the rest of the UI) with one styled like every other
+  // popup in the game. `onConfirm` only ever fires if the player picks
+  // "Да" — dismissing any other way (Отмена, or clicking the dimmed
+  // background) does nothing, same as cancelling a native confirm().
+  function showConfirmPopup(title, text, onConfirm){
+    const overlay = document.getElementById('confirmPopupOverlay');
+    document.getElementById('confirmPopupTitle').textContent = title;
+    document.getElementById('confirmPopupText').textContent = text;
+    const yesBtn = document.getElementById('confirmPopupYesBtn');
+    const noBtn = document.getElementById('confirmPopupNoBtn');
+    function cleanup(){
+      overlay.style.display = 'none';
+      yesBtn.removeEventListener('click', onYes);
+      noBtn.removeEventListener('click', onNo);
+      overlay.removeEventListener('click', onOverlayClick);
+    }
+    function onYes(){ cleanup(); onConfirm(); }
+    function onNo(){ cleanup(); }
+    function onOverlayClick(e){ if(e.target.id==='confirmPopupOverlay') cleanup(); }
+    yesBtn.addEventListener('click', onYes);
+    noBtn.addEventListener('click', onNo);
+    overlay.addEventListener('click', onOverlayClick);
+    overlay.style.display = 'flex';
+  }
 
   function renderLibraryFactionTabs(){
     const tabsEl = document.getElementById('libraryFactionTabs');
@@ -3978,11 +4056,12 @@
 
   document.getElementById('surrenderBtn').addEventListener('click', ()=>{
     if(state.phase==='over') return;
-    if(!confirm('Сдаться? Тебе сразу засчитают поражение.')) return;
-    leavePvpMatchIfActive(); // tells the server: forfeit — opponent (or bot) wins
-    state.phase = 'over';
-    renderAll();
-    showOverlay('lose');
+    showConfirmPopup('Сдаться?', 'Тебе сразу засчитают поражение.', ()=>{
+      leavePvpMatchIfActive(); // tells the server: forfeit — opponent (or bot) wins
+      state.phase = 'over';
+      renderAll();
+      showOverlay('lose');
+    });
   });
 
   // ---------- init ----------
