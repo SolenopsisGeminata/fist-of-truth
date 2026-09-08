@@ -749,7 +749,20 @@
     width:100%;
   }
   .deck-list-row:hover{border-color:var(--brass-dim);}
+  .deck-list-row.active{border-color:var(--brass); background:rgba(201,162,39,0.1);}
   .deck-list-row-name{font-size:15px; font-weight:600;}
+  .deck-list-row-active-tag{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--brass);
+    border:1px solid var(--brass-dim);
+    border-radius:10px;
+    padding:2px 7px;
+    margin-left:6px;
+    vertical-align:middle;
+  }
   .deck-list-row-count{font-size:13px; color:var(--bone-dim); flex:0 0 auto;}
   .deck-list-row-count.full{color:var(--win);}
 
@@ -2869,6 +2882,7 @@
   let editingDeckCounts = {};
   let editingDeckId = null;
   let currentDecks = []; // [{id, name, counts}], fetched from the server (or a single localStorage-backed pseudo-deck offline)
+  let activeDeckId = 'basic'; // which deck PVE/PVP/tournament matches are actually played with
   const poolListEl = document.getElementById('poolList');
   const deckListEl = document.getElementById('deckList');
   const deckCountLabelEl = document.getElementById('deckCountLabel');
@@ -2882,20 +2896,44 @@
       if(!res.ok) return;
       const data = await res.json();
       if(data && Array.isArray(data.decks) && data.decks.length) currentDecks = data.decks;
+      if(data && data.activeDeckId) activeDeckId = data.activeDeckId;
     } catch(e){ /* keep last known */ }
+  }
+
+  // Makes `id` the deck matches are played with, in every mode, from now
+  // on. Awaited before opening that deck's editor, per the required
+  // order: pick a deck in the list -> it becomes active immediately ->
+  // then it opens for editing.
+  async function setActiveDeck(id){
+    activeDeckId = id; // reflect it locally right away, even if offline or the request fails
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      await fetch(apiUrl('/api/decks/set-active'), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
+        body: JSON.stringify({ id })
+      });
+    } catch(e){ /* local state already reflects the intent; will reconcile on next fetchDecks() */ }
   }
 
   function renderDeckListView(){
     const wrap = document.getElementById('decksListContainer');
     wrap.innerHTML = currentDecks.map(d=>{
       const total = totalDeckCount(d.counts||{});
-      return `<button class="deck-list-row" data-id="${d.id}">
-        <span class="deck-list-row-name">${d.name}</span>
+      const isActive = d.id===activeDeckId;
+      return `<button class="deck-list-row${isActive?' active':''}" data-id="${d.id}">
+        <span class="deck-list-row-name">${d.name}${isActive?' <span class="deck-list-row-active-tag">Активна</span>':''}</span>
         <span class="deck-list-row-count${total>=MAX_DECK_SIZE?' full':''}">${total}/${MAX_DECK_SIZE}</span>
       </button>`;
     }).join('');
     wrap.querySelectorAll('.deck-list-row').forEach(btn=>{
-      btn.addEventListener('click', ()=> openDeckEditor(btn.dataset.id));
+      btn.addEventListener('click', async ()=>{
+        const id = btn.dataset.id;
+        await setActiveDeck(id);
+        openDeckEditor(id);
+      });
     });
     // Creating additional decks needs the server (there's nowhere to
     // persist more than one deck locally) — hide the option offline
@@ -2913,6 +2951,7 @@
       // Offline fallback: a single pseudo-deck backed by localStorage,
       // same as before multiple decks existed.
       currentDecks = [{ id:'basic', name:'Базовая колода', counts: {...(loadSavedDeckCounts() || defaultDeckCounts())} }];
+      activeDeckId = 'basic';
     }
     renderDeckListView();
   }
