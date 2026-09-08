@@ -2801,7 +2801,12 @@
         rewardHtml += `<div class="match-reward-line">Награда за матч: ${matchBits.join(', ')}</div>`;
       }
       if(reward.tierCompleted){
-        rewardHtml += `<div class="match-reward-line tier">Этап полосы прогресса завершён: +${reward.tierGold} золота, +${reward.tierDust} пыли</div>`;
+        const tierBits = [];
+        if(reward.tierGold) tierBits.push(`+${reward.tierGold} золота`);
+        if(reward.tierDust) tierBits.push(`+${reward.tierDust} пыли`);
+        if(tierBits.length){
+          rewardHtml += `<div class="match-reward-line tier">Этап полосы прогресса завершён: ${tierBits.join(', ')}</div>`;
+        }
       }
     }
     const overlay = document.createElement('div');
