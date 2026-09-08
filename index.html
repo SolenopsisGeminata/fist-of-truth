@@ -727,6 +727,31 @@
     text-align:center;
     padding:16px 8px;
   }
+  .deck-list-rows{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .deck-list-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone);
+    cursor:pointer;
+    font-family:'Oswald',sans-serif;
+    text-align:left;
+    width:100%;
+  }
+  .deck-list-row:hover{border-color:var(--brass-dim);}
+  .deck-list-row-name{font-size:15px; font-weight:600;}
+  .deck-list-row-count{font-size:13px; color:var(--bone-dim); flex:0 0 auto;}
+  .deck-list-row-count.full{color:var(--win);}
 
   .hero-row{
     display:flex;
@@ -1447,22 +1472,35 @@
 </div>
 
 <div class="screen-deck" id="deckBuilder" style="display:none;">
-  <div class="deck-builder-header">
-    <h2>Колода</h2>
-    <div class="deck-count-label" id="deckCountLabel">0/30</div>
-  </div>
-  <div class="deck-builder-body">
-    <div class="pool-panel">
-      <div class="panel-title">Доступные карты</div>
-      <div class="faction-tabs" id="factionTabs"></div>
-      <div class="deck-row-list" id="poolList"></div>
+  <div id="deckListView">
+    <div class="deck-builder-header">
+      <h2>Колода</h2>
     </div>
-    <div class="deck-panel-wrap">
-      <div class="panel-title">Твоя колода</div>
-      <div class="deck-row-list" id="deckList"></div>
-      <div class="deck-panel-actions">
-        <button class="btn" id="saveDeckBtn">Сохранить</button>
-        <button class="btn ghost" id="backFromDeckBtn">Назад</button>
+    <div class="panel-title">Список колод</div>
+    <div class="deck-list-rows" id="decksListContainer"></div>
+    <div class="deck-panel-actions">
+      <button class="btn ghost" id="newDeckBtn">+ Новая колода</button>
+      <button class="btn ghost" id="deckListBackBtn">Назад</button>
+    </div>
+  </div>
+  <div id="deckEditorView" style="display:none;">
+    <div class="deck-builder-header">
+      <h2>Колода</h2>
+      <div class="deck-count-label" id="deckCountLabel">0/30</div>
+    </div>
+    <div class="deck-builder-body">
+      <div class="pool-panel">
+        <div class="panel-title">Доступные карты</div>
+        <div class="faction-tabs" id="factionTabs"></div>
+        <div class="deck-row-list" id="poolList"></div>
+      </div>
+      <div class="deck-panel-wrap">
+        <div class="panel-title" id="deckEditorTitle">Твоя колода</div>
+        <div class="deck-row-list" id="deckList"></div>
+        <div class="deck-panel-actions">
+          <button class="btn" id="saveDeckBtn">Сохранить</button>
+          <button class="btn ghost" id="backFromDeckBtn">Назад</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2827,11 +2865,74 @@
     if(resourceBar) resourceBar.style.display = (name==='login' || name==='register' || name==='arena') ? 'none' : 'flex';
   }
 
-  // ---------- Deck builder screen ----------
+  // ---------- Deck builder screen (list of decks + per-deck editor) ----------
   let editingDeckCounts = {};
+  let editingDeckId = null;
+  let currentDecks = []; // [{id, name, counts}], fetched from the server (or a single localStorage-backed pseudo-deck offline)
   const poolListEl = document.getElementById('poolList');
   const deckListEl = document.getElementById('deckList');
   const deckCountLabelEl = document.getElementById('deckCountLabel');
+
+  async function fetchDecks(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/decks'), { headers:{ 'Authorization':'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data && Array.isArray(data.decks) && data.decks.length) currentDecks = data.decks;
+    } catch(e){ /* keep last known */ }
+  }
+
+  function renderDeckListView(){
+    const wrap = document.getElementById('decksListContainer');
+    wrap.innerHTML = currentDecks.map(d=>{
+      const total = totalDeckCount(d.counts||{});
+      return `<button class="deck-list-row" data-id="${d.id}">
+        <span class="deck-list-row-name">${d.name}</span>
+        <span class="deck-list-row-count${total>=MAX_DECK_SIZE?' full':''}">${total}/${MAX_DECK_SIZE}</span>
+      </button>`;
+    }).join('');
+    wrap.querySelectorAll('.deck-list-row').forEach(btn=>{
+      btn.addEventListener('click', ()=> openDeckEditor(btn.dataset.id));
+    });
+    // Creating additional decks needs the server (there's nowhere to
+    // persist more than one deck locally) — hide the option offline
+    // rather than let it fail silently.
+    document.getElementById('newDeckBtn').style.display = serverConfigured() ? '' : 'none';
+  }
+
+  async function openDeckListView(){
+    showScreen('deck');
+    document.getElementById('deckListView').style.display = '';
+    document.getElementById('deckEditorView').style.display = 'none';
+    if(serverConfigured()){
+      await Promise.all([fetchDecks(), fetchOwnedCards()]);
+    } else {
+      // Offline fallback: a single pseudo-deck backed by localStorage,
+      // same as before multiple decks existed.
+      currentDecks = [{ id:'basic', name:'Базовая колода', counts: {...(loadSavedDeckCounts() || defaultDeckCounts())} }];
+    }
+    renderDeckListView();
+  }
+
+  function openDeckEditor(deckId){
+    const deck = currentDecks.find(d=>d.id===deckId);
+    if(!deck) return;
+    editingDeckId = deckId;
+    editingDeckCounts = {...(deck.counts||{})};
+    document.getElementById('deckEditorTitle').textContent = deck.name;
+    renderDeckBuilder();
+    document.getElementById('deckListView').style.display = 'none';
+    document.getElementById('deckEditorView').style.display = '';
+  }
+
+  function closeDeckEditorToList(){
+    document.getElementById('deckEditorView').style.display = 'none';
+    document.getElementById('deckListView').style.display = '';
+    renderDeckListView();
+  }
 
   // How many copies of each card this account owns (cardId -> count).
   // Falls back to the starter deck's own counts (mirrors the server's
@@ -2975,26 +3076,26 @@
     showScreen('mode');
   });
   document.getElementById('deckBtn').addEventListener('click', async ()=>{
-    editingDeckCounts = {...(loadSavedDeckCounts() || defaultDeckCounts())};
-    renderDeckBuilder();
-    showScreen('deck');
-    await fetchOwnedCards();
-    renderDeckBuilder();
-    if(serverConfigured()){
-      const session = loadSession();
-      if(session && session.token){
-        try{
-          const res = await fetch(apiUrl('/api/deck'), { headers:{ 'Authorization':'Bearer '+session.token } });
-          if(res.ok){
-            const data = await res.json();
-            if(data && data.counts && Object.keys(data.counts).length){
-              editingDeckCounts = {...data.counts};
-              renderDeckBuilder();
-            }
-          }
-        } catch(e){ /* keep the local copy if the server isn't reachable */ }
+    await openDeckListView();
+  });
+  document.getElementById('newDeckBtn').addEventListener('click', async ()=>{
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/decks/create'), {
+        method:'POST',
+        headers:{ 'Authorization':'Bearer '+session.token }
+      });
+      const data = await res.json().catch(()=>({}));
+      if(res.ok && data.deck){
+        currentDecks.push(data.deck);
+        renderDeckListView();
       }
-    }
+    } catch(e){ /* ignore — list just won't show the new deck */ }
+  });
+  document.getElementById('deckListBackBtn').addEventListener('click', ()=>{
+    showScreen('menu');
   });
   document.getElementById('libraryBtn').addEventListener('click', ()=>{
     libraryFaction = 'all';
@@ -3056,23 +3157,25 @@
     renderLibraryScreen();
   });
   document.getElementById('saveDeckBtn').addEventListener('click', async ()=>{
-    saveDeckCounts(editingDeckCounts); // instant local fallback for PVE
+    if(editingDeckId==='basic') saveDeckCounts(editingDeckCounts); // local fallback specifically for the deck matches are actually played with
     if(serverConfigured()){
       const session = loadSession();
       if(session && session.token){
         try{
-          await fetch(apiUrl('/api/deck'), {
+          await fetch(apiUrl('/api/decks/save'), {
             method:'POST',
             headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
-            body: JSON.stringify({ counts: editingDeckCounts })
+            body: JSON.stringify({ id: editingDeckId, counts: editingDeckCounts })
           });
-        } catch(e){ /* deck still saved locally for PVE even if this fails */ }
+        } catch(e){ /* deck still saved locally (if basic) even if this fails */ }
       }
     }
-    showScreen('menu');
+    const deck = currentDecks.find(d=>d.id===editingDeckId);
+    if(deck) deck.counts = {...editingDeckCounts};
+    closeDeckEditorToList();
   });
   document.getElementById('backFromDeckBtn').addEventListener('click', ()=>{
-    showScreen('menu');
+    closeDeckEditorToList();
   });
 
   // ---------- Game server connection ----------
