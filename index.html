@@ -1266,6 +1266,88 @@
     letter-spacing:5px;
     margin-bottom:16px;
   }
+
+  .card-popup-overlay{
+    position:fixed; inset:0;
+    background:rgba(10,7,5,0.82);
+    display:flex; align-items:center; justify-content:center;
+    z-index:200;
+    padding:24px;
+    cursor:pointer;
+    animation:fade-in .2s ease;
+  }
+  .card-popup{
+    width:100%;
+    max-width:300px;
+    background:linear-gradient(160deg,#241b14,#1a130d);
+    border:2px solid var(--brass-dim);
+    border-radius:16px;
+    padding:22px 20px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,0.65);
+    cursor:default;
+  }
+  .card-popup .cost{
+    position:absolute; top:-16px; left:-16px;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--brass);
+    color:#1a1206;
+    font-family:'Bebas Neue',cursive;
+    font-size:24px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 3px 8px rgba(0,0,0,0.5);
+    z-index:1;
+  }
+  .card-popup-art{
+    width:100%;
+    height:170px;
+    flex-shrink:0;
+    border-radius:12px;
+    background:radial-gradient(ellipse at 50% 30%, rgba(201,162,39,0.16), transparent 70%), #0f0b08;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:visible; /* the icon must render at its natural, uncompressed size — never clip it */
+  }
+  .card-popup-art svg{width:75%; height:75%;}
+  .card-popup-name{
+    font-size:21px;
+    font-weight:700;
+    color:var(--bone);
+    text-align:center;
+    line-height:1.2;
+  }
+  .card-popup-meta{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--bone-dim);
+  }
+  .card-popup-stats{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:16px;
+    font-family:'Oswald',sans-serif;
+    font-size:19px;
+    font-weight:600;
+  }
+  .card-popup-desc{
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--bone-dim);
+    text-align:center;
+  }
+
   .overlay-title.win{color:var(--win);}
   .overlay-title.lose{color:var(--crimson-bright);}
   .overlay-title.draw{color:var(--brass);}
@@ -1568,6 +1650,10 @@
 
 </div>
 
+<div class="card-popup-overlay" id="cardPopupOverlay" style="display:none;">
+  <div class="card-popup" id="cardPopupBody"></div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -1630,7 +1716,7 @@
     const statsHtml = card.type==='creature'
       ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}</div>`
       : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
-    return `<div class="hand-card affordable">
+    return `<div class="hand-card affordable" data-card-id="${card.id}">
       <div class="cost">${card.cost}</div>
       <div class="card-art">${cardArt(card.art)}</div>
       <div>
@@ -1642,6 +1728,43 @@
       <div class="cdesc" title="${card.desc}">${card.desc}</div>
     </div>`;
   }
+
+  // ---------- Card detail popup (Библиотека + Магазин) ----------
+  // Clicking any card in either screen's grid shows it enlarged — full
+  // name, full description (no line-clamp), and the icon at its natural
+  // uncompressed size — with the rest of the screen dimmed behind it.
+  // Clicking anywhere (including on the popup itself) closes it.
+  function showCardPopup(card){
+    if(!card) return;
+    const statsHtml = card.type==='creature'
+      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}</div>`
+      : `<div class="card-popup-stats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
+    document.getElementById('cardPopupBody').innerHTML = `
+      <div class="cost">${card.cost}</div>
+      <div class="card-popup-art">${cardArt(card.art)}</div>
+      <div class="card-popup-name">${card.name}</div>
+      <div class="card-popup-meta">${card.type==='creature'?'Боец':'Заклинание'} · ${rarityLabelHtml(card)}</div>
+      ${statsHtml}
+      <div class="card-popup-desc">${card.desc}</div>
+    `;
+    document.getElementById('cardPopupOverlay').style.display = 'flex';
+  }
+  function hideCardPopup(){
+    document.getElementById('cardPopupOverlay').style.display = 'none';
+  }
+  document.getElementById('cardPopupOverlay').addEventListener('click', hideCardPopup);
+  // Delegated (not per-card) listeners — survive every re-render of
+  // either grid, since they're bound once to the container itself.
+  document.getElementById('libraryCardsGrid').addEventListener('click', (e)=>{
+    const cardEl = e.target.closest('.hand-card[data-card-id]');
+    if(!cardEl) return;
+    showCardPopup(cardDefById(cardEl.dataset.cardId));
+  });
+  document.getElementById('shopCardsGrid').addEventListener('click', (e)=>{
+    const cardEl = e.target.closest('.hand-card[data-card-id]');
+    if(!cardEl) return;
+    showCardPopup(cardDefById(cardEl.dataset.cardId));
+  });
 
   function renderLibraryFactionTabs(){
     const tabsEl = document.getElementById('libraryFactionTabs');
