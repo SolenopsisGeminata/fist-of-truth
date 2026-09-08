@@ -1203,6 +1203,7 @@
     opacity:.9;
   }
   .unit-art svg{width:80%; height:80%;}
+  .unit-art .unit-sprite{height:82%; aspect-ratio:1/1;}
   .hand-card:hover{transform:translateY(-4px);}
   .hand-card.affordable{border-color:var(--brass-dim);}
   .hand-card.selected{
@@ -1377,6 +1378,7 @@
     .unit-stats{font-size:13px;}
     .unit-stats-extra{font-size:11px; gap:6px;}
     .unit-art svg{width:78%; height:78%;}
+    .unit-art .unit-sprite{height:80%; aspect-ratio:1/1;}
     .hand-card{flex:0 0 100px; height:188px;}
     .card-art{height:52px;}
     .card-art svg{width:32px; height:32px;}
@@ -2186,6 +2188,73 @@
   };
   function cardArt(id){ return ICONS[id] || ''; }
 
+  // ---------- Unit sprite-sheet overrides ----------
+  // Optional richer visuals for specific cards: when a card id has an
+  // entry here, its battlefield unit shows the sprite's own first attack
+  // frame as its idle art (instead of the plain SVG from ICONS above),
+  // and its actual attack/death moments play the full sprite-sheet
+  // animation instead of the generic lunge/fade effect every other unit
+  // still uses. Sheets are a `cols`×`rows` grid of `frames` frames total,
+  // read in row-major order (left-to-right, then top-to-bottom).
+  const UNIT_SPRITES = {
+    c10: {
+      attack: 'assets/sprites/c10-attack.png',
+      death: 'assets/sprites/c10-death.png',
+      cols: 5, rows: 5, frames: 25, fps: 26,
+    },
+  };
+  // CSS background-position for frame N of a cols×rows sheet, expressed
+  // as the standard percentage formula (0% = sheet's own left/top edge
+  // aligned with the element's, 100% = sheet's right/bottom edge aligned
+  // with the element's) — works at any display size since it's relative,
+  // not pixel-based.
+  function spriteFramePercent(frame, sprite){
+    const col = frame % sprite.cols;
+    const row = Math.floor(frame / sprite.cols);
+    const px = sprite.cols>1 ? (col/(sprite.cols-1)*100) : 0;
+    const py = sprite.rows>1 ? (row/(sprite.rows-1)*100) : 0;
+    return `${px}% ${py}%`;
+  }
+  // What actually goes inside a battlefield unit's .unit-art box: either
+  // the plain SVG icon (default), or — for a sprited card — a div showing
+  // that sprite's first attack frame as a static "standing" pose.
+  function unitArtHtml(unit){
+    const sprite = UNIT_SPRITES[unit.id];
+    if(sprite){
+      const style = `background-image:url('${sprite.attack}'); background-repeat:no-repeat; background-size:${sprite.cols*100}% ${sprite.rows*100}%; background-position:${spriteFramePercent(0, sprite)};`;
+      return `<div class="unit-sprite" style="${style}"></div>`;
+    }
+    return cardArt(unit.art);
+  }
+  // Plays a sprite sheet's frames in sequence inside `artEl` (a unit's
+  // .unit-art box), at `sprite.fps` frames per second. Reuses the same
+  // .unit-sprite div the idle pose already set up (creating one if this
+  // unit somehow doesn't have it yet) — no cleanup needed afterward, the
+  // next renderAll() naturally rebuilds every unit-art box from scratch
+  // (back to the idle first-attack-frame for a survivor, or removed
+  // entirely for a unit that died).
+  function playUnitSpriteAnimation(artEl, sheetUrl, sprite, onDone){
+    if(!artEl){ if(onDone) onDone(); return; }
+    let spriteEl = artEl.querySelector('.unit-sprite');
+    if(!spriteEl){
+      spriteEl = document.createElement('div');
+      spriteEl.className = 'unit-sprite';
+      artEl.innerHTML = '';
+      artEl.appendChild(spriteEl);
+    }
+    spriteEl.style.backgroundImage = `url('${sheetUrl}')`;
+    spriteEl.style.backgroundRepeat = 'no-repeat';
+    spriteEl.style.backgroundSize = `${sprite.cols*100}% ${sprite.rows*100}%`;
+    let frame = 0;
+    const intervalMs = 1000/(sprite.fps||24);
+    (function step(){
+      spriteEl.style.backgroundPosition = spriteFramePercent(frame, sprite);
+      frame++;
+      if(frame < sprite.frames) setTimeout(step, intervalMs);
+      else if(onDone) onDone();
+    })();
+  }
+
   // ---------- Rarity (display only, except deck copy limits — see maxCopiesForCard below) ----------
   // Mythic isn't an independent tier: it's a skin — a reskinned, slightly
   // re-tuned variant of an existing Rare/Epic/Legendary card. A mythic
@@ -2441,7 +2510,7 @@
     const extraRow = `<div class="unit-stats-extra">${extras.join('')}</div>`;
     return `<div class="unit-card ${cls}${appearClass}${placingClass}${isPicked?' move-selected':''}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name" title="${unit.name}">${unit.name}</div>
-      <div class="unit-art">${cardArt(unit.art)}</div>
+      <div class="unit-art">${unitArtHtml(unit)}</div>
       <div class="unit-stats-wrap">
         <div class="unit-stats"><span class="stat-atk">⚔ ${unit.atk}</span><span class="stat-hp">♥ ${unit.hp}</span>${unit.armor?`<span class="stat-armor">🛡 ${unit.armor}</span>`:''}</div>
         ${extraRow}
@@ -3062,7 +3131,17 @@
       const targetBoard = a.isMe ? state.enemyBoard : state.playerBoard;
       const targetName = a.targetHero ? (a.isMe?'кулак соперника':'твой кулак') : ((targetBoard[ev.lane][a.targetDepth]||{}).name || '???');
       const unitEl = findUnitEl(ev.lane, a.isMe, a.depth);
-      if(unitEl) unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left');
+      const atkSprite = atkUnit && UNIT_SPRITES[atkUnit.id];
+      if(unitEl){
+        if(atkSprite){
+          // A unit with its own attack sprite sheet acts out the whole
+          // swing itself — the generic lunge shove would just look like
+          // it's double-attacking on top of that.
+          playUnitSpriteAnimation(unitEl.querySelector('.unit-art'), atkSprite.attack, atkSprite);
+        } else {
+          unitEl.classList.add(a.isMe ? 'lunge-right' : 'lunge-left');
+        }
+      }
       parts.push(`${atkUnit? atkUnit.name : '???'} → ${targetName}`);
     });
     log(`Полоса ${ev.lane+1}: ` + parts.join(' · '));
@@ -3086,7 +3165,14 @@
           if(unit){
             unit.hp -= a.dmg;
             if(targetEl) spawnDamageNumber(targetEl, '-'+a.dmg, 'dmg');
-            if(a.died){ if(targetEl) targetEl.classList.add('unit-dying'); targetBoard[ev.lane][a.targetDepth]=null; }
+            if(a.died){
+              const dieSprite = UNIT_SPRITES[unit.id];
+              if(targetEl){
+                if(dieSprite) playUnitSpriteAnimation(targetEl.querySelector('.unit-art'), dieSprite.death, dieSprite);
+                else targetEl.classList.add('unit-dying');
+              }
+              targetBoard[ev.lane][a.targetDepth]=null;
+            }
           }
         }
       });
