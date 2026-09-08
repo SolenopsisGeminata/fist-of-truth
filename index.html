@@ -1038,6 +1038,16 @@
     100%{opacity:0; transform:translate(-50%,-125%) scale(1);}
   }
 
+  .crossbow-bolt{
+    position:absolute;
+    width:34px;
+    height:auto;
+    pointer-events:none;
+    z-index:15;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  }
+  .crossbow-bolt svg{width:100%; height:100%; display:block;}
+
   /* Spell impact burst: plays once, at the moment a queued spell actually fires */
   .spell-burst{
     position:absolute;
@@ -1813,7 +1823,7 @@
     {id:'c8', name:'Паладин', type:'creature', cost:5, atk:4, hp:2, rallyBuff:true, rarity:'rare', desc:'Благословляет соратников при выходе на поле — все союзники, кроме него самого, получают +2 к атаке и здоровью.', art:'paladin', faction:'empire'},
     {id:'c10', name:'Ополченец', type:'creature', cost:1, atk:1, hp:1, rarity:'common', desc:'Наскоро вооружённый крестьянин. Числом, а не умением.', art:'militia', faction:'empire'},
     {id:'c11', name:'Страж дворца', type:'creature', cost:2, atk:2, hp:2, lifesteal:true, rarity:'rare', desc:'Каждый пробитый удар по сопернику придаёт сил защитнику — исцеляет своего героя на значение атаки.', art:'palaceguard', faction:'empire'},
-    {id:'c12', name:'Легионер', type:'creature', cost:3, atk:2, hp:3, lifesteal:true, synergy:true, rarity:'epic', desc:'Крадёт здоровье при ударе по герою соперника. В строю с другими бойцами бьёт сильнее — +1 к атаке за каждого союзника по соседству (сверху, снизу, слева, справа).', art:'legion', faction:'empire'},
+    {id:'c12', name:'Легионер', type:'creature', cost:3, atk:2, hp:3, lifesteal:true, synergy:1, rarity:'epic', desc:'Крадёт здоровье при ударе по герою соперника. В строю с другими бойцами бьёт сильнее — +1 к атаке за каждого союзника по соседству (сверху, снизу, слева, справа).', art:'legion', faction:'empire'},
     {id:'s1', name:'Кольчуга', type:'spell', cost:2, buffHp:3, buffAtk:1, rarity:'common', desc:'Плетение колец укрепляет бойца — навсегда добавляет +3 к здоровью и +1 к атаке.', art:'chainmail', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
@@ -1823,6 +1833,7 @@
     {id:'c18', name:'Монахиня', type:'creature', cost:2, atk:1, hp:2, healOnPlay:2, rarity:'rare', desc:'При выходе на поле боя возносит молитву за своего героя, восстанавливая ему 2 очка здоровья.', art:'nun', faction:'empire'},
     {id:'c19', name:'Корова', type:'creature', cost:2, atk:0, hp:4, cowHeal:true, rarity:'rare', desc:'Мирно пасётся на поле боя. В конце каждого хода с шансом 50% делится с героем здоровьем — он восстанавливает ровно столько очков, сколько остаётся у неё самой в этот момент.', art:'cow', faction:'empire'},
     {id:'c20', name:'Страж ворот', type:'creature', cost:3, atk:3, hp:3, armor:1, rarity:'rare', desc:'Не пропустит врага через городские ворота ни на шаг. Броня гасит часть входящего урона от каждого удара.', art:'gateguard', faction:'empire'},
+    {id:'c21', name:'Арбалетчик', type:'creature', cost:3, atk:1, hp:4, synergy:1, shootHero:true, rarity:'rare', desc:'В строю с другими бойцами целится точнее — +1 к атаке за каждого союзника по соседству (сверху, снизу, слева, справа). При выходе на поле боя, а также в конце каждого хода стреляет во вражеского героя, нанося урон, равный своей текущей атаке.', art:'crossbowman', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -1859,7 +1870,7 @@
 
   function libraryCardHtml(card){
     const statsHtml = card.type==='creature'
-      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}</div>`
+      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}</div>`
       : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
     return `<div class="hand-card affordable" data-card-id="${card.id}">
       <div class="cost">${card.cost}</div>
@@ -1882,7 +1893,7 @@
   function showCardPopup(card){
     if(!card) return;
     const statsHtml = card.type==='creature'
-      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}</div>`
+      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}</div>`
       : `<div class="card-popup-stats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
     document.getElementById('cardPopupBody').innerHTML = `
       <div class="cost">${card.cost}</div>
@@ -2308,7 +2319,8 @@
     dawnpriestess: `<svg viewBox="0 0 64 64"><circle cx="32" cy="24" r="13" fill="#e0b93a" opacity=".85"/><path d="M32 3v7M12 10l4.5 4.5M52 10l-4.5 4.5M4 24h7M53 24h7M14 41l4.5-4.5M50 41l-4.5-4.5" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="23" r="6.5" fill="#f4d9a0"/><path d="M20 60c0-15 5.5-25 12-25s12 10 12 25z" fill="#8a3d5c" stroke="#5c2740" stroke-width="2"/><path d="M26 60l1-11M38 60l-1-11" stroke="#5c2740" stroke-width="1.5" opacity=".6"/></svg>`,
     nun: `<svg viewBox="0 0 64 64"><path d="M32 8c-9 0-16 6-16 14v4h32v-4c0-8-7-14-16-14z" fill="#3d5a73" stroke="#2a3f52" stroke-width="1.5"/><circle cx="32" cy="24" r="7" fill="#f4d9a0"/><path d="M16 60c0-15 7-26 16-26s16 11 16 26z" fill="#3d5a73" stroke="#2a3f52" stroke-width="2"/><path d="M28 48h8M32 44v8" stroke="#e9e0cf" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     cow: `<svg viewBox="0 0 64 64"><path d="M14 20c-3-4-2-8 2-8M50 20c3-4 2-8-2-8" stroke="#e9e0cf" stroke-width="4" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="34" rx="20" ry="16" fill="#e9e0cf"/><ellipse cx="22" cy="27" rx="6" ry="8" fill="#3a2c22" transform="rotate(-15 22 27)"/><ellipse cx="43" cy="29" rx="5" ry="7" fill="#3a2c22" transform="rotate(10 43 29)"/><circle cx="24" cy="30" r="3" fill="#1a130d"/><circle cx="40" cy="30" r="3" fill="#1a130d"/><ellipse cx="32" cy="43" rx="11" ry="9" fill="#d98a9e"/><circle cx="26" cy="41" r="1.5" fill="#8a5060"/><circle cx="38" cy="41" r="1.5" fill="#8a5060"/></svg>`,
-    gateguard: `<svg viewBox="0 0 64 64"><path d="M16 56V28c0-10 7-18 16-18s16 8 16 18v28" fill="none" stroke="#8a97a3" stroke-width="4"/><rect x="19" y="32" width="26" height="24" rx="2" fill="#3d5a73" stroke="#22303d" stroke-width="2"/><path d="M25 32v24M32 32v24M39 32v24" stroke="#15100d" stroke-width="2" opacity=".55"/><path d="M19 40h26M19 48h26" stroke="#15100d" stroke-width="1.5" opacity=".4"/><circle cx="32" cy="22" r="4" fill="#8a97a3"/></svg>`
+    gateguard: `<svg viewBox="0 0 64 64"><path d="M16 56V28c0-10 7-18 16-18s16 8 16 18v28" fill="none" stroke="#8a97a3" stroke-width="4"/><rect x="19" y="32" width="26" height="24" rx="2" fill="#3d5a73" stroke="#22303d" stroke-width="2"/><path d="M25 32v24M32 32v24M39 32v24" stroke="#15100d" stroke-width="2" opacity=".55"/><path d="M19 40h26M19 48h26" stroke="#15100d" stroke-width="1.5" opacity=".4"/><circle cx="32" cy="22" r="4" fill="#8a97a3"/></svg>`,
+    crossbowman: `<svg viewBox="0 0 64 64"><path d="M8 32h6M50 32h6" stroke="#8a97a3" stroke-width="3" stroke-linecap="round"/><path d="M18 14c8 8 8 26 0 34M46 14c-8 8-8 26 0 34" fill="none" stroke="#5c4536" stroke-width="4" stroke-linecap="round"/><rect x="24" y="27" width="20" height="10" rx="2" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M44 32h9" stroke="#8a97a3" stroke-width="2.5" stroke-linecap="round"/><path d="M50 27l6 5-6 5z" fill="#c9a227"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
 
@@ -2499,7 +2511,13 @@
   function hydrateUnit(u){
     if(!u) return null;
     const card = cardDefById(u.id);
-    return { id:u.id, uid:u.uid, name: card?card.name:u.id, art: card?card.art:null, atk:u.atk, hp:u.hp, maxHp:u.maxHp, armor:u.armor||0, lifesteal:!!u.lifesteal, synergy:!!u.synergy, placedThisRound:!!u.placedThisRound };
+    return {
+      id:u.id, uid:u.uid, name: card?card.name:u.id, art: card?card.art:null,
+      atk:u.atk, hp:u.hp, maxHp:u.maxHp, armor:u.armor||0,
+      lifesteal:!!u.lifesteal, synergy:u.synergy||0,
+      dawnBuff:!!u.dawnBuff, cookHeal:!!u.cookHeal, cowHeal:!!u.cowHeal, shootHero:!!u.shootHero,
+      placedThisRound:!!u.placedThisRound,
+    };
   }
   function hydrateBoard(board){
     return (isValidBoard(board) ? board : freshBoard()).map(lane=>lane.map(hydrateUnit));
@@ -2625,7 +2643,7 @@
     // who has both lifesteal and synergy).
     const extras = [];
     if(unit.lifesteal) extras.push(`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`);
-    if(unit.synergy) extras.push(`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`);
+    if(unit.synergy) extras.push(`<span class="stat-synergy" title="Атака растёт на ${unit.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${unit.synergy}</span>`);
     if(unit.dawnBuff) extras.push(`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`);
     // Always rendered (even with zero extras) so its reserved height (see
     // .unit-stats-extra CSS) applies the same to every unit — otherwise a
@@ -2752,7 +2770,7 @@
       const div = document.createElement('div');
       div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable') + (state.selectedCardUid===card.uid ? ' selected':'');
       const statsHtml = card.type==='creature'
-        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}</div>`
+        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}</div>`
         : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
       div.innerHTML = `
         <div class="cost">${card.cost}</div>
@@ -3149,6 +3167,7 @@
       else if(ev.type==='wave') playPvpWaveEvent(ev, next);
       else if(ev.type==='endOfRound') playEndOfRoundEvent(ev, next);
       else if(ev.type==='heroHeal') playHeroHealEvent(ev, next);
+      else if(ev.type==='heroShot') playHeroShotEvent(ev, next);
       else next();
     }
     setTimeout(next, 1050);
@@ -3234,6 +3253,65 @@
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
       setTimeout(()=>{ renderAll(); done(); }, 1350);
     }, 450);
+  }
+
+  // A small crossbow-bolt graphic used purely as a flying projectile —
+  // not a card icon, just the shot's own visual (see playHeroShotEvent).
+  const CROSSBOW_BOLT_SVG = `<svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg">
+    <line x1="3" y1="6" x2="30" y2="6" stroke="#8a97a3" stroke-width="3" stroke-linecap="round"/>
+    <path d="M30 1l9 5-9 5z" fill="#c9a227"/>
+    <path d="M3 3l6 3-6 3z" fill="#5c4536"/>
+  </svg>`;
+
+  // Арбалетчик's shot (battlecry and end-of-round alike — same event,
+  // same animation either way): a crossbow bolt flies from her own card
+  // straight to the targeted hero, then lands as ordinary hero damage.
+  // Both players see the same flight since it's driven by one shared
+  // event, not a per-viewer guess.
+  function playHeroShotEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetIsMe = ev.targetSide === state.myUsername;
+    const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    const heroEl = targetIsMe ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    const arenaEl = document.getElementById('arena');
+    log(`${shooterMine?'Твой':'Кулак соперника'} Арбалетчик стреляет во вражеского героя, нанося ${ev.amount}.`);
+    const applyDamage = ()=>{
+      if(targetIsMe) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+      if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
+    };
+    if(sourceEl && heroEl && arenaEl){
+      const arenaRect = arenaEl.getBoundingClientRect();
+      const srcRect = sourceEl.getBoundingClientRect();
+      const dstRect = heroEl.getBoundingClientRect();
+      const startX = srcRect.left + srcRect.width/2 - arenaRect.left;
+      const startY = srcRect.top + srcRect.height/2 - arenaRect.top;
+      const endX = dstRect.left + dstRect.width/2 - arenaRect.left;
+      const endY = dstRect.top + dstRect.height/2 - arenaRect.top;
+      const angle = Math.atan2(endY-startY, endX-startX) * 180/Math.PI;
+      const bolt = document.createElement('div');
+      bolt.className = 'crossbow-bolt';
+      bolt.innerHTML = CROSSBOW_BOLT_SVG;
+      bolt.style.left = startX+'px';
+      bolt.style.top = startY+'px';
+      bolt.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+      arenaEl.appendChild(bolt);
+      requestAnimationFrame(()=>{
+        bolt.style.transition = 'left .5s linear, top .5s linear';
+        bolt.style.left = endX+'px';
+        bolt.style.top = endY+'px';
+      });
+      setTimeout(()=>{
+        bolt.remove();
+        applyDamage();
+        setTimeout(()=>{ renderAll(); done(); }, 900);
+      }, 520);
+    } else {
+      // Source card or hero isn't on screen right now (e.g. a rare
+      // layout edge case) — still apply the damage, just without the
+      // flight animation, so the match never stalls waiting on it.
+      applyDamage();
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    }
   }
 
   function playPvpRallyBuffEvent(ev, batchSize, done){
