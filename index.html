@@ -443,7 +443,6 @@
   .shop-currency-tabs{
     display:flex;
     gap:2px;
-    margin-bottom:-1px; /* seam disappears: this pulls the tab strip's bottom edge to overlap the panel's top border by 1px */
     position:relative;
     z-index:1;
   }
@@ -478,12 +477,9 @@
     gap:10px;
     position:relative;
     z-index:0;
-    border-top:1px solid var(--brass-dim);
-    border-bottom:1px solid var(--brass-dim);
-    border-left:none;
-    border-right:none;
     border-radius:0 0 8px 8px;
     background:var(--bg-panel);
+    margin-top:-12px; /* cancels out .screen-library's flex gap so the panel sits flush against the currency tabs, with no visible seam between them */
     padding:12px 0; /* no horizontal padding/border on the sides — the card grid needs the full width (368px at the standard 420px screen) to fit 3 cards per row exactly like the library does, with zero pixels to spare */
   }
   .shop-card-wrap{
