@@ -748,6 +748,49 @@
     width:100%;
   }
   .deck-list-row:hover{border-color:var(--brass-dim);}
+  .deck-list-row-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .deck-list-icon-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    height:28px;
+    padding:0;
+    border-radius:6px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.25);
+    color:var(--bone-dim);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .deck-list-icon-btn svg{width:15px; height:15px;}
+  .deck-list-icon-btn:hover{border-color:var(--brass-dim); color:var(--brass);}
+  .deck-list-icon-btn.delete-btn:hover{border-color:var(--crimson-bright); color:var(--crimson-bright);}
+  .rename-popup-input{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.35);
+    color:var(--bone);
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+  }
+  .rename-popup-input:focus{outline:none; border-color:var(--brass-dim);}
+  .deck-list-note{
+    min-height:16px;
+    font-family:'Oswald',sans-serif;
+    font-size:12.5px;
+    color:var(--crimson-bright);
+    text-align:center;
+    margin-top:8px;
+  }
   .deck-list-row.active{border-color:var(--brass); background:rgba(201,162,39,0.1);}
   .deck-list-row-name{font-size:15px; font-weight:600;}
   .deck-list-row-active-tag{
@@ -1746,6 +1789,7 @@
     </div>
     <div class="panel-title">Список колод</div>
     <div class="deck-list-rows" id="decksListContainer"></div>
+    <div class="deck-list-note" id="deckListNote"></div>
     <div class="deck-panel-actions">
       <button class="btn ghost" id="newDeckBtn">+ Новая колода</button>
       <button class="btn ghost" id="deckListBackBtn">Назад</button>
@@ -1835,6 +1879,17 @@
     <div class="confirm-popup-actions">
       <button class="btn" id="confirmPopupYesBtn">Да</button>
       <button class="btn ghost" id="confirmPopupNoBtn">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-popup-overlay" id="renamePopupOverlay" style="display:none;">
+  <div class="confirm-popup">
+    <div class="confirm-popup-title">Переименовать колоду</div>
+    <input type="text" class="rename-popup-input" id="renamePopupInput" maxlength="40" placeholder="Название колоды">
+    <div class="confirm-popup-actions">
+      <button class="btn" id="renamePopupSaveBtn">Сохранить</button>
+      <button class="btn ghost" id="renamePopupCancelBtn">Отмена</button>
     </div>
   </div>
 </div>
@@ -3618,21 +3673,44 @@
     } catch(e){ /* local state already reflects the intent; will reconcile on next fetchDecks() */ }
   }
 
+  const DECK_RENAME_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>`;
+  const DECK_DELETE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
+
   function renderDeckListView(){
     const wrap = document.getElementById('decksListContainer');
     wrap.innerHTML = currentDecks.map(d=>{
       const total = totalDeckCount(d.counts||{});
       const isActive = d.id===activeDeckId;
-      return `<button class="deck-list-row${isActive?' active':''}" data-id="${d.id}">
+      return `<div class="deck-list-row${isActive?' active':''}" data-id="${d.id}">
         <span class="deck-list-row-name">${d.name}${isActive?' <span class="deck-list-row-active-tag">Активна</span>':''}</span>
-        <span class="deck-list-row-count${total>=MAX_DECK_SIZE?' full':''}">${total}/${MAX_DECK_SIZE}</span>
-      </button>`;
+        <span class="deck-list-row-right">
+          <button class="deck-list-icon-btn rename-btn" data-id="${d.id}" title="Переименовать колоду" aria-label="Переименовать колоду">${DECK_RENAME_ICON}</button>
+          <button class="deck-list-icon-btn delete-btn" data-id="${d.id}" title="Удалить колоду" aria-label="Удалить колоду">${DECK_DELETE_ICON}</button>
+          <span class="deck-list-row-count${total>=MAX_DECK_SIZE?' full':''}">${total}/${MAX_DECK_SIZE}</span>
+        </span>
+      </div>`;
     }).join('');
-    wrap.querySelectorAll('.deck-list-row').forEach(btn=>{
-      btn.addEventListener('click', async ()=>{
-        const id = btn.dataset.id;
+    wrap.querySelectorAll('.deck-list-row').forEach(row=>{
+      row.addEventListener('click', async ()=>{
+        const id = row.dataset.id;
         await setActiveDeck(id);
         openDeckEditor(id);
+      });
+    });
+    wrap.querySelectorAll('.deck-list-icon-btn.rename-btn').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        const id = btn.dataset.id;
+        const deck = currentDecks.find(d=>d.id===id);
+        if(deck) openRenameDeckPopup(deck);
+      });
+    });
+    wrap.querySelectorAll('.deck-list-icon-btn.delete-btn').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        const id = btn.dataset.id;
+        const deck = currentDecks.find(d=>d.id===id);
+        if(deck) openDeleteDeckConfirm(deck);
       });
     });
     // Creating additional decks needs the server (there's nowhere to
@@ -3641,10 +3719,97 @@
     document.getElementById('newDeckBtn').style.display = serverConfigured() ? '' : 'none';
   }
 
+  // Renaming needs a real text field, so it reuses the confirm popup's
+  // visual shell (see renamePopupOverlay) with an <input> swapped in for
+  // the plain text — a native prompt() would look completely out of
+  // place next to the rest of the UI, same reasoning as replacing
+  // confirm() for Сдаться earlier.
+  function openRenameDeckPopup(deck){
+    const overlay = document.getElementById('renamePopupOverlay');
+    const input = document.getElementById('renamePopupInput');
+    const saveBtn = document.getElementById('renamePopupSaveBtn');
+    const cancelBtn = document.getElementById('renamePopupCancelBtn');
+    input.value = deck.name;
+    function cleanup(){
+      overlay.style.display = 'none';
+      saveBtn.removeEventListener('click', onSave);
+      cancelBtn.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onOverlayClick);
+      input.removeEventListener('keydown', onKeydown);
+    }
+    async function onSave(){
+      const name = input.value.trim();
+      if(!name) return;
+      cleanup();
+      await renameDeck(deck.id, name);
+    }
+    function onCancel(){ cleanup(); }
+    function onOverlayClick(e){ if(e.target.id==='renamePopupOverlay') cleanup(); }
+    function onKeydown(e){ if(e.key==='Enter') onSave(); else if(e.key==='Escape') onCancel(); }
+    saveBtn.addEventListener('click', onSave);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onOverlayClick);
+    input.addEventListener('keydown', onKeydown);
+    overlay.style.display = 'flex';
+    input.focus();
+    input.select();
+  }
+
+  async function renameDeck(id, name){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/decks/rename'), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
+        body: JSON.stringify({ id, name })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(res.ok && data.deck){
+        const deck = currentDecks.find(d=>d.id===id);
+        if(deck) deck.name = data.deck.name;
+        renderDeckListView();
+      }
+    } catch(e){ /* ignore — deck keeps its old name locally */ }
+  }
+
+  function openDeleteDeckConfirm(deck){
+    showConfirmPopup('Удалить колоду?', `Колода «${deck.name}» будет удалена безвозвратно.`, ()=>{
+      deleteDeck(deck.id);
+    });
+  }
+
+  async function deleteDeck(id){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    const note = document.getElementById('deckListNote');
+    if(note) note.textContent = '';
+    try{
+      const res = await fetch(apiUrl('/api/decks/delete'), {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(res.ok){
+        if(Array.isArray(data.decks)) currentDecks = data.decks;
+        else currentDecks = currentDecks.filter(d=>d.id!==id);
+        if(data.activeDeckId) activeDeckId = data.activeDeckId;
+        renderDeckListView();
+      } else if(data.error && note){
+        note.textContent = data.error;
+      }
+    } catch(e){ /* ignore — deck list just won't reflect the deletion */ }
+  }
+
   async function openDeckListView(){
     showScreen('deck');
     document.getElementById('deckListView').style.display = '';
     document.getElementById('deckEditorView').style.display = 'none';
+    const note = document.getElementById('deckListNote');
+    if(note) note.textContent = '';
     if(serverConfigured()){
       await Promise.all([fetchDecks(), fetchOwnedCards()]);
     } else {
