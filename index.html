@@ -1293,7 +1293,19 @@
     box-shadow:0 2px 4px rgba(0,0,0,0.5);
     z-index:1;
   }
-  .hand-card .cname{font-size:12px; font-weight:700; line-height:1.2; margin-top:6px;}
+  .hand-card .cname{
+    height:2.4em; /* line-height 1.2 × 2 lines — always reserves 2 lines' worth of space, even for a short 1-line name, so hand/library/shop cards line up at the same height regardless of name length */
+    flex-shrink:0;
+    font-size:12px;
+    font-weight:700;
+    line-height:1.2;
+    margin-top:6px;
+    text-align:center;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
   .hand-card .ctype{font-size:9px; color:var(--bone-dim); text-transform:uppercase; letter-spacing:1px;}
   .rarity-label{font-weight:600;}
   .hand-card .cstats{
