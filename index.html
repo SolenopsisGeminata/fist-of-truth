@@ -1047,6 +1047,15 @@
     filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6));
   }
   .crossbow-bolt svg{width:100%; height:100%; display:block;}
+  .heal-orb{
+    position:absolute;
+    width:26px;
+    height:26px;
+    pointer-events:none;
+    z-index:15;
+    filter:drop-shadow(0 0 6px #4f8a5b) drop-shadow(0 0 3px #8fe0a0);
+  }
+  .heal-orb svg{width:100%; height:100%; display:block;}
 
   /* Spell impact burst: plays once, at the moment a queued spell actually fires */
   .spell-burst{
@@ -3221,14 +3230,15 @@
   // client code.
   function playEndOfRoundEvent(ev, done){
     const mine = ev.side === state.myUsername;
+    const sourceEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
     const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
     const label = (cardDefById(ev.cardId)||{}).name || ev.cardId;
     log(`«${label}» (${mine?'твой':'соперника'}) в конце хода восстанавливает герою ${ev.amount} HP.`);
-    setTimeout(()=>{
+    flyProjectileToHero(sourceEl, heroEl, HEAL_ORB_SVG, 'heal-orb', 500, ()=>{
       if(mine) state.playerHp += ev.amount; else state.enemyHp += ev.amount;
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
-      setTimeout(()=>{ renderAll(); done(); }, 1350);
-    }, 450);
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    });
   }
 
   // A rally-style "buff every ally already on the board" trigger (e.g.
@@ -3245,14 +3255,15 @@
   // so the stat increase reads as smoothly as taking a hit does.
   function playHeroHealEvent(ev, done){
     const mine = ev.side === state.myUsername;
+    const sourceEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
     const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
     log(`${mine?'Твой':'Кулак соперника'} герой исцеляется на ${ev.amount}.`);
-    setTimeout(()=>{
+    flyProjectileToHero(sourceEl, heroEl, HEAL_ORB_SVG, 'heal-orb', 500, ()=>{
       if(mine) state.playerHp = Math.min(START_HP, state.playerHp + ev.amount);
       else state.enemyHp = Math.min(START_HP, state.enemyHp + ev.amount);
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
-      setTimeout(()=>{ renderAll(); done(); }, 1350);
-    }, 450);
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    });
   }
 
   // A small crossbow-bolt graphic used purely as a flying projectile —
@@ -3263,59 +3274,72 @@
     <path d="M3 3l6 3-6 3z" fill="#5c4536"/>
   </svg>`;
 
+  // A small glowing green orb — the shared visual for every "heal the
+  // hero" trigger (Монахиня's battlecry, Повар/Корова's end-of-round),
+  // flying from whichever cell caused it to the hero being healed.
+  const HEAL_ORB_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="#4f8a5b" opacity=".35"/>
+    <circle cx="12" cy="12" r="5.5" fill="#8fe0a0"/>
+    <circle cx="12" cy="12" r="5.5" fill="none" stroke="#daffe6" stroke-width="1"/>
+  </svg>`;
+
   // Арбалетчик's shot (battlecry and end-of-round alike — same event,
   // same animation either way): a crossbow bolt flies from her own card
   // straight to the targeted hero, then lands as ordinary hero damage.
   // Both players see the same flight since it's driven by one shared
   // event, not a per-viewer guess.
+  // Shared "small thing flies from a board cell to a hero" animator —
+  // used by the crossbow bolt (damage) and the heal orb below (healing).
+  // Positions itself relative to #arena using real screen coordinates, so
+  // it works regardless of which lane/depth or which hero is involved.
+  // If either endpoint isn't actually on screen right now, it skips
+  // straight to onLand() rather than stalling the match.
+  function flyProjectileToHero(sourceEl, heroEl, svgHtml, className, flightMs, onLand){
+    const arenaEl = document.getElementById('arena');
+    if(!(sourceEl && heroEl && arenaEl)){
+      onLand();
+      return;
+    }
+    const arenaRect = arenaEl.getBoundingClientRect();
+    const srcRect = sourceEl.getBoundingClientRect();
+    const dstRect = heroEl.getBoundingClientRect();
+    const startX = srcRect.left + srcRect.width/2 - arenaRect.left;
+    const startY = srcRect.top + srcRect.height/2 - arenaRect.top;
+    const endX = dstRect.left + dstRect.width/2 - arenaRect.left;
+    const endY = dstRect.top + dstRect.height/2 - arenaRect.top;
+    const angle = Math.atan2(endY-startY, endX-startX) * 180/Math.PI;
+    const el = document.createElement('div');
+    el.className = className;
+    el.innerHTML = svgHtml;
+    el.style.left = startX+'px';
+    el.style.top = startY+'px';
+    el.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+    el.style.transition = `left ${flightMs}ms linear, top ${flightMs}ms linear`;
+    arenaEl.appendChild(el);
+    // Force the browser to commit the starting left/top set above before
+    // changing to the end position below — without this, some browsers
+    // collapse both style writes into a single frame and the projectile
+    // just appears at its destination instead of visibly flying there.
+    void el.offsetWidth;
+    el.style.left = endX+'px';
+    el.style.top = endY+'px';
+    setTimeout(()=>{ el.remove(); onLand(); }, flightMs);
+  }
+
   function playHeroShotEvent(ev, done){
     const shooterMine = ev.side === state.myUsername;
     const targetIsMe = ev.targetSide === state.myUsername;
     const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
     const heroEl = targetIsMe ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
-    const arenaEl = document.getElementById('arena');
     log(`${shooterMine?'Твой':'Кулак соперника'} Арбалетчик стреляет во вражеского героя, нанося ${ev.amount}.`);
     const applyDamage = ()=>{
       if(targetIsMe) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
       if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
     };
-    if(sourceEl && heroEl && arenaEl){
-      const arenaRect = arenaEl.getBoundingClientRect();
-      const srcRect = sourceEl.getBoundingClientRect();
-      const dstRect = heroEl.getBoundingClientRect();
-      const startX = srcRect.left + srcRect.width/2 - arenaRect.left;
-      const startY = srcRect.top + srcRect.height/2 - arenaRect.top;
-      const endX = dstRect.left + dstRect.width/2 - arenaRect.left;
-      const endY = dstRect.top + dstRect.height/2 - arenaRect.top;
-      const angle = Math.atan2(endY-startY, endX-startX) * 180/Math.PI;
-      const bolt = document.createElement('div');
-      bolt.className = 'crossbow-bolt';
-      bolt.innerHTML = CROSSBOW_BOLT_SVG;
-      bolt.style.left = startX+'px';
-      bolt.style.top = startY+'px';
-      bolt.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
-      bolt.style.transition = 'left .5s linear, top .5s linear';
-      arenaEl.appendChild(bolt);
-      // Force the browser to commit the starting left/top set above
-      // before changing to the end position below — without this, some
-      // browsers collapse both style writes into a single frame and the
-      // bolt just appears at its destination instead of visibly flying
-      // there (which is exactly the bug this was reported as).
-      void bolt.offsetWidth;
-      bolt.style.left = endX+'px';
-      bolt.style.top = endY+'px';
-      setTimeout(()=>{
-        bolt.remove();
-        applyDamage();
-        setTimeout(()=>{ renderAll(); done(); }, 900);
-      }, 520);
-    } else {
-      // Source card or hero isn't on screen right now (e.g. a rare
-      // layout edge case) — still apply the damage, just without the
-      // flight animation, so the match never stalls waiting on it.
+    flyProjectileToHero(sourceEl, heroEl, CROSSBOW_BOLT_SVG, 'crossbow-bolt', 500, ()=>{
       applyDamage();
       setTimeout(()=>{ renderAll(); done(); }, 900);
-    }
+    });
   }
 
   function playPvpRallyBuffEvent(ev, batchSize, done){
