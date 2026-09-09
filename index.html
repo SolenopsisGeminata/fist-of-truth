@@ -259,6 +259,25 @@
     color:var(--brass);
     margin:0 0 6px;
   }
+  .mode-leaderboard-btn{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    border:2px solid var(--brass-dim);
+    background:rgba(0,0,0,0.25);
+    color:var(--brass);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    margin:0 auto;
+    flex-shrink:0;
+    transition:border-color .15s, opacity .15s;
+  }
+  .mode-leaderboard-btn svg{width:23px; height:23px;}
+  .mode-leaderboard-btn:hover{border-color:var(--brass);}
+  .mode-leaderboard-btn:disabled{opacity:.3; cursor:not-allowed;}
+  .mode-leaderboard-btn:disabled:hover{border-color:var(--brass-dim);}
   .screen-tournament{
     width:100%;
     max-width:340px;
@@ -881,6 +900,69 @@
     color:var(--crimson-bright);
     text-align:center;
     margin-top:8px;
+  }
+  .leaderboard-popup{max-width:360px;}
+  .leaderboard-list{
+    max-height:360px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .leaderboard-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 8px;
+    border-radius:6px;
+    background:rgba(0,0,0,0.22);
+  }
+  .leaderboard-row.me{border:1px solid var(--brass-dim);}
+  .leaderboard-rank{
+    width:20px;
+    flex-shrink:0;
+    font-family:'Bebas Neue',cursive;
+    font-size:16px;
+    color:var(--brass-dim);
+    text-align:center;
+  }
+  .leaderboard-league-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:1px;
+    flex-shrink:0;
+    width:24px;
+  }
+  .leaderboard-league-wrap svg{width:20px; height:20px;}
+  .leaderboard-league-stars{
+    font-family:'Oswald',sans-serif;
+    font-size:8.5px;
+    color:var(--brass-dim);
+  }
+  .leaderboard-name{
+    flex:1;
+    min-width:0;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    color:var(--bone);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .leaderboard-value{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    color:var(--brass);
+    flex-shrink:0;
+  }
+  .leaderboard-empty{
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    color:var(--bone-dim);
+    padding:24px 0;
   }
   .deck-list-row.active{border-color:var(--brass); background:rgba(201,162,39,0.1);}
   .deck-list-row-name{font-size:15px; font-weight:600;}
@@ -1747,6 +1829,9 @@
 </div>
 
 <div class="screen-tournament" id="tournamentScreen" style="display:none;">
+  <button class="mode-leaderboard-btn" id="tournamentLeaderboardBtn" data-mode="tournament" title="Рейтинг" aria-label="Рейтинг">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 4H4a3 3 0 0 0 3 3.5M17 4h3a3 3 0 0 1-3 3.5"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M9 21l.6-3h4.8l.6 3"/></svg>
+  </button>
   <div class="mode-title">Турнир</div>
   <div class="league-icon-wrap" id="leagueIconWrap">
     <div class="league-icon" id="leagueIcon"></div>
@@ -1768,6 +1853,9 @@
 </div>
 
 <div class="screen-treasure-race" id="treasureRaceScreen" style="display:none;">
+  <button class="mode-leaderboard-btn" id="treasureRaceLeaderboardBtn" data-mode="treasureRace" title="Рейтинг" aria-label="Рейтинг">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 4H4a3 3 0 0 0 3 3.5M17 4h3a3 3 0 0 1-3 3.5"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M9 21l.6-3h4.8l.6 3"/></svg>
+  </button>
   <div class="mode-title">Гонка за сокровищами</div>
   <div class="treasure-race-lives" id="treasureRaceLives"></div>
   <div class="treasure-race-track-wrap" id="treasureRaceTrackWrap"></div>
@@ -1777,6 +1865,9 @@
 </div>
 
 <div class="screen-tournament" id="pveScreen" style="display:none;">
+  <button class="mode-leaderboard-btn" id="pveLeaderboardBtn" data-mode="pve" title="Рейтинг" aria-label="Рейтинг">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 4H4a3 3 0 0 0 3 3.5M17 4h3a3 3 0 0 1-3 3.5"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M9 21l.6-3h4.8l.6 3"/></svg>
+  </button>
   <div class="mode-title">PVE — против ИИ</div>
   <div class="menu-fist">
     <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
@@ -1804,6 +1895,9 @@
 </div>
 
 <div class="screen-tournament" id="pvpScreen" style="display:none;">
+  <button class="mode-leaderboard-btn" id="pvpLeaderboardBtn" data-mode="pvp" title="Рейтинг" aria-label="Рейтинг">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 4H4a3 3 0 0 0 3 3.5M17 4h3a3 3 0 0 1-3 3.5"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M9 21l.6-3h4.8l.6 3"/></svg>
+  </button>
   <div class="mode-title">PVP — против игрока</div>
   <div class="menu-fist">
     <svg viewBox="0 0 64 64"><path fill="#c9a227" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
@@ -2019,6 +2113,16 @@
   </div>
 </div>
 
+<div class="confirm-popup-overlay" id="leaderboardOverlay" style="display:none;">
+  <div class="confirm-popup leaderboard-popup">
+    <div class="confirm-popup-title" id="leaderboardTitle">Рейтинг</div>
+    <div class="leaderboard-list" id="leaderboardList"></div>
+    <div class="confirm-popup-actions">
+      <button class="btn ghost" id="leaderboardCloseBtn">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -2191,6 +2295,54 @@
     okBtn.addEventListener('click', onOk);
     overlay.addEventListener('click', onOverlayClick);
     overlay.style.display = 'flex';
+  }
+
+  // ---------- Leaderboards ----------
+  const LEADERBOARD_ENDPOINTS = { pve:'pve', pvp:'pvp', tournament:'tournament', treasureRace:'treasure-race' };
+  const LEADERBOARD_TITLES = { pve:'Рейтинг · PVE', pvp:'Рейтинг · PVP', tournament:'Рейтинг · Турнир', treasureRace:'Рейтинг · Гонка за сокровищами' };
+
+  function leaderboardRowHtml(mode, entry, rank){
+    const mine = entry.username === currentUser;
+    if(mode==='tournament'){
+      const leagueDef = LEAGUES.find(l=>l.id===entry.league) || LEAGUES[0];
+      return `<div class="leaderboard-row${mine?' me':''}">
+        <span class="leaderboard-rank">${rank}</span>
+        <span class="leaderboard-league-wrap">${leagueDef.icon}<span class="leaderboard-league-stars">${entry.league==='king'?'':('★'.repeat(entry.stars))}</span></span>
+        <span class="leaderboard-name">${entry.username}</span>
+        <span class="leaderboard-value">${entry.points}</span>
+      </div>`;
+    }
+    // pve / pvp / treasureRace all share the same "rank | name | wins" shape
+    return `<div class="leaderboard-row${mine?' me':''}">
+      <span class="leaderboard-rank">${rank}</span>
+      <span class="leaderboard-name">${entry.username}</span>
+      <span class="leaderboard-value">${entry.wins}</span>
+    </div>`;
+  }
+
+  async function openLeaderboard(mode){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    const overlay = document.getElementById('leaderboardOverlay');
+    const listEl = document.getElementById('leaderboardList');
+    document.getElementById('leaderboardTitle').textContent = LEADERBOARD_TITLES[mode] || 'Рейтинг';
+    listEl.innerHTML = '<div class="leaderboard-empty">Загрузка…</div>';
+    overlay.style.display = 'flex';
+    try{
+      const res = await fetch(apiUrl('/api/leaderboard/'+LEADERBOARD_ENDPOINTS[mode]), { headers:{ 'Authorization':'Bearer '+session.token } });
+      const data = await res.json().catch(()=>({entries:[]}));
+      const entries = data.entries || [];
+      listEl.innerHTML = entries.length
+        ? entries.map((e,i)=>leaderboardRowHtml(mode, e, i+1)).join('')
+        : '<div class="leaderboard-empty">Пока никто не попал в рейтинг.</div>';
+    } catch(e){
+      listEl.innerHTML = '<div class="leaderboard-empty">Не удалось загрузить рейтинг.</div>';
+    }
+  }
+
+  function closeLeaderboard(){
+    document.getElementById('leaderboardOverlay').style.display = 'none';
   }
 
   function renderLibraryFactionTabs(){
@@ -2532,6 +2684,11 @@
     const livesEl = document.getElementById('treasureRaceLives');
     livesEl.innerHTML = [0,1,2].map(i=>`<span class="treasure-race-life${i<s.lives?' filled':''}">❤</span>`).join('');
     document.getElementById('treasureRaceTrackWrap').innerHTML = buildTreasureRaceTrackHtml(s.wins||0);
+    // The rating table only ever shows the last fully-finished window —
+    // while one is currently open, there's nothing new to show yet, so
+    // the button stays disabled until it closes.
+    const lbBtn = document.getElementById('treasureRaceLeaderboardBtn');
+    if(lbBtn) lbBtn.disabled = !!s.windowOpen;
 
     const startBtn = document.getElementById('treasureRaceStartBtn');
     const note = document.getElementById('treasureRaceNote');
@@ -4290,6 +4447,16 @@
   });
   document.getElementById('treasureRewardClaimBtn').addEventListener('click', ()=>{
     claimTreasureRaceReward();
+  });
+  document.querySelectorAll('.mode-leaderboard-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.disabled) return;
+      openLeaderboard(btn.dataset.mode);
+    });
+  });
+  document.getElementById('leaderboardCloseBtn').addEventListener('click', closeLeaderboard);
+  document.getElementById('leaderboardOverlay').addEventListener('click', (e)=>{
+    if(e.target.id==='leaderboardOverlay') closeLeaderboard();
   });
   document.getElementById('tournamentBtn').addEventListener('click', async ()=>{
     document.getElementById('tournamentNote').textContent = '';
