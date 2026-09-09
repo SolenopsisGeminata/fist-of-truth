@@ -2635,7 +2635,20 @@
   // 11:00, 15:00, 19:00 and 23:00 server time. Status/progress/lives/gold
   // are entirely server-owned (GET /api/treasure-race) — this just
   // renders whatever it's told, same convention as PVE/PVP/Tournament.
-  const TREASURE_RACE_REWARDS = [50,35,35,100,75,75,200,125,125,300,150,150,500];
+  // Two separate parts per node, matching how they're actually displayed:
+  // TREASURE_RACE_REGULAR is the per-tier amount shown on the connecting
+  // line (nodes 2-3-4 share 35, 5-6-7 share 75, etc. — including the big
+  // node at the end of each group of 3), and TREASURE_RACE_BONUS is the
+  // EXTRA amount only the big milestone nodes (4/7/10/13) also carry,
+  // shown above the big circle itself rather than on the line. Node 1 is
+  // its own special case — a single flat reward with no preceding
+  // segment to put it on, shown above it exactly like a bonus would be.
+  // The server's own TREASURE_RACE_REWARDS combines both parts into one
+  // total per node for the actual gold payout — regular+bonus here must
+  // stay in sync with that sum.
+  const TREASURE_RACE_NODE1_REWARD = 50;
+  const TREASURE_RACE_REGULAR = {2:35,3:35,4:35, 5:75,6:75,7:75, 8:125,9:125,10:125, 11:150,12:150,13:150};
+  const TREASURE_RACE_BONUS = {4:100, 7:200, 10:300, 13:500};
   const TREASURE_RACE_BIG_NODES = new Set([1,4,7,10,13]);
   let treasureRaceStatus = { windowOpen:false, wins:0, lives:3, gold:0, status:'active', rewardPending:false, windowEndsAt:null, nextWindowStart:null };
 
@@ -2654,17 +2667,24 @@
   // 13 nodes joined by 12 segments, node 1 at the very start of the line
   // (no leading stub) — its own reward is shown just above it instead,
   // since there's no preceding segment to put it on. Every other node's
-  // reward sits on the segment leading up to it. A node/segment brightens
-  // ("won") the moment the match it represents has actually been won.
+  // REGULAR reward sits on the segment leading up to it; the big
+  // milestone nodes (4/7/10/13) additionally show their bonus reward
+  // above the circle itself. A node/segment brightens ("won") the moment
+  // the match it represents has actually been won.
   function buildTreasureRaceTrackHtml(wins){
     let html = '<div class="treasure-race-track">';
     for(let n=1; n<=13; n++){
       const isBig = TREASURE_RACE_BIG_NODES.has(n);
       const isWon = wins >= n;
-      const firstNodeReward = n===1 ? `<span class="treasure-race-segment-label">+${TREASURE_RACE_REWARDS[0]}</span>` : '';
-      html += `<div class="treasure-race-node${isBig?' big':''}${isWon?' won':''}">${firstNodeReward}<span class="treasure-race-node-label">${n}</span></div>`;
+      let nodeExtra = '';
+      if(n===1){
+        nodeExtra = `<span class="treasure-race-segment-label">+${TREASURE_RACE_NODE1_REWARD}</span>`;
+      } else if(TREASURE_RACE_BONUS[n]){
+        nodeExtra = `<span class="treasure-race-segment-label">+${TREASURE_RACE_BONUS[n]}</span>`;
+      }
+      html += `<div class="treasure-race-node${isBig?' big':''}${isWon?' won':''}">${nodeExtra}<span class="treasure-race-node-label">${n}</span></div>`;
       if(n < 13){
-        const reward = TREASURE_RACE_REWARDS[n]; // reward for the (n+1)th win
+        const reward = TREASURE_RACE_REGULAR[n+1];
         const segWon = wins >= n+1;
         html += `<div class="treasure-race-segment${segWon?' won':''}"><span class="treasure-race-segment-label">+${reward}</span></div>`;
       }
