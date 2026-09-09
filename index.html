@@ -269,6 +269,16 @@
     padding:36px 20px 20px;
     margin:0 auto;
   }
+  .screen-treasure-race{
+    width:100%;
+    max-width:560px;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:14px;
+    padding:36px 20px 20px;
+    margin:0 auto;
+  }
   .league-icon-wrap{
     position:relative;
     width:128px;
@@ -308,6 +318,75 @@
     align-items:flex-start;
     gap:8px;
   }
+  .treasure-race-lives{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:4px 0 28px;
+    font-size:22px;
+    line-height:1;
+  }
+  .treasure-race-life{opacity:.25; filter:grayscale(1);}
+  .treasure-race-life.filled{opacity:1; filter:none;}
+  .treasure-race-track-wrap{
+    width:100%;
+    max-width:560px;
+    margin:0 auto 28px;
+    padding:0 6px;
+    overflow-x:auto;
+  }
+  .treasure-race-track{
+    position:relative;
+    display:flex;
+    align-items:center;
+    min-height:64px;
+    min-width:340px;
+  }
+  .treasure-race-segment{
+    flex:1;
+    min-width:14px;
+    height:3px;
+    background:var(--line);
+    position:relative;
+    transition:background .3s;
+  }
+  .treasure-race-segment.won{background:var(--brass);}
+  .treasure-race-segment-label{
+    position:absolute;
+    top:-19px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Oswald',sans-serif;
+    font-size:9px;
+    color:var(--bone-dim);
+    white-space:nowrap;
+  }
+  .treasure-race-segment.won .treasure-race-segment-label{color:var(--brass);}
+  .treasure-race-node.won .treasure-race-segment-label{color:var(--brass);}
+  .treasure-race-node{
+    width:15px;
+    height:15px;
+    border-radius:50%;
+    background:#2a1e14;
+    border:2px solid var(--line);
+    flex-shrink:0;
+    position:relative;
+    z-index:1;
+    transition:background .3s, border-color .3s, box-shadow .3s;
+  }
+  .treasure-race-node.big{width:21px; height:21px;}
+  .treasure-race-node.won{background:var(--brass); border-color:#f3e6bd; box-shadow:0 0 8px rgba(201,162,39,.7);}
+  .treasure-race-node-label{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Oswald',sans-serif;
+    font-size:9px;
+    color:var(--bone-dim);
+  }
+  .treasure-race-node.won .treasure-race-node-label{color:var(--brass);}
+
   .league-progress-label{
     font-family:'Oswald',sans-serif;
     font-size:12px;
@@ -1662,6 +1741,7 @@
   <div class="mode-title">Выбери режим</div>
   <button class="btn btn-menu" id="pveBtn">PVE — против ИИ</button>
   <button class="btn ghost btn-menu" id="pvpBtn">PVP — против игрока</button>
+  <button class="btn ghost btn-menu" id="treasureRaceBtn">Гонка за сокровищами</button>
   <button class="btn ghost btn-menu" id="tournamentBtn">Турнир</button>
   <button class="btn ghost btn-menu" id="modeBackBtn">Назад</button>
 </div>
@@ -1685,6 +1765,15 @@
   <button class="btn btn-menu" id="tournamentStartBtn">Начать</button>
   <div class="tournament-note" id="tournamentNote"></div>
   <button class="btn ghost btn-menu" id="tournamentBackBtn">Назад</button>
+</div>
+
+<div class="screen-treasure-race" id="treasureRaceScreen" style="display:none;">
+  <div class="mode-title">Гонка за сокровищами</div>
+  <div class="treasure-race-lives" id="treasureRaceLives"></div>
+  <div class="treasure-race-track-wrap" id="treasureRaceTrackWrap"></div>
+  <button class="btn btn-menu" id="treasureRaceStartBtn">Начать</button>
+  <div class="tournament-note" id="treasureRaceNote"></div>
+  <button class="btn ghost btn-menu" id="treasureRaceBackBtn">Назад</button>
 </div>
 
 <div class="screen-tournament" id="pveScreen" style="display:none;">
@@ -1916,6 +2005,16 @@
     <div class="confirm-popup-text" id="infoPopupText"></div>
     <div class="confirm-popup-actions">
       <button class="btn" id="infoPopupOkBtn">Понятно</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-popup-overlay" id="treasureRewardOverlay" style="display:none;">
+  <div class="confirm-popup">
+    <div class="confirm-popup-title">Гонка за сокровищами завершена</div>
+    <div class="confirm-popup-text" id="treasureRewardText"></div>
+    <div class="confirm-popup-actions">
+      <button class="btn" id="treasureRewardClaimBtn">Забрать награду</button>
     </div>
   </div>
 </div>
@@ -2379,6 +2478,132 @@
     }
   }
 
+  // ---------- Treasure Race (Гонка за сокровищами) ----------
+  // A time-limited event mode: open 1 hour starting at 03:00, 07:00,
+  // 11:00, 15:00, 19:00 and 23:00 server time. Status/progress/lives/gold
+  // are entirely server-owned (GET /api/treasure-race) — this just
+  // renders whatever it's told, same convention as PVE/PVP/Tournament.
+  const TREASURE_RACE_REWARDS = [50,35,35,100,75,75,200,125,125,300,150,150,500];
+  const TREASURE_RACE_BIG_NODES = new Set([1,4,7,10,13]);
+  let treasureRaceStatus = { windowOpen:false, wins:0, lives:3, gold:0, status:'active', rewardPending:false, windowEndsAt:null, nextWindowStart:null };
+
+  async function fetchTreasureRaceStatus(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      const res = await fetch(apiUrl('/api/treasure-race'), { headers: { 'Authorization': 'Bearer '+session.token } });
+      if(!res.ok) return;
+      const data = await res.json();
+      treasureRaceStatus = data;
+    } catch(e){ /* keep last known / default status */ }
+  }
+
+  // 13 nodes joined by 12 segments, node 1 at the very start of the line
+  // (no leading stub) — its own reward is shown just above it instead,
+  // since there's no preceding segment to put it on. Every other node's
+  // reward sits on the segment leading up to it. A node/segment brightens
+  // ("won") the moment the match it represents has actually been won.
+  function buildTreasureRaceTrackHtml(wins){
+    let html = '<div class="treasure-race-track">';
+    for(let n=1; n<=13; n++){
+      const isBig = TREASURE_RACE_BIG_NODES.has(n);
+      const isWon = wins >= n;
+      const firstNodeReward = n===1 ? `<span class="treasure-race-segment-label">+${TREASURE_RACE_REWARDS[0]}</span>` : '';
+      html += `<div class="treasure-race-node${isBig?' big':''}${isWon?' won':''}">${firstNodeReward}<span class="treasure-race-node-label">${n}</span></div>`;
+      if(n < 13){
+        const reward = TREASURE_RACE_REWARDS[n]; // reward for the (n+1)th win
+        const segWon = wins >= n+1;
+        html += `<div class="treasure-race-segment${segWon?' won':''}"><span class="treasure-race-segment-label">+${reward}</span></div>`;
+      }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function formatUtcHm(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')+' UTC';
+  }
+
+  function renderTreasureRaceScreen(){
+    const s = treasureRaceStatus;
+    const livesEl = document.getElementById('treasureRaceLives');
+    livesEl.innerHTML = [0,1,2].map(i=>`<span class="treasure-race-life${i<s.lives?' filled':''}">❤</span>`).join('');
+    document.getElementById('treasureRaceTrackWrap').innerHTML = buildTreasureRaceTrackHtml(s.wins||0);
+
+    const startBtn = document.getElementById('treasureRaceStartBtn');
+    const note = document.getElementById('treasureRaceNote');
+    if(!s.windowOpen){
+      startBtn.style.display = 'none';
+      note.textContent = `Режим закрыт. Следующее открытие — в ${formatUtcHm(s.nextWindowStart)}.`;
+    } else if(s.rewardPending){
+      startBtn.style.display = 'none';
+      note.textContent = 'Заберите награду, чтобы начать новый забег.';
+    } else if(s.status!=='active'){
+      startBtn.style.display = 'none';
+      note.textContent = 'В этом окне вы уже не можете участвовать.';
+    } else {
+      startBtn.style.display = '';
+      note.textContent = `Открыто до ${formatUtcHm(s.windowEndsAt)}.`;
+    }
+  }
+
+  // Opens the screen, refreshes status, and — if a finished run is
+  // sitting there unclaimed — immediately shows the reward popup on top
+  // of it, same as the spec: the player must see (and dismiss) that
+  // notification before anything else, and the gold is only actually
+  // credited once they do.
+  async function openTreasureRaceScreen(){
+    await fetchTreasureRaceStatus();
+    renderTreasureRaceScreen();
+    showScreen('treasureRace');
+    if(treasureRaceStatus.rewardPending) showTreasureRaceRewardPopup();
+  }
+
+  function showTreasureRaceRewardPopup(){
+    const overlay = document.getElementById('treasureRewardOverlay');
+    document.getElementById('treasureRewardText').textContent =
+      `Ваша награда в Гонке за сокровищами: ${treasureRaceStatus.gold} золотых.`;
+    overlay.style.display = 'flex';
+  }
+
+  async function claimTreasureRaceReward(){
+    if(!serverConfigured()) return;
+    const session = loadSession();
+    if(!session || !session.token) return;
+    try{
+      await fetch(apiUrl('/api/treasure-race/claim'), {
+        method:'POST',
+        headers:{ 'Authorization':'Bearer '+session.token }
+      });
+    } catch(e){ /* the reward stays pending server-side; next visit will retry */ }
+    document.getElementById('treasureRewardOverlay').style.display = 'none';
+    if(session && session.token) await fetchResources(session.token);
+    await fetchTreasureRaceStatus();
+    renderTreasureRaceScreen();
+  }
+
+  function startTreasureRaceSearch(){
+    const note = document.getElementById('searchingNote');
+    searchMode = 'treasureRace';
+    if(!serverConfigured() || !onlineSocket || onlineSocket.readyState!==WebSocket.OPEN){
+      if(note) note.textContent = 'Сервер не настроен или недоступен — Гонка за сокровищами сейчас невозможна.';
+      showScreen('searching');
+      return;
+    }
+    activeDeckReadyForMatch().then(ready=>{
+      if(!ready) return;
+      if(note) note.textContent = 'Ищем соперника для Гонки за сокровищами…';
+      showScreen('searching');
+      onlineSocket.send(JSON.stringify({
+        type:'start_treasure_race_search',
+        username: currentUser || 'Игрок'
+      }));
+    });
+  }
+
   // ---------- PVE progress screen ----------
   // Populated from GET /api/pve-progress each time the screen is opened —
   // matchesPlayed/matchesRequired/reward are the account's real standing
@@ -2637,8 +2862,8 @@
   }
 
   const ACTIVE_MATCH_KEY = 'fistDuelActiveMatch';
-  function saveActiveMatch(matchId, opponentName, mode, isTournament){
-    try{ localStorage.setItem(ACTIVE_MATCH_KEY, JSON.stringify({matchId, opponentName, mode, isTournament})); } catch(e){}
+  function saveActiveMatch(matchId, opponentName, mode, isTournament, isTreasureRace){
+    try{ localStorage.setItem(ACTIVE_MATCH_KEY, JSON.stringify({matchId, opponentName, mode, isTournament, isTreasureRace})); } catch(e){}
   }
   function loadActiveMatch(){
     try{
@@ -2687,7 +2912,7 @@
   // are functionally identical from here on: the server owns the decks,
   // hands, boards, and all combat math; the client just renders whatever
   // it's sent.
-  function initNetworkMatch(matchId, opponentName, mode, isTournament){
+  function initNetworkMatch(matchId, opponentName, mode, isTournament, isTreasureRace){
     seenUnitUids = new Set(); // fresh match — every unit should pop in the first time it's shown
     selectedMoveUnit = null;
     state = {
@@ -2705,16 +2930,17 @@
       matchId,
       opponentName: opponentName || (mode==='pve' ? 'ИИ' : 'Соперник'),
       myUsername: currentUser || 'Игрок',
-      isTournamentMatch: !!isTournament
+      isTournamentMatch: !!isTournament,
+      isTreasureRaceMatch: !!isTreasureRace
     };
-    saveActiveMatch(matchId, state.opponentName, state.mode, state.isTournamentMatch);
+    saveActiveMatch(matchId, state.opponentName, state.mode, state.isTournamentMatch, state.isTreasureRaceMatch);
     renderAll();
     log(`Матч против ${state.opponentName} начинается…`);
   }
 
   // Legacy name kept as an alias — some call sites still refer to it.
-  function initPvpMatch(matchId, opponentName, mode, isTournament){
-    initNetworkMatch(matchId, opponentName, mode, isTournament);
+  function initPvpMatch(matchId, opponentName, mode, isTournament, isTreasureRace){
+    initNetworkMatch(matchId, opponentName, mode, isTournament, isTreasureRace);
   }
 
   // Applies a full authoritative snapshot from the server. Used both for
@@ -3255,7 +3481,9 @@
     if(session && session.token) fetchResources(session.token);
     document.getElementById('restartBtn').addEventListener('click', async ()=>{
       overlay.remove();
-      if(state.isTournamentMatch){
+      if(state.isTreasureRaceMatch){
+        await openTreasureRaceScreen();
+      } else if(state.isTournamentMatch){
         // Tournament matches always return to the league screen, not the
         // generic mode picker — refresh first so the just-earned points
         // (or loss) are already reflected.
@@ -3279,7 +3507,9 @@
     });
     document.getElementById('exitBtn').addEventListener('click', async ()=>{
       overlay.remove();
-      if(state.isTournamentMatch){
+      if(state.isTreasureRaceMatch){
+        await openTreasureRaceScreen();
+      } else if(state.isTournamentMatch){
         await fetchTournamentStatus();
         renderTournamentScreen();
         showScreen('tournament');
@@ -3668,6 +3898,7 @@
     deck: document.getElementById('deckBuilder'),
     arena: document.getElementById('arena'),
     tournament: document.getElementById('tournamentScreen'),
+    treasureRace: document.getElementById('treasureRaceScreen'),
     library: document.getElementById('libraryScreen'),
     shop: document.getElementById('shopScreen'),
   };
@@ -3683,6 +3914,7 @@
     screens.deck.style.display = name==='deck' ? 'block' : 'none';
     screens.arena.style.display = name==='arena' ? 'block' : 'none';
     screens.tournament.style.display = name==='tournament' ? 'flex' : 'none';
+    screens.treasureRace.style.display = name==='treasureRace' ? 'flex' : 'none';
     screens.library.style.display = name==='library' ? 'flex' : 'none';
     screens.shop.style.display = name==='shop' ? 'flex' : 'none';
     registerNavBtn.style.display = name==='login' ? 'block' : 'none';
@@ -4047,6 +4279,18 @@
   document.getElementById('pvpBackBtn').addEventListener('click', ()=>{
     showScreen('mode');
   });
+  document.getElementById('treasureRaceBtn').addEventListener('click', async ()=>{
+    await openTreasureRaceScreen();
+  });
+  document.getElementById('treasureRaceBackBtn').addEventListener('click', ()=>{
+    showScreen('mode');
+  });
+  document.getElementById('treasureRaceStartBtn').addEventListener('click', ()=>{
+    startTreasureRaceSearch();
+  });
+  document.getElementById('treasureRewardClaimBtn').addEventListener('click', ()=>{
+    claimTreasureRaceReward();
+  });
   document.getElementById('tournamentBtn').addEventListener('click', async ()=>{
     document.getElementById('tournamentNote').textContent = '';
     await fetchTournamentStatus();
@@ -4392,7 +4636,7 @@
     if(!active || !currentUser) return;
     if(!onlineSocket || onlineSocket.readyState!==WebSocket.OPEN) return;
     resumeAttempted = true;
-    initNetworkMatch(active.matchId, active.opponentName, active.mode, active.isTournament);
+    initNetworkMatch(active.matchId, active.opponentName, active.mode, active.isTournament, active.isTreasureRace);
     showScreen('arena');
     onlineSocket.send(JSON.stringify({
       type:'resume_match',
@@ -4411,12 +4655,18 @@
       if(note) note.textContent = 'Ты в очереди — ждём второго игрока.';
       return;
     }
+    if(data.type === 'treasure_race_closed'){
+      openTreasureRaceScreen().then(()=>{
+        showInfoPopup('Гонка за сокровищами', 'Режим сейчас недоступен — окно закрылось или вы уже не можете участвовать в этом заходе.');
+      });
+      return;
+    }
     if(data.type === 'action_rejected'){
       log('Сервер отклонил действие (' + (data.reason || 'неизвестная причина') + ').');
       return;
     }
     if(data.type === 'match_found'){
-      initNetworkMatch(data.matchId, data.opponent, data.mode, searchMode==='tournament');
+      initNetworkMatch(data.matchId, data.opponent, data.mode, searchMode==='tournament', searchMode==='treasureRace');
       showScreen('arena');
       return;
     }
@@ -4535,7 +4785,10 @@
 
   function cancelMatchmaking(){
     if(onlineSocket && onlineSocket.readyState===WebSocket.OPEN){
-      onlineSocket.send(JSON.stringify({ type: searchMode==='tournament' ? 'cancel_tournament_search' : 'cancel_search' }));
+      const type = searchMode==='tournament' ? 'cancel_tournament_search'
+        : searchMode==='treasureRace' ? 'cancel_treasure_race_search'
+        : 'cancel_search';
+      onlineSocket.send(JSON.stringify({ type }));
     }
   }
 
