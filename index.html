@@ -1894,6 +1894,16 @@
   </div>
 </div>
 
+<div class="confirm-popup-overlay" id="infoPopupOverlay" style="display:none;">
+  <div class="confirm-popup">
+    <div class="confirm-popup-title" id="infoPopupTitle"></div>
+    <div class="confirm-popup-text" id="infoPopupText"></div>
+    <div class="confirm-popup-actions">
+      <button class="btn" id="infoPopupOkBtn">Понятно</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -2044,6 +2054,26 @@
     function onOverlayClick(e){ if(e.target.id==='confirmPopupOverlay') cleanup(); }
     yesBtn.addEventListener('click', onYes);
     noBtn.addEventListener('click', onNo);
+    overlay.addEventListener('click', onOverlayClick);
+    overlay.style.display = 'flex';
+  }
+
+  // A purely informational popup — one "Понятно" button, no choice to
+  // make — for messages that just need acknowledging (e.g. the active
+  // deck isn't a legal 30-card deck yet).
+  function showInfoPopup(title, text){
+    const overlay = document.getElementById('infoPopupOverlay');
+    document.getElementById('infoPopupTitle').textContent = title;
+    document.getElementById('infoPopupText').textContent = text;
+    const okBtn = document.getElementById('infoPopupOkBtn');
+    function cleanup(){
+      overlay.style.display = 'none';
+      okBtn.removeEventListener('click', onOk);
+      overlay.removeEventListener('click', onOverlayClick);
+    }
+    function onOk(){ cleanup(); }
+    function onOverlayClick(e){ if(e.target.id==='infoPopupOverlay') cleanup(); }
+    okBtn.addEventListener('click', onOk);
     overlay.addEventListener('click', onOverlayClick);
     overlay.style.display = 'flex';
   }
@@ -2572,6 +2602,22 @@
 
   function totalDeckCount(counts){
     return Object.values(counts).reduce((a,b)=>a+b,0);
+  }
+
+  // Refuses to start a match unless the active deck has exactly 30 cards
+  // — refetches fresh deck data first, in case it changed since the deck
+  // screen was last visited (a card sold, or edited from another tab).
+  // Editing decks (including the incomplete one) always stays available;
+  // this only blocks actually starting a match with one.
+  async function activeDeckReadyForMatch(){
+    await fetchDecks();
+    const deck = currentDecks.find(d=>d.id===activeDeckId) || currentDecks[0];
+    const total = totalDeckCount((deck && deck.counts) || {});
+    if(total < 30){
+      showInfoPopup('Колода не готова', 'В текущей активной колоде менее 30 карт. Невозможно начать новый матч.');
+      return false;
+    }
+    return true;
   }
 
   const ACTIVE_MATCH_KEY = 'fistDuelActiveMatch';
@@ -4410,10 +4456,13 @@
       log('Сервер не настроен или недоступен — PVE сейчас невозможен.');
       return;
     }
-    onlineSocket.send(JSON.stringify({
-      type:'start_pve',
-      username: currentUser || 'Игрок'
-    }));
+    activeDeckReadyForMatch().then(ready=>{
+      if(!ready) return;
+      onlineSocket.send(JSON.stringify({
+        type:'start_pve',
+        username: currentUser || 'Игрок'
+      }));
+    });
   }
 
   let searchMode = 'pvp'; // 'pvp' | 'tournament' — decides what Cancel actually sends
@@ -4426,12 +4475,15 @@
       showScreen('searching');
       return;
     }
-    if(note) note.textContent = 'Подключаемся к очереди…';
-    showScreen('searching');
-    onlineSocket.send(JSON.stringify({
-      type:'find_match',
-      username: currentUser || 'Игрок'
-    }));
+    activeDeckReadyForMatch().then(ready=>{
+      if(!ready) return;
+      if(note) note.textContent = 'Подключаемся к очереди…';
+      showScreen('searching');
+      onlineSocket.send(JSON.stringify({
+        type:'find_match',
+        username: currentUser || 'Игрок'
+      }));
+    });
   }
 
   function startTournamentSearch(){
@@ -4442,12 +4494,15 @@
       showScreen('searching');
       return;
     }
-    if(note) note.textContent = 'Ищем соперника для турнирного боя…';
-    showScreen('searching');
-    onlineSocket.send(JSON.stringify({
-      type:'start_tournament_search',
-      username: currentUser || 'Игрок'
-    }));
+    activeDeckReadyForMatch().then(ready=>{
+      if(!ready) return;
+      if(note) note.textContent = 'Ищем соперника для турнирного боя…';
+      showScreen('searching');
+      onlineSocket.send(JSON.stringify({
+        type:'start_tournament_search',
+        username: currentUser || 'Игрок'
+      }));
+    });
   }
 
   function cancelMatchmaking(){
