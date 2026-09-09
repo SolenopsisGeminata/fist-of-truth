@@ -1782,7 +1782,7 @@
       <svg class="fist-icon" viewBox="0 0 64 64"><path fill="#e04a3f" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
       <div class="hero-info">
         <div class="hero-name">Ты</div>
-        <div class="hpbar-wrap"><div class="hpbar" id="playerHpBar" style="width:100%"></div><div class="hp-label" id="playerHpLabel">30/30</div></div>
+        <div class="hpbar-wrap"><div class="hpbar" id="playerHpBar" style="width:100%"></div><div class="hp-label" id="playerHpLabel">30</div></div>
       </div>
     </div>
     <div class="mana-center">
@@ -1792,7 +1792,7 @@
       <svg class="fist-icon" viewBox="0 0 64 64"><path fill="#5c85a8" d="M20 26c0-3 2-5 5-5h2v-4a5 5 0 0 1 10 0v4h2v-2a5 5 0 0 1 10 0v2h1a5 5 0 0 1 5 5v10c0 8-6 15-14 16v6H26v-6c-4-1-6-4-6-8V26z"/></svg>
       <div class="hero-info">
         <div class="hero-name">Соперник</div>
-        <div class="hpbar-wrap"><div class="hpbar" id="enemyHpBar" style="width:100%"></div><div class="hp-label" id="enemyHpLabel">30/30</div></div>
+        <div class="hpbar-wrap"><div class="hpbar" id="enemyHpBar" style="width:100%"></div><div class="hp-label" id="enemyHpLabel">30</div></div>
       </div>
     </div>
   </div>
@@ -2857,8 +2857,8 @@
     el.enemyHpBar.style.width = ePct+'%';
     el.playerHpBar.classList.toggle('overheal', state.playerHp>START_HP);
     el.enemyHpBar.classList.toggle('overheal', state.enemyHp>START_HP);
-    el.playerHpLabel.textContent = `${Math.max(0,state.playerHp)}/${START_HP}`;
-    el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}/${START_HP}`;
+    el.playerHpLabel.textContent = `${Math.max(0,state.playerHp)}`;
+    el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}`;
     const enemyNameEl = document.querySelector('.hero.enemy .hero-name');
     if(enemyNameEl) enemyNameEl.textContent = state.opponentName || 'Соперник';
   }
@@ -3280,8 +3280,8 @@
       const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
       log(`«${label}» (${mine?'твой':'соперника'}) исцеляет героя на ${ev.healAmount}${ev.drew?' и добавляет карту в руку':''}.`);
       flyProjectileToHero(sourceEl, heroEl, HEAL_ORB_SVG, 'heal-orb', 500, ()=>{
-        if(mine) state.playerHp = Math.min(START_HP, state.playerHp + ev.healAmount);
-        else state.enemyHp = Math.min(START_HP, state.enemyHp + ev.healAmount);
+        if(mine) state.playerHp += ev.healAmount;
+        else state.enemyHp += ev.healAmount;
         if(heroEl) spawnDamageNumber(heroEl, '+'+ev.healAmount, 'heal');
         setTimeout(()=>{ renderAll(); done(); }, 900);
       });
@@ -3360,8 +3360,8 @@
     const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
     log(`${mine?'Твой':'Кулак соперника'} герой исцеляется на ${ev.amount}.`);
     flyProjectileToHero(sourceEl, heroEl, HEAL_ORB_SVG, 'heal-orb', 500, ()=>{
-      if(mine) state.playerHp = Math.min(START_HP, state.playerHp + ev.amount);
-      else state.enemyHp = Math.min(START_HP, state.enemyHp + ev.amount);
+      if(mine) state.playerHp += ev.amount;
+      else state.enemyHp += ev.amount;
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
       setTimeout(()=>{ renderAll(); done(); }, 900);
     });
@@ -3511,8 +3511,8 @@
           const heroEl = a.isMe ? document.querySelector('.hero.enemy') : document.querySelector('.hero.player');
           if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+a.dmg, 'dmg'); }
           if(a.lifesteal>0){
-            if(a.isMe) state.playerHp = Math.min(START_HP, state.playerHp + a.lifesteal);
-            else state.enemyHp = Math.min(START_HP, state.enemyHp + a.lifesteal);
+            if(a.isMe) state.playerHp = state.playerHp + a.lifesteal;
+            else state.enemyHp = state.enemyHp + a.lifesteal;
             const ownHeroEl = a.isMe ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
             if(ownHeroEl) spawnDamageNumber(ownHeroEl, '+'+a.lifesteal, 'heal');
           }
