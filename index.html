@@ -56,6 +56,18 @@
     color:var(--bone-dim);
     margin-bottom:16px;
   }
+  .utc-clock{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:var(--brass-dim);
+    margin:-8px 0 16px;
+  }
+  .utc-clock-icon{width:13px; height:13px; flex-shrink:0;}
 
   .resource-bar{
     display:flex;
@@ -1555,6 +1567,10 @@
 <div class="app-header" id="appHeader">
   <h1>Хватка</h1>
   <div class="subtitle">Дуэль кулаков · карточная тактика</div>
+  <div class="utc-clock" id="utcClock">
+    <svg class="utc-clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+    <span id="utcClockText">00:00:00 UTC</span>
+  </div>
 </div>
 
 <div class="resource-bar" id="resourceBar" style="display:none;">
@@ -4529,6 +4545,22 @@
   });
 
   // ---------- init ----------
+  // A small UTC clock shown in the header on every screen except the
+  // match itself (appHeader is already hidden there — see showScreen).
+  // Ticks every second; the shop's own daily reset also runs on UTC, so
+  // this doubles as a visible cue for when that happens.
+  function updateUtcClock(){
+    const el = document.getElementById('utcClockText');
+    if(!el) return;
+    const now = new Date();
+    const hh = String(now.getUTCHours()).padStart(2,'0');
+    const mm = String(now.getUTCMinutes()).padStart(2,'0');
+    const ss = String(now.getUTCSeconds()).padStart(2,'0');
+    el.textContent = `${hh}:${mm}:${ss} UTC`;
+  }
+  updateUtcClock();
+  setInterval(updateUtcClock, 1000);
+
   tryAutoLogin();
 })();
 </script>
