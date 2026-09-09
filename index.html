@@ -1841,7 +1841,7 @@
     {id:'c3', name:'Стражник', type:'creature', cost:2, atk:2, hp:1, rarity:'common', desc:'Гвардеец на грани — бьёт вдвое сильнее, но падает от первого же ответа.', art:'guard', faction:'empire'},
     {id:'c4', name:'Наёмник', type:'creature', cost:3, atk:3, hp:3, rarity:'common', desc:'Сбалансированный боец.', art:'dagger', faction:'empire'},
     {id:'c6', name:'Молотобоец', type:'creature', cost:4, atk:5, hp:2, rarity:'common', desc:'Один взмах молота сокрушает всё на пути — но брони на второй удар уже не остаётся.', art:'hammer', faction:'empire'},
-    {id:'c7', name:'Каменная Стена', type:'creature', cost:4, atk:2, hp:9, rarity:'rare', desc:'Почти не падает.', art:'wall', faction:'empire'},
+    {id:'c7', name:'Каменная Стена', type:'creature', cost:2, atk:0, hp:4, wallGrow:true, rarity:'rare', desc:'Не атакует, но с каждым ходом становится крепче — в конце каждого хода навсегда получает +2 к здоровью.', art:'wall', faction:'empire'},
     {id:'c8', name:'Паладин', type:'creature', cost:5, atk:4, hp:2, rallyBuff:true, rarity:'rare', desc:'Благословляет соратников при выходе на поле — все союзники, кроме него самого, получают +2 к атаке и здоровью.', art:'paladin', faction:'empire'},
     {id:'c10', name:'Ополченец', type:'creature', cost:1, atk:1, hp:1, rarity:'common', desc:'Наскоро вооружённый крестьянин. Числом, а не умением.', art:'militia', faction:'empire'},
     {id:'c11', name:'Страж дворца', type:'creature', cost:2, atk:2, hp:2, lifesteal:true, rarity:'rare', desc:'Каждый пробитый удар по сопернику придаёт сил защитнику — исцеляет своего героя на значение атаки.', art:'palaceguard', faction:'empire'},
@@ -3436,17 +3436,29 @@
     const board = mine ? state.playerBoard : state.enemyBoard;
     const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
     const targetEl = findUnitEl(ev.laneIdx, mine, ev.targetDepth);
+    // Skip a zero part entirely (e.g. Каменная Стена only ever grows hp,
+    // never atk) rather than showing a meaningless "+0 атаки".
+    const parts = [];
+    if(ev.buffAtk) parts.push(`+${ev.buffAtk} атаки`);
+    if(ev.buffHp) parts.push(`+${ev.buffHp} здоровья`);
+    const phrase = parts.join(', ');
     if(batchSize>1){
-      log(`Союзники${mine?' твои':' соперника'} получают подкрепление: +${ev.buffAtk} атаки, +${ev.buffHp} здоровья.`);
+      log(`Союзники${mine?' твои':' соперника'} получают подкрепление: ${phrase}.`);
     } else {
-      log(`Союзник${mine?' твой':' соперника'}${unit? ' — '+unit.name:''} получает подкрепление: +${ev.buffAtk} атаки, +${ev.buffHp} здоровья.`);
+      log(`Союзник${mine?' твой':' соперника'}${unit? ' — '+unit.name:''} получает подкрепление: ${phrase}.`);
     }
     setTimeout(()=>{
       if(unit){
         unit.atk += ev.buffAtk;
         unit.hp += ev.buffHp;
         unit.maxHp += ev.buffHp;
-        if(targetEl){ spawnSpellBurst(targetEl,'heal'); spawnDamageNumber(targetEl, `+${ev.buffAtk}⚔ +${ev.buffHp}♥`, 'heal'); }
+        if(targetEl){
+          const popupParts = [];
+          if(ev.buffAtk) popupParts.push(`+${ev.buffAtk}⚔`);
+          if(ev.buffHp) popupParts.push(`+${ev.buffHp}♥`);
+          spawnSpellBurst(targetEl,'heal');
+          spawnDamageNumber(targetEl, popupParts.join(' '), 'heal');
+        }
       }
       setTimeout(()=>{ renderAll(); done(); }, 1350);
     }, 450);
