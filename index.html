@@ -3294,12 +3294,16 @@
       bolt.style.left = startX+'px';
       bolt.style.top = startY+'px';
       bolt.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+      bolt.style.transition = 'left .5s linear, top .5s linear';
       arenaEl.appendChild(bolt);
-      requestAnimationFrame(()=>{
-        bolt.style.transition = 'left .5s linear, top .5s linear';
-        bolt.style.left = endX+'px';
-        bolt.style.top = endY+'px';
-      });
+      // Force the browser to commit the starting left/top set above
+      // before changing to the end position below — without this, some
+      // browsers collapse both style writes into a single frame and the
+      // bolt just appears at its destination instead of visibly flying
+      // there (which is exactly the bug this was reported as).
+      void bolt.offsetWidth;
+      bolt.style.left = endX+'px';
+      bolt.style.top = endY+'px';
       setTimeout(()=>{
         bolt.remove();
         applyDamage();
