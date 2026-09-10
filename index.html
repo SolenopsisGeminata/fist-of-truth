@@ -1516,6 +1516,23 @@
     pointer-events:none;
     z-index:9;
   }
+  .lightning-strike{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    z-index:12;
+    animation: lightning-flash .45s ease-out;
+  }
+  .lightning-strike svg{width:55%; height:150%;}
+  @keyframes lightning-flash{
+    0%{opacity:0; transform:scaleY(.4);}
+    12%{opacity:1; transform:scaleY(1);}
+    65%{opacity:1;}
+    100%{opacity:0;}
+  }
   .spell-burst svg{
     width:135%;
     height:135%;
@@ -2416,6 +2433,7 @@
     {id:'s2', name:'Родник', type:'spell', cost:2, healHero:2, drawCard:1, rarity:'rare', desc:'Применяется на любую ячейку поля боя — свободную или занятую кем угодно. Восстанавливает своему герою 2 здоровья и добавляет в руку 1 карту из колоды.', art:'spring', faction:'empire'},
     {id:'s3', name:'Доспехи', type:'spell', cost:3, buffAtk:2, buffHp:2, buffArmor:1, rarity:'epic', desc:'Облачает выбранного бойца в тяжёлые доспехи — навсегда +2 к атаке, +2 к здоровью и +1 к броне.', art:'armor', faction:'empire'},
     {id:'s4', name:'Отряд ополченцев', type:'spell', cost:3, instantSummon:true, summonCardId:'c10', summonCount:3, rarity:'rare', desc:'Мгновенный призыв: срабатывает раньше фаз баффов и заклинаний — призывает 3 Ополченцев на случайные свободные ячейки своего поля боя, по одному на ячейку.', art:'militiasquad', faction:'empire'},
+    {id:'s5', name:'Гнев небес', type:'spell', cost:5, wrathDmg:7, rarity:'rare', desc:'Молнии последовательно бьют по всем ячейкам выбранной вражеской полосы, нанося 7 урона каждому бойцу в ней. Пустая ячейка тоже получает удар молнии, но без урона.', art:'heavenswrath', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
     {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
@@ -3342,7 +3360,8 @@
     cannon: `<svg viewBox="0 0 64 64"><circle cx="16" cy="52" r="6" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><circle cx="42" cy="52" r="6" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="10" y="42" width="38" height="8" rx="2" fill="#5c4536"/><path d="M14 40c0-10 6-18 22-18s10 8 10 18z" fill="#2a2118" stroke="#15100d" stroke-width="1.5"/><ellipse cx="46" cy="32" rx="5" ry="8" fill="#15100d"/><circle cx="20" cy="24" r="4" fill="#c9a227"/></svg>`,
     moonpriest: `<svg viewBox="0 0 64 64"><path d="M32 8c-8 0-14 6-14 13v5h28v-5c0-7-6-13-14-13z" fill="#5c85a8" stroke="#3d5a73" stroke-width="1.5"/><circle cx="32" cy="22" r="6.5" fill="#e9e0cf"/><path d="M17 60c0-14 6-24 15-24s15 10 15 24z" fill="#3d5a73" stroke="#2a3f52" stroke-width="2"/><path d="M36 38a6 6 0 1 0 0 12 5 5 0 0 1 0-12z" fill="#e9e0cf"/></svg>`,
     guardcaptain: `<svg viewBox="0 0 64 64"><rect x="29" y="8" width="6" height="48" rx="1" fill="#8a7020"/><path d="M35 10l16 6-5 12-13-5z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><path d="M29 10l-14 8 6 9 8-7z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><path d="M35 24l14 5-3 8-11-4z" fill="#7a3d9c"/><circle cx="32" cy="46" r="5" fill="#e04a3f" stroke="#8a6d1a" stroke-width="1.5"/></svg>`,
-    canoness: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="10" fill="none" stroke="#e0b93a" stroke-width="2" opacity=".7"/><path d="M32 10a7 7 0 0 1 7 7v4H25v-4a7 7 0 0 1 7-7z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M32 24c-9 2-15 2-15 2v16c0 11 7 18 15 22 8-4 15-11 15-22V26s-6 0-15-2z" fill="#8a3d5c" stroke="#5c2740" stroke-width="1.8"/><path d="M32 32v18M24 41h16" stroke="#e0b93a" stroke-width="3" stroke-linecap="round"/></svg>`
+    canoness: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="10" fill="none" stroke="#e0b93a" stroke-width="2" opacity=".7"/><path d="M32 10a7 7 0 0 1 7 7v4H25v-4a7 7 0 0 1 7-7z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M32 24c-9 2-15 2-15 2v16c0 11 7 18 15 22 8-4 15-11 15-22V26s-6 0-15-2z" fill="#8a3d5c" stroke="#5c2740" stroke-width="1.8"/><path d="M32 32v18M24 41h16" stroke="#e0b93a" stroke-width="3" stroke-linecap="round"/></svg>`,
+    heavenswrath: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="18" rx="19" ry="10" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><ellipse cx="18" cy="21" rx="10" ry="7" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><ellipse cx="46" cy="21" rx="10" ry="7" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><path d="M34 26l-11 18h8l-6 16 20-24h-9z" fill="#e8f4ff" stroke="#8fd6ff" stroke-width="1.5" stroke-linejoin="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -3922,6 +3941,9 @@
       } else if(card.dmg){
         el.hint.textContent = 'Выбери полосу — заклинание ударит переднего врага в ней.';
         highlightEnemyLanesForSpell();
+      } else if(card.wrathDmg){
+        el.hint.textContent = 'Выбери полосу — молнии ударят по всем вражеским бойцам в ней.';
+        highlightEnemyLanesForSpell();
       } else if(card.healHero){
         el.hint.textContent = 'Выбери любую ячейку на своей стороне.';
         highlightAnyOwnCellForWellspring();
@@ -4009,7 +4031,7 @@
 
   function castDamageSpell(laneIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !card.dmg) return;
+    if(!card || !(card.dmg || card.wrathDmg)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -4091,6 +4113,22 @@
     wrap.innerHTML = kind==='heal' ? SPELL_BURST_HEAL : SPELL_BURST_DMG;
     container.appendChild(wrap);
     setTimeout(()=>{ wrap.remove(); }, 1950);
+  }
+
+  // Гнев небес: a single jagged bolt flashing down onto a cell — used for
+  // every cell it strikes in the targeted lane (unit, empty, or
+  // Чаростойкость alike), only the aftermath (damage number / nothing)
+  // differs by case.
+  const LIGHTNING_BOLT_SVG = `<svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 0L3 32h8l-5 28 20-38h-9z" fill="#e8f4ff" stroke="#8fd6ff" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>`;
+  function spawnLightningStrike(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'lightning-strike';
+    wrap.innerHTML = LIGHTNING_BOLT_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 450);
   }
 
   function findUnitEl(laneIdx, mine, depth=0){
@@ -4320,6 +4358,30 @@
         if(heroEl) spawnDamageNumber(heroEl, '+'+ev.healAmount, 'heal');
         setTimeout(()=>{ renderAll(); done(); }, 900);
       });
+      return;
+    }
+    if(ev.kind==='wrath'){
+      // Гнев небес: struck cell may be empty, hold a normal unit, or hold
+      // a Чаростойкость unit — the lightning still visibly strikes every
+      // case, only the aftermath differs. Uses findSlotEl as a fallback
+      // so an empty cell still has somewhere for the bolt to land.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnLightningStrike(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» ударяет молнией по пустой ячейке.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          unit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          log(`«${label}» поражает молнией ${unit.name}, нанося ${ev.amount}.`);
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+        }
+        setTimeout(()=>{ renderAll(); done(); }, 500);
+      }, 300);
       return;
     }
     if(ev.targetHero){
@@ -4967,6 +5029,7 @@
 
   function spellStatsText(card){
     if(card.dmg) return '−'+card.dmg+' HP';
+    if(card.wrathDmg) return '−'+card.wrathDmg+' HP по ряду';
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
@@ -4977,6 +5040,7 @@
   function cardStatsLine(card){
     if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}${card.lifesteal?' · 🩸 при ударе':''}${card.synergy?' · 🔗 синергия':''}${card.firstStrike?' · ⚡ первый удар':''}${card.defender?' · 🛑 защитник':''}${card.spellResist?' · 🔮 чаростойкость':''}`;
     if(card.dmg) return `−${card.dmg} урона`;
+    if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
