@@ -2390,6 +2390,7 @@
     {id:'s1', name:'Кольчуга', type:'spell', cost:2, buffHp:3, buffAtk:1, rarity:'common', desc:'Плетение колец укрепляет бойца — навсегда добавляет +3 к здоровью и +1 к атаке.', art:'chainmail', faction:'empire'},
     {id:'s2', name:'Родник', type:'spell', cost:2, healHero:2, drawCard:1, rarity:'rare', desc:'Применяется на любую ячейку поля боя — свободную или занятую кем угодно. Восстанавливает своему герою 2 здоровья и добавляет в руку 1 карту из колоды.', art:'spring', faction:'empire'},
     {id:'s3', name:'Доспехи', type:'spell', cost:3, buffAtk:2, buffHp:2, buffArmor:1, rarity:'epic', desc:'Облачает выбранного бойца в тяжёлые доспехи — навсегда +2 к атаке, +2 к здоровью и +1 к броне.', art:'armor', faction:'empire'},
+    {id:'s4', name:'Отряд ополченцев', type:'spell', cost:3, instantSummon:true, summonCardId:'c10', summonCount:3, rarity:'rare', desc:'Мгновенный призыв: срабатывает раньше фаз баффов и заклинаний — призывает 3 Ополченцев на случайные свободные ячейки своего поля боя, по одному на ячейку.', art:'militiasquad', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
     {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
@@ -3295,7 +3296,8 @@
     palacewall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#c9a227" stroke-width="2"><path d="M8 22h6v-8h6v8h6v-8h6v8h6v-8h6v8h6v-8h6v8"/><rect x="8" y="22" width="48" height="28"/></g><g fill="none" stroke="#a89a84" stroke-width="1.5"><line x1="8" y1="32" x2="56" y2="32"/><line x1="8" y1="42" x2="56" y2="42"/><line x1="20" y1="22" x2="20" y2="32"/><line x1="35" y1="22" x2="35" y2="32"/><line x1="47" y1="22" x2="47" y2="32"/><line x1="14" y1="32" x2="14" y2="42"/><line x1="28" y1="32" x2="28" y2="42"/><line x1="42" y1="32" x2="42" y2="42"/><line x1="20" y1="42" x2="20" y2="50"/><line x1="35" y1="42" x2="35" y2="50"/><line x1="47" y1="42" x2="47" y2="50"/></g></svg>`,
     armor: `<svg viewBox="0 0 64 64"><path d="M32 6c-8 4-16 4-16 4v20c0 14 8 22 16 28 8-6 16-14 16-28V10s-8 0-16-4z" fill="#8a97a3" stroke="#5c6570" stroke-width="2"/><path d="M32 10v46" stroke="#5c6570" stroke-width="1.5"/><path d="M22 22h20M22 30h20M22 38h20" stroke="#5c6570" stroke-width="1.2" opacity=".6"/><path d="M32 6c-6 3-11 4-14 4" fill="none" stroke="#c9d2da" stroke-width="1" opacity=".7"/></svg>`,
     templeknight: `<svg viewBox="0 0 64 64"><path d="M32 6a10 10 0 0 1 10 10v6H22v-6a10 10 0 0 1 10-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><rect x="28" y="17" width="8" height="5" fill="#3a2c22"/><path d="M32 26c-8 2-14 2-14 2v14c0 10 6 16 14 20 8-4 14-10 14-20V28s-6 0-14-2z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1.5"/><path d="M32 32v18M25 41h14" stroke="#7a3d9c" stroke-width="2.5" stroke-linecap="round"/></svg>`,
-    priest: `<svg viewBox="0 0 64 64"><path d="M32 8c-8 0-14 6-14 13v5h28v-5c0-7-6-13-14-13z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1.5"/><circle cx="32" cy="22" r="6.5" fill="#f4d9a0"/><path d="M17 60c0-14 6-24 15-24s15 10 15 24z" fill="#c9a227" stroke="#8a6d1a" stroke-width="2"/><path d="M28 46h8M32 42v8" stroke="#5c4536" stroke-width="2.5" stroke-linecap="round"/></svg>`
+    priest: `<svg viewBox="0 0 64 64"><path d="M32 8c-8 0-14 6-14 13v5h28v-5c0-7-6-13-14-13z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1.5"/><circle cx="32" cy="22" r="6.5" fill="#f4d9a0"/><path d="M17 60c0-14 6-24 15-24s15 10 15 24z" fill="#c9a227" stroke="#8a6d1a" stroke-width="2"/><path d="M28 46h8M32 42v8" stroke="#5c4536" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    militiasquad: `<svg viewBox="0 0 64 64"><line x1="14" y1="10" x2="14" y2="56" stroke="#8a7020" stroke-width="3" stroke-linecap="round"/><path d="M14 10l-4 8h8z" fill="#a89a84"/><line x1="32" y1="6" x2="32" y2="56" stroke="#8a7020" stroke-width="3.5" stroke-linecap="round"/><path d="M32 6l-5 9h10z" fill="#a89a84"/><line x1="50" y1="10" x2="50" y2="56" stroke="#8a7020" stroke-width="3" stroke-linecap="round"/><path d="M50 10l-4 8h8z" fill="#a89a84"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
 
@@ -4828,6 +4830,7 @@
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
+    if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.buffHp || card.buffAtk || card.buffArmor) return `+${card.buffAtk||0} АТК / +${card.buffHp||0} ХП${card.buffArmor?' / +'+card.buffArmor+' 🛡':''}`;
     return '';
   }
@@ -4837,6 +4840,7 @@
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
+    if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     return `+${card.buffAtk||0} атк / +${card.buffHp||0} хп${card.buffArmor?' / +'+card.buffArmor+' брони':''} навсегда`;
   }
 
