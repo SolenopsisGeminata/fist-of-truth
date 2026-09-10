@@ -468,36 +468,50 @@
     font-size:11px;
     color:var(--bone-dim);
   }
-  .chest-track{
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  .chest-progress-track{
     flex:1;
-  }
-  .chest-segment{
-    flex:1;
-    height:3px;
-    background:var(--line);
-    transition:background .3s;
-  }
-  .chest-segment.lead{flex:1;}
-  .chest-segment.open{background:var(--brass);}
-  .chest-node{
     position:relative;
-    width:40px;
-    height:34px;
-    flex-shrink:0;
+    padding-bottom:34px;
+  }
+  .chest-progress-track-inner{
+    height:10px;
+    background:rgba(0,0,0,0.35);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .chest-progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--brass-dim),var(--brass));
+    transition:width .4s ease;
+  }
+  .chest-progress-value{
+    position:absolute;
+    top:14px;
+    transform:translateX(-50%);
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    font-weight:600;
+    color:var(--brass);
+    white-space:nowrap;
+    transition:left .4s ease;
+  }
+  .chest-icon-marker{
+    position:absolute;
+    top:16px;
+    transform:translateX(-50%);
+    width:30px;
+    height:26px;
     cursor:pointer;
     opacity:.55;
     filter:grayscale(.6);
     transition:opacity .2s, filter .2s;
   }
-  .chest-node.open{opacity:1; filter:none;}
-  .chest-node svg{width:100%; height:100%;}
-  .chest-node-label{
+  .chest-icon-marker.open{opacity:1; filter:none;}
+  .chest-icon-marker svg{width:100%; height:100%;}
+  .chest-icon-marker-label{
     position:absolute;
-    bottom:-15px;
+    bottom:-13px;
     left:50%;
     transform:translateX(-50%);
     font-family:'Oswald',sans-serif;
@@ -2908,23 +2922,25 @@
   function buildChestTrackHtml(chestWins){
     const milestones = [10,20,30];
     const tiers = ['wood','iron','gold'];
-    const wins = chestWins||0;
-    // Starts at an explicit "0" label and a leading segment up to the
-    // first chest — otherwise the bar visually begins at 10, with no way
-    // to tell how many of those first 10 wins have actually happened.
+    const wins = Math.max(0, Math.min(30, chestWins||0));
+    const pct = wins/30*100;
+    // A continuous fill bar (0-30, exact win count shown), same visual
+    // language as the star progress bar above it — chest icons sit as
+    // fixed markers at 10/20/30 along it, brightening once reached, so
+    // the player can always see precisely how far they are, not just
+    // whether they've crossed the next milestone.
     let html = '<div class="chest-track-row">';
     html += '<span class="chest-progress-label">0</span>';
-    html += '<div class="chest-track">';
-    html += `<div class="chest-segment lead${wins>=milestones[0]?' open':''}"></div>`;
+    html += '<div class="chest-progress-track">';
+    html += `<div class="chest-progress-track-inner"><div class="chest-progress-fill" style="width:${pct}%"></div></div>`;
+    html += `<span class="chest-progress-value" style="left:${Math.max(3,Math.min(97,pct))}%">${wins}</span>`;
     milestones.forEach((m,i)=>{
       const isOpen = wins >= m;
-      html += `<div class="chest-node${isOpen?' open':''}" data-milestone="${m}">${chestIconSvg(tiers[i])}<span class="chest-node-label">${m}</span></div>`;
-      if(i < milestones.length-1){
-        const segOpen = wins >= milestones[i+1];
-        html += `<div class="chest-segment${segOpen?' open':''}"></div>`;
-      }
+      const markerPct = Math.max(5, Math.min(95, m/30*100));
+      html += `<div class="chest-icon-marker${isOpen?' open':''}" data-milestone="${m}" style="left:${markerPct}%">${chestIconSvg(tiers[i])}<span class="chest-icon-marker-label">${m}</span></div>`;
     });
     html += '</div>';
+    html += '<span class="chest-progress-label">30</span>';
     html += '</div>';
     return html;
   }
@@ -2932,7 +2948,7 @@
     const wrap = document.getElementById('chestTrackWrap');
     if(!wrap) return;
     wrap.innerHTML = buildChestTrackHtml(tournamentStatus.chestWins||0);
-    wrap.querySelectorAll('.chest-node').forEach(node=>{
+    wrap.querySelectorAll('.chest-icon-marker').forEach(node=>{
       node.addEventListener('click', (ev)=>{
         ev.stopPropagation();
         const existing = node.querySelector('.chest-tooltip');
