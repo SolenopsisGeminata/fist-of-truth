@@ -916,6 +916,42 @@
     background:rgba(201,162,39,0.16);
     box-shadow:0 0 0 1px var(--brass) inset;
   }
+  .settings-row{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    margin:4px 0 8px;
+  }
+  .settings-label{
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+  }
+  .settings-toggle-group{
+    display:flex;
+    gap:8px;
+  }
+  .settings-toggle-btn{
+    padding:8px 14px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.22);
+    color:var(--bone-dim);
+    font-family:'Oswald',sans-serif;
+    font-size:12.5px;
+    cursor:pointer;
+    transition:border-color .15s, background .15s, color .15s;
+  }
+  .settings-toggle-btn:hover{border-color:var(--brass-dim);}
+  .settings-toggle-btn.active{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.16);
+    color:var(--brass);
+    box-shadow:0 0 0 1px var(--brass) inset;
+  }
   .deck-row-list{
     display:flex;
     flex-direction:column;
@@ -2319,7 +2355,13 @@
 <div class="confirm-popup-overlay" id="settingsOverlay" style="display:none;">
   <div class="confirm-popup">
     <div class="confirm-popup-title">Настройки</div>
-    <div class="confirm-popup-text">Здесь появятся настройки игры.</div>
+    <div class="settings-row">
+      <div class="settings-label">Иконки</div>
+      <div class="settings-toggle-group">
+        <button class="settings-toggle-btn" id="iconModeStandardBtn">Стандартные</button>
+        <button class="settings-toggle-btn" id="iconModeAnimatedBtn">Анимированные</button>
+      </div>
+    </div>
     <div class="confirm-popup-actions">
       <button class="btn ghost" id="settingsCloseBtn">Закрыть</button>
     </div>
@@ -3204,6 +3246,26 @@
   }
 
   // ---------- Card art (inline SVG, drawn to match the arena palette) ----------
+  // ---------- Icon mode preference (Настройки → Иконки) ----------
+  // 'standard' — every unit, including Ополченец, shows its plain SVG
+  // icon (the sprite is simply never used, even for a card that has
+  // one). 'animated' — a card WITH a sprite sheet (currently only
+  // Ополченец) plays it as before; every other card shows nothing at
+  // all in its art box, since an animated version doesn't exist for it
+  // yet. Purely a client-side display preference — never sent to or
+  // read from the server, and defaults to 'standard' so every card
+  // reads consistently out of the box.
+  const ICON_MODE_KEY = 'fistDuelIconMode';
+  function getIconMode(){
+    try{
+      const saved = localStorage.getItem(ICON_MODE_KEY);
+      return saved==='animated' ? 'animated' : 'standard';
+    } catch(e){ return 'standard'; }
+  }
+  function setIconMode(mode){
+    try{ localStorage.setItem(ICON_MODE_KEY, mode==='animated' ? 'animated' : 'standard'); } catch(e){}
+  }
+
   const ICONS = {
     peasant: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="26" ry="6" fill="#8a7020"/><path d="M18 40c0-11 6-19 14-19s14 8 14 19" fill="#c9a227"/><rect x="28" y="14" width="8" height="8" rx="2" fill="#8a7020"/></svg>`,
     shield: `<svg viewBox="0 0 64 64"><path d="M32 6l18 6v16c0 14-9 24-18 30-9-6-18-16-18-30V12z" fill="#3d5a73" stroke="#5c85a8" stroke-width="2.5"/><path d="M32 14v30M20 26h24" stroke="#e9e0cf" stroke-width="2" opacity=".5"/></svg>`,
@@ -3266,12 +3328,15 @@
   // the plain SVG icon (default), or — for a sprited card — a div showing
   // that sprite's first attack frame as a static "standing" pose.
   function unitArtHtml(unit){
+    if(getIconMode()==='standard') return cardArt(unit.art);
     const sprite = UNIT_SPRITES[unit.id];
     if(sprite){
       const style = `background-image:url('${sprite.attack}'); background-repeat:no-repeat; background-size:${sprite.cols*100}% ${sprite.rows*100}%; background-position:${spriteFramePercent(0, sprite)};`;
       return `<div class="unit-sprite" style="${style}"></div>`;
     }
-    return cardArt(unit.art);
+    // Animated mode, but this card has no animated version yet — empty
+    // art box rather than falling back to the standard icon, per spec.
+    return '';
   }
   // Plays a sprite sheet's frames in sequence inside `artEl` (a unit's
   // .unit-art box), at `sprite.fps` frames per second. Reuses the same
@@ -3582,7 +3647,7 @@
     // unit with one/two icons doesn't get, making icons inconsistently
     // sized across units.
     const extraRow = `<div class="unit-stats-extra">${extras.join('')}</div>`;
-    const spriteClass = UNIT_SPRITES[unit.id] ? ' has-sprite' : '';
+    const spriteClass = (getIconMode()==='animated' && UNIT_SPRITES[unit.id]) ? ' has-sprite' : '';
     return `<div class="unit-card ${cls}${appearClass}${placingClass}${isPicked?' move-selected':''}${spriteClass}" data-lane="${laneIdx}" data-depth="${depthIdx}" data-mine="${mine}">
       <div class="unit-name" title="${unit.name}">${unit.name}</div>
       <div class="unit-art">${unitArtHtml(unit)}</div>
@@ -4425,7 +4490,7 @@
       const targetBoard = a.isMe ? state.enemyBoard : state.playerBoard;
       const targetName = a.targetHero ? (a.isMe?'кулак соперника':'твой кулак') : ((targetBoard[ev.lane][a.targetDepth]||{}).name || '???');
       const unitEl = findUnitEl(ev.lane, a.isMe, a.depth);
-      const atkSprite = atkUnit && UNIT_SPRITES[atkUnit.id];
+      const atkSprite = getIconMode()==='animated' && atkUnit && UNIT_SPRITES[atkUnit.id];
       if(unitEl){
         if(atkSprite){
           // A unit with its own attack sprite sheet acts out the whole
@@ -4460,7 +4525,7 @@
             unit.hp -= a.dmg;
             if(targetEl) spawnDamageNumber(targetEl, '-'+a.dmg, 'dmg');
             if(a.died){
-              const dieSprite = UNIT_SPRITES[unit.id];
+              const dieSprite = getIconMode()==='animated' && UNIT_SPRITES[unit.id];
               if(targetEl){
                 if(dieSprite) playUnitSpriteAnimation(targetEl.querySelector('.unit-art'), dieSprite.death, dieSprite);
                 else targetEl.classList.add('unit-dying');
@@ -5445,8 +5510,24 @@
   document.getElementById('mailDetailOverlay').addEventListener('click', (e)=>{
     if(e.target.id==='mailDetailOverlay'){ closeMailDetail(); openMailList(); }
   });
+  function renderIconModeButtons(){
+    const mode = getIconMode();
+    document.getElementById('iconModeStandardBtn').classList.toggle('active', mode==='standard');
+    document.getElementById('iconModeAnimatedBtn').classList.toggle('active', mode==='animated');
+  }
   document.getElementById('settingsBtn').addEventListener('click', ()=>{
+    renderIconModeButtons();
     document.getElementById('settingsOverlay').style.display = 'flex';
+  });
+  document.getElementById('iconModeStandardBtn').addEventListener('click', ()=>{
+    setIconMode('standard');
+    renderIconModeButtons();
+    if(state && state.playerBoard) renderAll();
+  });
+  document.getElementById('iconModeAnimatedBtn').addEventListener('click', ()=>{
+    setIconMode('animated');
+    renderIconModeButtons();
+    if(state && state.playerBoard) renderAll();
   });
   document.getElementById('settingsCloseBtn').addEventListener('click', ()=>{
     document.getElementById('settingsOverlay').style.display = 'none';
