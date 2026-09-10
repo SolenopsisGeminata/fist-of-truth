@@ -4565,16 +4565,25 @@
       targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
     }
     const targetName = ev.targetHero ? (targetMine?'твоему кулаку':'кулаку соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
-    log(`${shooterMine?'Твоя':'Пушка соперника'} Имперская пушка стреляет по ${targetName}, нанося ${ev.amount}.`);
+    if(ev.resisted){
+      log(`${shooterMine?'Твоя':'Пушка соперника'} Имперская пушка стреляет по ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`${shooterMine?'Твоя':'Пушка соперника'} Имперская пушка стреляет по ${targetName}, нанося ${ev.amount}.`);
+    }
     flyProjectileToHero(sourceEl, targetEl, CANNONBALL_SVG, 'cannonball', 600, ()=>{
+      // Чаростойкость: the cannonball still explodes on contact — it just
+      // has nothing to actually apply, to her or (unlike the empty-cell
+      // case) to the hero either.
       spawnSpellBurst(targetEl, 'dmg');
-      if(ev.targetHero){
-        if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
-        if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
-      } else if(targetUnit){
-        targetUnit.hp -= ev.amount;
-        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
-        if(ev.died) targetBoard[ev.targetLaneIdx][ev.targetDepthIdx] = null;
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died) targetBoard[ev.targetLaneIdx][ev.targetDepthIdx] = null;
+        }
       }
       setTimeout(()=>{ renderAll(); done(); }, 900);
     });
