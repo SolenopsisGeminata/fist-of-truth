@@ -457,11 +457,23 @@
     max-width:280px;
     margin:4px auto 8px;
   }
+  .chest-track-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .chest-progress-label{
+    flex-shrink:0;
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    color:var(--bone-dim);
+  }
   .chest-track{
     position:relative;
     display:flex;
     align-items:center;
     justify-content:center;
+    flex:1;
   }
   .chest-segment{
     flex:1;
@@ -469,6 +481,7 @@
     background:var(--line);
     transition:background .3s;
   }
+  .chest-segment.lead{flex:0 0 20px;}
   .chest-segment.open{background:var(--brass);}
   .chest-node{
     position:relative;
@@ -2895,15 +2908,24 @@
   function buildChestTrackHtml(chestWins){
     const milestones = [10,20,30];
     const tiers = ['wood','iron','gold'];
-    let html = '<div class="chest-track">';
+    const wins = chestWins||0;
+    // Starts at an explicit "0" label and a leading segment up to the
+    // first chest — otherwise the bar visually begins at 10, with no way
+    // to tell how many of those first 10 wins have actually happened.
+    let html = '<div class="chest-track-row">';
+    html += '<span class="chest-progress-label">0</span>';
+    html += '<div class="chest-track">';
+    html += `<div class="chest-segment lead${wins>=milestones[0]?' open':''}"></div>`;
     milestones.forEach((m,i)=>{
-      const isOpen = (chestWins||0) >= m;
+      const isOpen = wins >= m;
       html += `<div class="chest-node${isOpen?' open':''}" data-milestone="${m}">${chestIconSvg(tiers[i])}<span class="chest-node-label">${m}</span></div>`;
       if(i < milestones.length-1){
-        const segOpen = (chestWins||0) >= milestones[i+1];
+        const segOpen = wins >= milestones[i+1];
         html += `<div class="chest-segment${segOpen?' open':''}"></div>`;
       }
     });
+    html += '</div>';
+    html += '<span class="chest-progress-label">30</span>';
     html += '</div>';
     return html;
   }
