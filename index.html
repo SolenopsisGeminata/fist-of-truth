@@ -2439,6 +2439,7 @@
     {id:'c33', name:'Лагерь ополченцев', type:'creature', cost:4, atk:0, hp:6, battlecrySummon:'c10', endOfRoundSummon:'c10', rarity:'rare', desc:'При появлении на поле боя, а затем в конце каждого хода призывает Ополченца на случайную свободную ячейку своего поля боя.', art:'militiacamp', faction:'empire'},
     {id:'c34', name:'Имперская пушка', type:'creature', cost:4, atk:4, hp:9, defender:true, cannonShot:true, rarity:'rare', desc:'Защитник — не может атаковать в бою. В конце каждого хода бьёт по случайной ячейке в своей же полосе на стороне соперника, нанося урон, равный своей атаке. Если ячейка пуста, урон достаётся вражескому герою.', art:'cannon', faction:'empire'},
     {id:'c35', name:'Священник Луны', type:'creature', cost:4, atk:1, hp:3, fixedHeal:7, rarity:'epic', desc:'В конце каждого хода восстанавливает своему герою 7 здоровья.', art:'moonpriest', faction:'empire'},
+    {id:'c36', name:'Капитан дворцовой стражи', type:'creature', cost:4, atk:3, hp:6, lifesteal:true, summonOnHeroHit:'c11', rarity:'epic', desc:'Кража жизни. Каждый раз, когда бьёт прямо в кулак соперника, призывает Стража дворца на случайную свободную ячейку своего поля боя.', art:'guardcaptain', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3338,7 +3339,8 @@
     elitearcher: `<svg viewBox="0 0 64 64"><path d="M22 8c-13 10-13 38 0 48" stroke="#c9a227" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M22 8l24 24-24 24" stroke="#3a2c22" stroke-width="1.5" fill="none"/><line x1="10" y1="32" x2="52" y2="32" stroke="#8a5a34" stroke-width="2.5" stroke-linecap="round"/><path d="M52 32l-8-5v10z" fill="#c9a227"/><path d="M10 32l7-4.5M10 32l7 4.5" stroke="#7a3d9c" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="8" r="2" fill="#c9a227"/><circle cx="22" cy="56" r="2" fill="#c9a227"/></svg>`,
     militiacamp: `<svg viewBox="0 0 64 64"><path d="M32 12L14 50h36z" fill="#8a7020" stroke="#5c4536" stroke-width="1.5"/><path d="M32 12L32 50" stroke="#5c4536" stroke-width="1.5"/><path d="M22 50l10-24 10 24z" fill="#6b5a1a" opacity=".5"/><line x1="32" y1="12" x2="32" y2="6" stroke="#5c4536" stroke-width="2"/><path d="M32 6l8 3-8 3z" fill="#c9a227"/><path d="M20 50c2-4 6-4 8 0" stroke="#e04a3f" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
     cannon: `<svg viewBox="0 0 64 64"><circle cx="16" cy="52" r="6" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><circle cx="42" cy="52" r="6" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="10" y="42" width="38" height="8" rx="2" fill="#5c4536"/><path d="M14 40c0-10 6-18 22-18s10 8 10 18z" fill="#2a2118" stroke="#15100d" stroke-width="1.5"/><ellipse cx="46" cy="32" rx="5" ry="8" fill="#15100d"/><circle cx="20" cy="24" r="4" fill="#c9a227"/></svg>`,
-    moonpriest: `<svg viewBox="0 0 64 64"><path d="M32 8c-8 0-14 6-14 13v5h28v-5c0-7-6-13-14-13z" fill="#5c85a8" stroke="#3d5a73" stroke-width="1.5"/><circle cx="32" cy="22" r="6.5" fill="#e9e0cf"/><path d="M17 60c0-14 6-24 15-24s15 10 15 24z" fill="#3d5a73" stroke="#2a3f52" stroke-width="2"/><path d="M36 38a6 6 0 1 0 0 12 5 5 0 0 1 0-12z" fill="#e9e0cf"/></svg>`
+    moonpriest: `<svg viewBox="0 0 64 64"><path d="M32 8c-8 0-14 6-14 13v5h28v-5c0-7-6-13-14-13z" fill="#5c85a8" stroke="#3d5a73" stroke-width="1.5"/><circle cx="32" cy="22" r="6.5" fill="#e9e0cf"/><path d="M17 60c0-14 6-24 15-24s15 10 15 24z" fill="#3d5a73" stroke="#2a3f52" stroke-width="2"/><path d="M36 38a6 6 0 1 0 0 12 5 5 0 0 1 0-12z" fill="#e9e0cf"/></svg>`,
+    guardcaptain: `<svg viewBox="0 0 64 64"><rect x="29" y="8" width="6" height="48" rx="1" fill="#8a7020"/><path d="M35 10l16 6-5 12-13-5z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><path d="M29 10l-14 8 6 9 8-7z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><path d="M35 24l14 5-3 8-11-4z" fill="#7a3d9c"/><circle cx="32" cy="46" r="5" fill="#e04a3f" stroke="#8a6d1a" stroke-width="1.5"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -3563,7 +3565,7 @@
       atk:u.atk, hp:u.hp, maxHp:u.maxHp, armor:u.armor||0,
       lifesteal:!!u.lifesteal, synergy:u.synergy||0,
       dawnBuff:!!u.dawnBuff, cookHeal:!!u.cookHeal, cowHeal:!!u.cowHeal, shootHero:!!u.shootHero,
-      wallGrow:!!u.wallGrow, firstStrike:!!u.firstStrike, bishopBuff:!!u.bishopBuff, summonOnHeroHit:!!u.summonOnHeroHit,
+      wallGrow:!!u.wallGrow, firstStrike:!!u.firstStrike, bishopBuff:!!u.bishopBuff, summonOnHeroHit:u.summonOnHeroHit||null,
       priestHeal:!!u.priestHeal, siegeShot:!!u.siegeShot, endOfRoundSummon:u.endOfRoundSummon||null,
       defender:!!u.defender, cannonShot:!!u.cannonShot,
       placedThisRound:!!u.placedThisRound,
@@ -4488,7 +4490,7 @@
       atk: card?card.atk:0, hp: card?card.hp:1, maxHp: card?card.hp:1,
       armor: card?card.armor:0, lifesteal: card?card.lifesteal:false, synergy: card?card.synergy:0,
       dawnBuff: card?card.dawnBuff:false, cookHeal: card?card.cookHeal:false, cowHeal: card?card.cowHeal:false, shootHero: card?card.shootHero:false,
-      wallGrow: card?card.wallGrow:false, firstStrike: card?card.firstStrike:false, bishopBuff: card?card.bishopBuff:false, summonOnHeroHit: card?card.summonOnHeroHit:false,
+      wallGrow: card?card.wallGrow:false, firstStrike: card?card.firstStrike:false, bishopBuff: card?card.bishopBuff:false, summonOnHeroHit: card?card.summonOnHeroHit:null,
       priestHeal: card?card.priestHeal:false,
       siegeShot: card?card.siegeShot:false,
       endOfRoundSummon: card?card.endOfRoundSummon:null,
