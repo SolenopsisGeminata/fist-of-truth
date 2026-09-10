@@ -4859,7 +4859,7 @@
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
-    if(card.buffHp || card.buffAtk || card.buffArmor) return `+${card.buffAtk||0} АТК / +${card.buffHp||0} ХП${card.buffArmor?' / +'+card.buffArmor+' 🛡':''}`;
+    if(card.buffHp || card.buffAtk || card.buffArmor) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}`;
     return '';
   }
 
@@ -4869,7 +4869,7 @@
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
-    return `+${card.buffAtk||0} атк / +${card.buffHp||0} хп${card.buffArmor?' / +'+card.buffArmor+' брони':''} навсегда`;
+    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''} навсегда`;
   }
 
   function renderFactionTabs(){
