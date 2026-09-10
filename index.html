@@ -452,6 +452,70 @@
   }
   .treasure-race-segment.won .treasure-race-segment-label{color:var(--brass);}
   .treasure-race-node.won .treasure-race-segment-label{color:var(--brass);}
+  .chest-track-wrap{
+    width:100%;
+    max-width:280px;
+    margin:4px auto 8px;
+  }
+  .chest-track{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .chest-segment{
+    flex:1;
+    height:3px;
+    background:var(--line);
+    transition:background .3s;
+  }
+  .chest-segment.open{background:var(--brass);}
+  .chest-node{
+    position:relative;
+    width:40px;
+    height:34px;
+    flex-shrink:0;
+    cursor:pointer;
+    opacity:.55;
+    filter:grayscale(.6);
+    transition:opacity .2s, filter .2s;
+  }
+  .chest-node.open{opacity:1; filter:none;}
+  .chest-node svg{width:100%; height:100%;}
+  .chest-node-label{
+    position:absolute;
+    bottom:-15px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Oswald',sans-serif;
+    font-size:9px;
+    color:var(--bone-dim);
+  }
+  .chest-tooltip{
+    position:absolute;
+    bottom:calc(100% + 6px);
+    left:50%;
+    transform:translateX(-50%);
+    background:#1a130d;
+    border:1px solid var(--brass-dim);
+    border-radius:6px;
+    padding:6px 9px;
+    font-family:'Oswald',sans-serif;
+    font-size:10.5px;
+    color:var(--bone);
+    white-space:nowrap;
+    z-index:5;
+    box-shadow:0 2px 8px rgba(0,0,0,0.6);
+  }
+  .chest-tooltip div{padding:1px 0;}
+  .treasure-race-current-reward{
+    text-align:center;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    color:var(--bone);
+    margin:2px 0 4px;
+  }
+  .treasure-race-current-reward b{color:var(--brass); font-weight:700;}
   .treasure-race-node{
     width:15px;
     height:15px;
@@ -1927,6 +1991,7 @@
     </div>
     <span class="league-progress-label">30</span>
   </div>
+  <div class="chest-track-wrap" id="chestTrackWrap"></div>
   <button class="btn btn-menu" id="tournamentStartBtn">Начать</button>
   <div class="tournament-note" id="tournamentNote"></div>
   <button class="btn ghost btn-menu" id="tournamentBackBtn">Назад</button>
@@ -1939,6 +2004,7 @@
   <div class="mode-title">Гонка за сокровищами</div>
   <div class="treasure-race-lives" id="treasureRaceLives"></div>
   <div class="treasure-race-track-wrap" id="treasureRaceTrackWrap"></div>
+  <div class="treasure-race-current-reward" id="treasureRaceCurrentReward"></div>
   <button class="btn btn-menu" id="treasureRaceStartBtn">Начать</button>
   <div class="tournament-note" id="treasureRaceNote"></div>
   <button class="btn ghost btn-menu" id="treasureRaceBackBtn">Назад</button>
@@ -2798,6 +2864,68 @@
     } catch(e){ /* keep last known / default status */ }
   }
 
+  // Same reward numbers as the server's TOURNAMENT_CHEST_REWARDS — shown
+  // in the click-to-open tooltip, purely informational (the server is
+  // what actually rolls and credits the reward).
+  const TOURNAMENT_CHEST_REWARDS = {
+    10: [{amount:1000,unit:'золота',chance:34},{amount:800,unit:'пыли',chance:33},{amount:100,unit:'кристаллов',chance:33}],
+    20: [{amount:2000,unit:'золота',chance:34},{amount:1600,unit:'пыли',chance:33},{amount:200,unit:'кристаллов',chance:33}],
+    30: [{amount:3000,unit:'золота',chance:34},{amount:2500,unit:'пыли',chance:33},{amount:300,unit:'кристаллов',chance:33}],
+  };
+  const CHEST_TIER_COLORS = {
+    wood: { body:'#8a5a34', lid:'#6b4423', band:'#5c4536' },
+    iron: { body:'#8a97a3', lid:'#6b7580', band:'#4a5560' },
+    gold: { body:'#e0b93c', lid:'#c9a227', band:'#8a6d1a' },
+  };
+  function chestIconSvg(tier){
+    const c = CHEST_TIER_COLORS[tier];
+    return `<svg viewBox="0 0 32 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 12h26v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V12z" fill="${c.body}" stroke="${c.band}" stroke-width="1.2"/>
+      <path d="M3 12c0-5 5-9 13-9s13 4 13 9" fill="${c.lid}" stroke="${c.band}" stroke-width="1.2"/>
+      <rect x="14" y="10" width="4" height="6" rx="1" fill="${c.band}"/>
+      <path d="M3 12h26" stroke="${c.band}" stroke-width="1.5"/>
+    </svg>`;
+  }
+  function chestTooltipHtml(milestone){
+    const rewards = TOURNAMENT_CHEST_REWARDS[milestone];
+    return `<div class="chest-tooltip">${rewards.map(r=>`<div>${r.chance}% — +${r.amount} ${r.unit}</div>`).join('')}</div>`;
+  }
+  // 3 nodes (10/20/30 wins) joined by 2 segments — wooden, iron and
+  // golden chests, each brightening once its win count is reached.
+  function buildChestTrackHtml(chestWins){
+    const milestones = [10,20,30];
+    const tiers = ['wood','iron','gold'];
+    let html = '<div class="chest-track">';
+    milestones.forEach((m,i)=>{
+      const isOpen = (chestWins||0) >= m;
+      html += `<div class="chest-node${isOpen?' open':''}" data-milestone="${m}">${chestIconSvg(tiers[i])}<span class="chest-node-label">${m}</span></div>`;
+      if(i < milestones.length-1){
+        const segOpen = (chestWins||0) >= milestones[i+1];
+        html += `<div class="chest-segment${segOpen?' open':''}"></div>`;
+      }
+    });
+    html += '</div>';
+    return html;
+  }
+  function renderChestTrack(){
+    const wrap = document.getElementById('chestTrackWrap');
+    if(!wrap) return;
+    wrap.innerHTML = buildChestTrackHtml(tournamentStatus.chestWins||0);
+    wrap.querySelectorAll('.chest-node').forEach(node=>{
+      node.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        const existing = node.querySelector('.chest-tooltip');
+        // Close any other open tooltip first — only one shown at a time.
+        wrap.querySelectorAll('.chest-tooltip').forEach(t=>t.remove());
+        if(!existing) node.insertAdjacentHTML('beforeend', chestTooltipHtml(node.dataset.milestone));
+      });
+    });
+    // Clicking anywhere else closes whichever tooltip is open.
+    document.addEventListener('click', ()=>{
+      wrap.querySelectorAll('.chest-tooltip').forEach(t=>t.remove());
+    }, { once:true });
+  }
+
   function renderTournamentScreen(){
     const leagueDef = LEAGUES.find(l=>l.id===tournamentStatus.league) || LEAGUES[0];
     document.getElementById('leagueIcon').innerHTML = leagueDef.icon;
@@ -2822,6 +2950,7 @@
       valueEl.textContent = Math.max(0, Math.min(30, tournamentStatus.progress||0));
       valueEl.style.left = Math.max(3, Math.min(97, pct))+'%'; // nudged in slightly so it never hangs off either edge
     }
+    renderChestTrack();
   }
 
   // ---------- Treasure Race (Гонка за сокровищами) ----------
@@ -2898,6 +3027,7 @@
     const livesEl = document.getElementById('treasureRaceLives');
     livesEl.innerHTML = [0,1,2].map(i=>`<span class="treasure-race-life${i<s.lives?' filled':''}">❤</span>`).join('');
     document.getElementById('treasureRaceTrackWrap').innerHTML = buildTreasureRaceTrackHtml(s.wins||0);
+    document.getElementById('treasureRaceCurrentReward').innerHTML = `Текущая награда: <b>${s.gold||0}</b> золотых`;
     // The rating table only ever shows the last fully-finished window —
     // while one is currently open, there's nothing new to show yet, so
     // the button stays disabled until it closes.
@@ -3990,6 +4120,17 @@
     const mine = ev.side === state.myUsername;
     const targetMine = ev.targetSide === state.myUsername;
     const label = (cardDefById(ev.cardId)||{}).name || ev.cardId;
+
+    // The spell has now actually fired — its hovering icon over the cell
+    // it was placed on (shown during placing) no longer applies. Clear
+    // it right now rather than waiting for the whole round's final
+    // snapshot, which might not land until well after any combat that
+    // follows this same spell in the same round.
+    const spellDepth = ev.kind==='wellspring' ? ev.depthIdx : ev.targetDepth;
+    const spellSide = mine ? 'player' : 'enemy';
+    state.pendingSpells = state.pendingSpells.filter(sp=>!(sp.side===spellSide && sp.laneIdx===ev.laneIdx && sp.depthIdx===spellDepth));
+    renderAll();
+
     if(ev.kind==='wellspring'){
       // Родник can be cast on ANY cell (empty or occupied) — the orb
       // flies from that CELL's own center, not from a unit that may not
