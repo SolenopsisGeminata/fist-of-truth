@@ -2347,6 +2347,7 @@
     {id:'c12', name:'Легионер', type:'creature', cost:3, atk:2, hp:3, lifesteal:true, synergy:1, rarity:'epic', desc:'Крадёт здоровье при ударе по герою соперника. В строю с другими бойцами бьёт сильнее — +1 к атаке за каждого союзника по соседству (сверху, снизу, слева, справа).', art:'legion', faction:'empire'},
     {id:'s1', name:'Кольчуга', type:'spell', cost:2, buffHp:3, buffAtk:1, rarity:'common', desc:'Плетение колец укрепляет бойца — навсегда добавляет +3 к здоровью и +1 к атаке.', art:'chainmail', faction:'empire'},
     {id:'s2', name:'Родник', type:'spell', cost:2, healHero:2, drawCard:1, rarity:'rare', desc:'Применяется на любую ячейку поля боя — свободную или занятую кем угодно. Восстанавливает своему герою 2 здоровья и добавляет в руку 1 карту из колоды.', art:'spring', faction:'empire'},
+    {id:'s3', name:'Доспехи', type:'spell', cost:3, buffAtk:2, buffHp:2, buffArmor:1, rarity:'epic', desc:'Облачает выбранного бойца в тяжёлые доспехи — навсегда +2 к атаке, +2 к здоровью и +1 к броне.', art:'armor', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
     {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
@@ -3227,7 +3228,8 @@
     bishop: `<svg viewBox="0 0 64 64"><path d="M30 4h4v6h-4z" fill="#c9a227"/><path d="M32 8l11 18c-5-3-8-4-11-4s-6 1-11 4z" fill="#7a3d9c" stroke="#5c2d78" stroke-width="1.5"/><path d="M19 30c5-5 9-7 13-7s8 2 13 7l-4 9H23z" fill="#8a4bab" stroke="#5c2d78" stroke-width="1.5"/><path d="M20 58c0-14 5-24 12-24s12 10 12 24z" fill="#4a2a5c" stroke="#33203d" stroke-width="2"/><circle cx="32" cy="45" r="3.5" fill="#c9a227"/></svg>`,
     ballista: `<svg viewBox="0 0 64 64"><path d="M20 50l-8 10M44 50l8 10" stroke="#5c4536" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="18" y="44" width="28" height="8" rx="1" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><rect x="29" y="20" width="6" height="26" fill="#6b4423"/><path d="M14 26c6-8 16-8 18 0M50 26c-6-8-16-8-18 0" stroke="#8a97a3" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M14 26l18 4 18-4" stroke="#3a2c22" stroke-width="1.5" fill="none"/><line x1="8" y1="30" x2="54" y2="30" stroke="#8a5a34" stroke-width="2.5" stroke-linecap="round"/><path d="M54 30l-7-4.5v9z" fill="#c9a227"/></svg>`,
     archer: `<svg viewBox="0 0 64 64"><path d="M22 8c-13 10-13 38 0 48" stroke="#6b4423" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M22 8l24 24-24 24" stroke="#3a2c22" stroke-width="1.5" fill="none"/><line x1="10" y1="32" x2="52" y2="32" stroke="#8a5a34" stroke-width="2.5" stroke-linecap="round"/><path d="M52 32l-8-5v10z" fill="#8a97a3"/><path d="M10 32l7-4.5M10 32l7 4.5" stroke="#c9a227" stroke-width="2" stroke-linecap="round"/></svg>`,
-    palacewall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#c9a227" stroke-width="2"><path d="M8 22h6v-8h6v8h6v-8h6v8h6v-8h6v8h6v-8h6v8"/><rect x="8" y="22" width="48" height="28"/></g><g fill="none" stroke="#a89a84" stroke-width="1.5"><line x1="8" y1="32" x2="56" y2="32"/><line x1="8" y1="42" x2="56" y2="42"/><line x1="20" y1="22" x2="20" y2="32"/><line x1="35" y1="22" x2="35" y2="32"/><line x1="47" y1="22" x2="47" y2="32"/><line x1="14" y1="32" x2="14" y2="42"/><line x1="28" y1="32" x2="28" y2="42"/><line x1="42" y1="32" x2="42" y2="42"/><line x1="20" y1="42" x2="20" y2="50"/><line x1="35" y1="42" x2="35" y2="50"/><line x1="47" y1="42" x2="47" y2="50"/></g></svg>`
+    palacewall: `<svg viewBox="0 0 64 64"><g fill="none" stroke="#c9a227" stroke-width="2"><path d="M8 22h6v-8h6v8h6v-8h6v8h6v-8h6v8h6v-8h6v8"/><rect x="8" y="22" width="48" height="28"/></g><g fill="none" stroke="#a89a84" stroke-width="1.5"><line x1="8" y1="32" x2="56" y2="32"/><line x1="8" y1="42" x2="56" y2="42"/><line x1="20" y1="22" x2="20" y2="32"/><line x1="35" y1="22" x2="35" y2="32"/><line x1="47" y1="22" x2="47" y2="32"/><line x1="14" y1="32" x2="14" y2="42"/><line x1="28" y1="32" x2="28" y2="42"/><line x1="42" y1="32" x2="42" y2="42"/><line x1="20" y1="42" x2="20" y2="50"/><line x1="35" y1="42" x2="35" y2="50"/><line x1="47" y1="42" x2="47" y2="50"/></g></svg>`,
+    armor: `<svg viewBox="0 0 64 64"><path d="M32 6c-8 4-16 4-16 4v20c0 14 8 22 16 28 8-6 16-14 16-28V10s-8 0-16-4z" fill="#8a97a3" stroke="#5c6570" stroke-width="2"/><path d="M32 10v46" stroke="#5c6570" stroke-width="1.5"/><path d="M22 22h20M22 30h20M22 38h20" stroke="#5c6570" stroke-width="1.2" opacity=".6"/><path d="M32 6c-6 3-11 4-14 4" fill="none" stroke="#c9d2da" stroke-width="1" opacity=".7"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
 
@@ -4214,7 +4216,15 @@
         } else if(ev.kind==='buff'){
           if(ev.buffAtk) unit.atk += ev.buffAtk;
           if(ev.buffHp){ unit.hp += ev.buffHp; unit.maxHp += ev.buffHp; }
-          if(targetEl){ spawnSpellBurst(targetEl,'heal'); spawnDamageNumber(targetEl, `+${ev.buffAtk}⚔ +${ev.buffHp}♥`, 'heal'); }
+          if(ev.buffArmor) unit.armor = (unit.armor||0) + ev.buffArmor;
+          if(targetEl){
+            const popupParts = [];
+            if(ev.buffAtk) popupParts.push(`+${ev.buffAtk}⚔`);
+            if(ev.buffHp) popupParts.push(`+${ev.buffHp}♥`);
+            if(ev.buffArmor) popupParts.push(`+${ev.buffArmor}🛡`);
+            spawnSpellBurst(targetEl,'heal');
+            spawnDamageNumber(targetEl, popupParts.join(' '), 'heal');
+          }
         }
       }
       // IMPORTANT: renderAll() rebuilds every .unit-card element from
@@ -4724,7 +4734,7 @@
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
-    if(card.buffHp || card.buffAtk) return `+${card.buffAtk||0} АТК / +${card.buffHp||0} ХП`;
+    if(card.buffHp || card.buffAtk || card.buffArmor) return `+${card.buffAtk||0} АТК / +${card.buffHp||0} ХП${card.buffArmor?' / +'+card.buffArmor+' 🛡':''}`;
     return '';
   }
 
@@ -4733,7 +4743,7 @@
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
-    return `+${card.buffAtk||0} атк / +${card.buffHp||0} хп навсегда`;
+    return `+${card.buffAtk||0} атк / +${card.buffHp||0} хп${card.buffArmor?' / +'+card.buffArmor+' брони':''} навсегда`;
   }
 
   function renderFactionTabs(){
