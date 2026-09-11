@@ -2715,11 +2715,20 @@
       const session = loadSession();
       if(session && session.token){
         try{
-          await fetch(apiUrl('/api/mail/read'), {
+          const res = await fetch(apiUrl('/api/mail/read'), {
             method:'POST',
             headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.token },
             body: JSON.stringify({ id })
           });
+          const data = await res.json().catch(()=>({}));
+          if(data && data.claimed > 0){
+            // The reward embedded in this message was just credited —
+            // refresh the header balance and confirm it right in the
+            // open message, replacing the "will be auto-claimed" note.
+            fetchResources(session.token);
+            document.getElementById('mailDetailBody').textContent =
+              msg.body.replace(/\n\n———\n.*$/s, '') + `\n\n✅ Награда получена: ${data.claimed} золотых.`;
+          }
         } catch(e){ /* the server will just see it as unread again next time — harmless */ }
       }
       mailData.unread = mailData.messages.filter(m=>!m.read).length;
@@ -5748,6 +5757,16 @@
   // logged in, so the unread badge shows up on its own without the
   // player needing to think to open the mailbox first.
   setInterval(()=>{ if(currentUser) fetchMailStatus(); }, 60000);
+  // Гонка за сокровищами's own window can open/close/roll over to a
+  // fresh run while the player just sits on that screen without
+  // navigating away and back (which is what normally triggers a refetch)
+  // — poll it too, but only while it's actually the visible screen, so
+  // this doesn't fire needlessly the rest of the time.
+  setInterval(()=>{
+    if(currentUser && screens.treasureRace.style.display !== 'none'){
+      fetchTreasureRaceStatus().then(renderTreasureRaceScreen);
+    }
+  }, 30000);
 
   document.getElementById('mailBtn').addEventListener('click', openMailList);
   document.getElementById('mailListCloseBtn').addEventListener('click', closeMailList);
