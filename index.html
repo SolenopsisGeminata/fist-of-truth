@@ -988,6 +988,48 @@
     pointer-events:none;
   }
   .card-faction-badge svg{width:100%; height:100%; display:block;}
+  .mail-reward-block{
+    margin:14px auto 4px;
+    width:120px;
+    padding:14px 10px;
+    border-radius:10px;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    transition:opacity .3s, filter .3s;
+  }
+  .mail-reward-block.claimed{
+    opacity:.5;
+    filter:grayscale(.4);
+  }
+  .mail-reward-icon-wrap{
+    position:relative;
+    width:38px;
+    height:38px;
+  }
+  .mail-reward-icon-wrap svg{width:100%; height:100%; display:block;}
+  .mail-reward-check{
+    position:absolute;
+    inset:-4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(10,8,6,0.55);
+    border-radius:50%;
+    color:#4ecb5e;
+    font-size:24px;
+    font-weight:900;
+    line-height:1;
+  }
+  .mail-reward-amount{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--brass);
+  }
   .deck-row-art .card-faction-badge{width:11px; height:11px; top:1px; left:1px;}
   .card-popup-art .card-faction-badge{width:22px; height:22px; top:6px; left:6px;}
   .deck-row-art svg{width:20px; height:20px;}
@@ -2388,6 +2430,19 @@
   <div class="confirm-popup">
     <div class="confirm-popup-title" id="mailDetailSubject"></div>
     <div class="confirm-popup-text" id="mailDetailBody"></div>
+    <div class="mail-reward-block" id="mailRewardBlock" style="display:none;">
+      <div class="mail-reward-icon-wrap">
+        <svg viewBox="0 0 64 64">
+          <ellipse cx="32" cy="46" rx="20" ry="7" fill="#8a7020"/>
+          <ellipse cx="32" cy="38" rx="20" ry="7" fill="#c9a227"/>
+          <ellipse cx="32" cy="30" rx="20" ry="7" fill="#e0b93a"/>
+          <ellipse cx="32" cy="22" rx="20" ry="7" fill="#c9a227" stroke="#8a7020" stroke-width="2"/>
+          <circle cx="32" cy="22" r="7" fill="none" stroke="#8a7020" stroke-width="1.5" opacity=".6"/>
+        </svg>
+        <div class="mail-reward-check" id="mailRewardCheck" style="display:none;">✓</div>
+      </div>
+      <div class="mail-reward-amount" id="mailRewardAmount"></div>
+    </div>
     <div class="confirm-popup-actions">
       <button class="btn ghost" id="mailDetailBackBtn">Назад к списку</button>
     </div>
@@ -2702,14 +2757,31 @@
     document.getElementById('mailListOverlay').style.display = 'none';
   }
 
+  // Shows/hides the reward block for a mail message. `claimed` controls
+  // whether it renders as already-collected (checkmark overlay, slightly
+  // darkened) or still-fresh — a message opened for the first time
+  // starts fresh and flips to claimed once the read request confirms the
+  // gold was actually credited; a message reopened later (already read
+  // earlier) renders straight into the claimed state.
+  function renderMailRewardBlock(msg, claimed){
+    const block = document.getElementById('mailRewardBlock');
+    if(!msg.reward){ block.style.display = 'none'; return; }
+    block.style.display = 'flex';
+    block.classList.toggle('claimed', !!claimed);
+    document.getElementById('mailRewardCheck').style.display = claimed ? 'flex' : 'none';
+    document.getElementById('mailRewardAmount').textContent = `${msg.reward.amount} золотых`;
+  }
+
   async function openMailDetail(id){
     const msg = mailData.messages.find(m=>m.id===id);
     if(!msg) return;
     document.getElementById('mailDetailSubject').textContent = msg.subject;
     document.getElementById('mailDetailBody').textContent = msg.body;
+    const alreadyRead = msg.read;
+    renderMailRewardBlock(msg, alreadyRead); // reopening an already-read message shows its reward as already claimed
     closeMailList();
     document.getElementById('mailDetailOverlay').style.display = 'flex';
-    if(!msg.read){
+    if(!alreadyRead){
       msg.read = true; // reflect immediately in the local list before the request even completes
       updateMailListRowLocally(id);
       const session = loadSession();
@@ -2723,11 +2795,10 @@
           const data = await res.json().catch(()=>({}));
           if(data && data.claimed > 0){
             // The reward embedded in this message was just credited —
-            // refresh the header balance and confirm it right in the
-            // open message, replacing the "will be auto-claimed" note.
+            // refresh the header balance and flip the reward block over
+            // to its claimed (checkmarked, darkened) state.
             fetchResources(session.token);
-            document.getElementById('mailDetailBody').textContent =
-              msg.body.replace(/\n\n———\n.*$/s, '') + `\n\n✅ Награда получена: ${data.claimed} золотых.`;
+            renderMailRewardBlock(msg, true);
           }
         } catch(e){ /* the server will just see it as unread again next time — harmless */ }
       }
