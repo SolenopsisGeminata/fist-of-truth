@@ -1592,6 +1592,22 @@
     60%{opacity:1; transform:scale(1.15);}
     100%{opacity:0; transform:scale(1.3);}
   }
+  .whirlwind-effect{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    z-index:14;
+    animation: whirlwind-spin .8s ease-in forwards;
+  }
+  .whirlwind-effect svg{width:150%; height:150%;}
+  @keyframes whirlwind-spin{
+    0%{opacity:0; transform:scale(1.3) rotate(0deg);}
+    25%{opacity:1;}
+    100%{opacity:0; transform:scale(.2) rotate(340deg);}
+  }
   .spell-burst svg{
     width:135%;
     height:135%;
@@ -2514,6 +2530,7 @@
     {id:'s4', name:'Отряд ополченцев', type:'spell', cost:3, instantSummon:true, summonCardId:'c10', summonCount:3, rarity:'rare', desc:'Мгновенный призыв: срабатывает раньше фаз баффов и заклинаний — призывает 3 Ополченцев на случайные свободные ячейки своего поля боя, по одному на ячейку.', art:'militiasquad', faction:'empire'},
     {id:'s5', name:'Гнев небес', type:'spell', cost:5, wrathDmg:7, rarity:'rare', desc:'Молнии последовательно бьют по всем ячейкам выбранной вражеской полосы, нанося 7 урона каждому бойцу в ней. Пустая ячейка тоже получает удар молнии, но без урона.', art:'heavenswrath', faction:'empire'},
     {id:'s6', name:'Крестьянское ополчение', type:'spell', cost:5, endOfRoundSpell:true, summonCardId:'c1', summonCount:5, healAmount:5, rarity:'epic', desc:'В конце этого хода, уже после боя, призывает 5 Крестьян на случайные свободные ячейки своего поля боя и восстанавливает своему герою 5 здоровья.', art:'peasantmilitia', faction:'empire'},
+    {id:'s7', name:'Небесный вихрь', type:'spell', cost:4, bounceToHand:true, rarity:'epic', desc:'Возвращает в руку соперника всех бойцов из выбранной вражеской полосы в виде их исходных карт — любые полученные баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует. С вероятностью 30% призывает Ополченца на случайную свободную ячейку в своей же полосе.', art:'skywhirlwind', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
     {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
@@ -3486,6 +3503,7 @@
     canoness: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="10" fill="none" stroke="#e0b93a" stroke-width="2" opacity=".7"/><path d="M32 10a7 7 0 0 1 7 7v4H25v-4a7 7 0 0 1 7-7z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M32 24c-9 2-15 2-15 2v16c0 11 7 18 15 22 8-4 15-11 15-22V26s-6 0-15-2z" fill="#8a3d5c" stroke="#5c2740" stroke-width="1.8"/><path d="M32 32v18M24 41h16" stroke="#e0b93a" stroke-width="3" stroke-linecap="round"/></svg>`,
     heavenswrath: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="18" rx="19" ry="10" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><ellipse cx="18" cy="21" rx="10" ry="7" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><ellipse cx="46" cy="21" rx="10" ry="7" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><path d="M34 26l-11 18h8l-6 16 20-24h-9z" fill="#e8f4ff" stroke="#8fd6ff" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
     peasantmilitia: `<svg viewBox="0 0 64 64"><ellipse cx="16" cy="46" rx="14" ry="4" fill="#8a7020"/><path d="M8 46c0-7 4-12 8-12s8 5 8 12" fill="#c9a227"/><ellipse cx="32" cy="40" rx="16" ry="5" fill="#8a7020"/><path d="M22 40c0-8 5-14 10-14s10 6 10 14" fill="#c9a227"/><ellipse cx="48" cy="46" rx="14" ry="4" fill="#8a7020"/><path d="M40 46c0-7 4-12 8-12s8 5 8 12" fill="#c9a227"/></svg>`,
+    skywhirlwind: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="14" rx="16" ry="8" fill="#5c6570" opacity=".5"/><path d="M32 20c14 0 24 8 24 18s-9 16-20 16-16-5-16-12 5-9 11-9 8 3 8 6" fill="none" stroke="#8fd6ff" stroke-width="4" stroke-linecap="round"/></svg>`,
     centurion: `<svg viewBox="0 0 64 64"><path d="M32 10c-9 0-16 6-16 14v6h32v-6c0-8-7-14-16-14z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M8 20h48v4H8z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><rect x="26" y="30" width="12" height="8" fill="#3a2c22"/><path d="M20 44c0-4 5-6 12-6s12 2 12 6v10H20z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     jarlironsides: `<svg viewBox="0 0 64 64"><path d="M16 20l-8-6 4 10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.2"/><path d="M48 20l8-6-4 10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.2"/><path d="M32 8a11 11 0 0 1 11 11v6H21v-6a11 11 0 0 1 11-11z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><rect x="26" y="20" width="12" height="5" fill="#3a2c22"/><path d="M32 28c-11 2-18 3-18 3v14c0 12 8 20 18 25 10-5 18-13 18-25V31s-7-1-18-3z" fill="#5c6570" stroke="#3a4048" stroke-width="2"/><path d="M22 40h20M22 48h20" stroke="#3a4048" stroke-width="1.5" opacity=".6"/></svg>`,
     punisherangel: `<svg viewBox="0 0 64 64"><path d="M32 22c-16-10-26-2-28 8 10-4 20-2 24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><path d="M32 22c16-10 26-2 28 8-10-4-20-2-24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><circle cx="32" cy="16" r="7" fill="none" stroke="#e0b93a" stroke-width="2"/><circle cx="32" cy="20" r="6" fill="#f4d9a0"/><path d="M32 26c-7 2-11 6-11 12v20h22V38c0-6-4-10-11-12z" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.5"/><path d="M32 30l-4 14h5l-3 14 10-18h-6z" fill="#8fd6ff" stroke="#5c85a8" stroke-width="1"/></svg>`,
@@ -4074,6 +4092,9 @@
       } else if(card.wrathDmg){
         el.hint.textContent = 'Выбери полосу — молнии ударят по всем вражеским бойцам в ней.';
         highlightEnemyLanesForSpell();
+      } else if(card.bounceToHand){
+        el.hint.textContent = 'Выбери вражескую полосу — все бойцы в ней (кроме Чаростойкости) вернутся сопернику в руку.';
+        highlightEnemyLanesForSpell();
       } else if(card.healHero || card.instantSummon || card.endOfRoundSpell){
         el.hint.textContent = 'Выбери любую ячейку на своей стороне.';
         highlightAnyOwnCellForWellspring();
@@ -4161,7 +4182,7 @@
 
   function castDamageSpell(laneIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.dmg || card.wrathDmg)) return;
+    if(!card || !(card.dmg || card.wrathDmg || card.bounceToHand)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -4290,6 +4311,21 @@
     wrap.innerHTML = REINA_FLARE_SVG;
     container.appendChild(wrap);
     setTimeout(()=>{ wrap.remove(); }, 1400);
+  }
+
+  // Небесный вихрь: a spinning vortex over the cell, shrinking away as
+  // the unit gets sucked back into its owner's hand.
+  const WHIRLWIND_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10c20 0 36 12 36 28s-14 24-30 24-24-8-24-18 8-14 16-14 12 4 12 9" fill="none" stroke="#8fd6ff" stroke-width="4" stroke-linecap="round"/>
+    <path d="M50 90c-20 0-36-12-36-28s14-24 30-24 24 8 24 18-8 14-16 14-12-4-12-9" fill="none" stroke="#e8f4ff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  </svg>`;
+  function spawnWhirlwind(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'whirlwind-effect';
+    wrap.innerHTML = WHIRLWIND_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 800);
   }
 
   function findUnitEl(laneIdx, mine, depth=0){
@@ -4547,6 +4583,30 @@
         }
         setTimeout(()=>{ renderAll(); done(); }, 500);
       }, 300);
+      return;
+    }
+    if(ev.kind==='skyWhirlwind'){
+      // Небесный вихрь: struck cell may be empty, hold a normal unit
+      // (bounced back to its owner's hand, losing every buff), or hold a
+      // Чаростойкость unit (left untouched). We don't track the
+      // opponent's exact hand contents client-side, only the board
+      // change itself — the next full sync naturally reflects their new
+      // hand size wherever that's shown.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnWhirlwind(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» проносится над пустой ячейкой.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          log(`«${label}» уносит ${unit.name} обратно в руку ${targetMine?'твоему':'вражескому'} игроку.`);
+          board[ev.laneIdx][ev.targetDepth] = null;
+        }
+        setTimeout(()=>{ renderAll(); done(); }, 400);
+      }, 350);
       return;
     }
     if(ev.targetHero){
@@ -5285,6 +5345,7 @@
   function spellStatsText(card){
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.wrathDmg) return '−'+card.wrathDmg+' HP по ряду';
+    if(card.bounceToHand) return 'Вернуть в руку · ряд';
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
@@ -5297,6 +5358,7 @@
     if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}${card.lifesteal?' · 🩸 при ударе':''}${card.synergy?' · 🔗 синергия':''}${card.firstStrike?' · ⚡ первый удар':''}${card.defender?' · 🛑 защитник':''}${card.spellResist?' · 🔮 чаростойкость':''}${card.trample?' · 🐾 топот':''}${card.doubleHeal?' · 💞 двойное омоложение':''}${card.doubleStrike?' · ⚔️⚔️ двойной удар':''}`;
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
+    if(card.bounceToHand) return `возвращает ряд в руку`;
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
