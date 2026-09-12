@@ -2571,7 +2571,7 @@
     {id:'c50', name:'Священник святого Света', type:'creature', cost:5, atk:2, hp:5, healOnPlay:3, healTrigger:true, rarity:'epic', desc:'При появлении на поле боя восстанавливает своему герою 3 здоровья. Каждый раз, когда исцеляется свой герой (от любого источника), навсегда даёт случайному другому союзнику +1 к атаке и +3 к здоровью.', art:'holypriest', faction:'empire'},
     {id:'c51', name:'Кузнец', type:'creature', cost:4, atk:1, hp:6, armor:1, blacksmithBuff:true, rarity:'epic', desc:'В конце каждого хода навсегда увеличивает свою атаку и броню на 1, а также даёт такое же усиление случайному другому союзнику с бронёй, если такой есть.', art:'blacksmith', faction:'empire'},
     {id:'c52', name:'Подрывник', type:'creature', cost:3, atk:1, hp:4, powderKeg:true, explodeOnDeath:true, rarity:'rare', desc:'В конце каждого хода бросает пороховую бочку в случайный квадрат на поле боя соперника. Если там нет бойца, урон достаётся герою соперника. При гибели (от чего угодно) взрывается сам, нанося 5 урона своему же герою.', art:'sapper', faction:'empire'},
-    {id:'c53', name:'Статуя', type:'creature', cost:3, atk:1, hp:6, statueBuff:true, rarity:'rare', desc:'В конце каждого хода навсегда увеличивает здоровье случайного соседнего союзника (сверху, снизу, слева, справа) на величину, равную своей текущей атаке.', art:'statue', faction:'empire'},
+    {id:'c53', name:'Статуя', type:'creature', cost:3, atk:1, hp:6, defender:true, statueBuff:true, rarity:'rare', desc:'Защитник: не может атаковать в бою. В начале каждого хода навсегда увеличивает здоровье случайного соседнего союзника (сверху, снизу, слева, справа) на величину, равную своей текущей атаке.', art:'statue', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
