@@ -2570,7 +2570,7 @@
     {id:'c49', name:'Имперский кавалерист', type:'creature', cost:5, atk:6, hp:3, punisherKill:true, rarity:'rare', desc:'При появлении на поле боя стремительным наскоком уничтожает первого бойца соперника, появившегося в этот же ход в полосе прямо напротив. На бойцов, появившихся ранее, не действует.', art:'imperialcavalry', faction:'empire'},
     {id:'c50', name:'Священник святого Света', type:'creature', cost:5, atk:2, hp:5, healOnPlay:3, healTrigger:true, rarity:'epic', desc:'При появлении на поле боя восстанавливает своему герою 3 здоровья. Каждый раз, когда исцеляется свой герой (от любого источника), навсегда даёт случайному другому союзнику +1 к атаке и +3 к здоровью.', art:'holypriest', faction:'empire'},
     {id:'c51', name:'Кузнец', type:'creature', cost:4, atk:1, hp:6, armor:1, blacksmithBuff:true, rarity:'epic', desc:'В конце каждого хода навсегда увеличивает свою атаку и броню на 1, а также даёт такое же усиление случайному другому союзнику с бронёй, если такой есть.', art:'blacksmith', faction:'empire'},
-    {id:'c52', name:'Подрывник', type:'creature', cost:3, atk:1, hp:4, powderKeg:true, explodeOnDeath:true, rarity:'rare', desc:'В конце каждого хода бросает пороховую бочку в случайного бойца соперника, нанося 5 урона при взрыве. Когда сам погибает (от чего угодно), взрывается — нанося 5 урона своему же герою.', art:'sapper', faction:'empire'},
+    {id:'c52', name:'Подрывник', type:'creature', cost:3, atk:1, hp:4, powderKeg:true, explodeOnDeath:true, rarity:'rare', desc:'В конце каждого хода бросает пороховую бочку в случайный квадрат на поле боя соперника. Если там нет бойца, урон достаётся герою соперника. При гибели (от чего угодно) взрывается сам, нанося 5 урона своему же герою.', art:'sapper', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4913,29 +4913,46 @@
     const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
     const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
     const shooterName = sourceUnit ? sourceUnit.name : 'Подрывник';
-    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
-    const targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
-    const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
-    log(`${shooterMine?'Твой':'Соперника'} «${shooterName}» бросает пороховую бочку в ${targetUnit?targetUnit.name:'вражеского бойца'}, нанося ${ev.amount}.`);
+    let targetEl, targetUnit = null, targetBoard = null;
+    if(ev.targetHero){
+      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    } else {
+      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    }
+    const targetName = ev.targetHero ? (targetMine?'твоему кулаку':'кулаку соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
+    if(ev.resisted){
+      log(`${shooterMine?'Твой':'Соперника'} «${shooterName}» бросает пороховую бочку в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`${shooterMine?'Твой':'Соперника'} «${shooterName}» бросает пороховую бочку в ${targetName}, нанося ${ev.amount}.`);
+    }
     flyProjectileToHero(sourceEl, targetEl, KEG_SVG, 'cannonball', 600, ()=>{
       spawnSpellBurst(targetEl, 'dmg');
-      if(targetUnit){
-        targetUnit.hp -= ev.amount;
-        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
-        if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); targetBoard[ev.targetLaneIdx][ev.targetDepthIdx] = null; }
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
     });
   }
 
-  // Подрывник's own death trigger: he's already gone from the board by
-  // the time this fires (checked at the very end of resolution), so the
-  // blast is shown at his OWN hero rather than at a specific cell.
+  // Подрывник's own death trigger: shows the SAME explosion visual as
+  // his powder keg (spawnSpellBurst 'dmg') right at his own death cell
+  // — the server now fires this the instant he actually dies, wherever
+  // that happened, rather than deferring to end of round.
   function playSelfExplosionEvent(ev, done){
     const mine = ev.side === state.myUsername;
     const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    const deathEl = findSlotEl(ev.laneIdx, mine, ev.depthIdx);
     log(`${mine?'Твой':'Вражеский'} Подрывник взрывается, нанося ${ev.amount} урона ${mine?'твоему':'вражескому'} герою.`);
-    spawnSpellBurst(heroEl, 'dmg');
+    spawnSpellBurst(deathEl || heroEl, 'dmg');
     setTimeout(()=>{
       if(mine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
       if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
