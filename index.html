@@ -2584,6 +2584,7 @@
     {id:'c57', name:'Луна, голос будущего', type:'creature', cost:4, atk:0, hp:1, spellResist:true, lunaBlind:true, rarity:'legendary', desc:'Пока эта карта на поле боя, все вражеские бойцы в противоположном ряду не могут атаковать (получают Защитник), кроме бойцов с Чаростойкостью. Эффект пересчитывается каждый ход и исчезает вместе с ней.', art:'lunavoice', faction:'empire'},
     {id:'c58', name:'Отшельник', type:'creature', cost:1, atk:1, hp:2, legacy:1, rarity:'rare', desc:'Несёт эффект Наследие 1. При гибели (от чего угодно) передаёт случайному соседнему союзнику +1 атаки и +1 здоровья, а также сам эффект Наследие — тот, кто его получает, при своей смерти передаст его дальше. Наследие накапливается при каждой передаче и никогда не действует на изначального носителя.', art:'hermit', faction:'zen'},
     {id:'c59', name:'Бамбуковый стрелок', type:'creature', cost:1, atk:2, hp:1, bambooShotOnPlay:2, bambooShotRecurring:1, rarity:'rare', desc:'При появлении на поле боя бросает бамбуковое копьё в случайную ячейку в своей же полосе на стороне соперника, нанося 2 урона (пусто — урон герою). Начиная со следующего хода после появления, перед своей обычной атакой каждый ход бросает ещё одно копьё туда же, нанося 1 урона.', art:'bambooarcher', faction:'zen'},
+    {id:'c60', name:'Олень-Даос', type:'creature', cost:1, atk:2, hp:1, legacy:1, rarity:'common', desc:'Часть стартовой колоды фракции Дзен. Несёт эффект Наследие 1 — при гибели передаёт случайному соседнему союзнику +1 атаки и +1 здоровья, а также сам эффект Наследие.', art:'deertaoist', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -2596,7 +2597,7 @@
     { id:'savages', name:'Дикари', icon:`<svg viewBox="0 0 64 64"><path d="M32 6l7 12-7 4-7-4z" fill="#8a7020"/><path d="M17 20h30l-5 28H22z" fill="#a12c2c"/><circle cx="26" cy="31" r="3.2" fill="#15100d"/><circle cx="38" cy="31" r="3.2" fill="#15100d"/><path d="M23 42h18" stroke="#15100d" stroke-width="3" stroke-linecap="round"/></svg>` },
     { id:'inferno', name:'Инферно', icon:`<svg viewBox="0 0 64 64"><path d="M32 6c-3 9 4 11 0 18-4-2-7 1-7 6 0 7 6 12 7 12s7-5 7-12c0-3-1-5-3-6 4-1 6-7 3-18z" fill="#e04a3f"/></svg>` },
     { id:'frost', name:'Холод', icon:`<svg viewBox="0 0 64 64"><g stroke="#8fd6ff" stroke-width="3.5" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="56"/><line x1="10" y1="32" x2="54" y2="32"/><line x1="16" y1="16" x2="48" y2="48"/><line x1="48" y1="16" x2="16" y2="48"/></g><g stroke="#8fd6ff" stroke-width="2.5" stroke-linecap="round"><path d="M32 8l-6 7M32 8l6 7M32 56l-6-7M32 56l6-7M10 32l7-6M10 32l7 6M54 32l-7-6M54 32l-7 6"/></g></svg>` },
-    { id:'zen', name:'Дзен', icon:`<svg viewBox="0 0 64 64"><path d="M47 17A23 23 0 1 1 21 12" fill="none" stroke="#4f8a5b" stroke-width="4.5" stroke-linecap="round"/></svg>` },
+    { id:'zen', name:'Дзен', locked:true, icon:`<svg viewBox="0 0 64 64"><path d="M47 17A23 23 0 1 1 21 12" fill="none" stroke="#4f8a5b" stroke-width="4.5" stroke-linecap="round"/></svg>` },
     { id:'mystery', name:'Мистерия', icon:`<svg viewBox="0 0 64 64"><path d="M5 32s11-15 27-15 27 15 27 15-11 15-27 15S5 32 5 32z" fill="none" stroke="#5c85a8" stroke-width="3.5"/><circle cx="32" cy="32" r="7.5" fill="#5c85a8"/><circle cx="32" cy="32" r="2.8" fill="#0f0b08"/></svg>` },
   ];
   let selectedFaction = 'empire';
@@ -2609,7 +2610,9 @@
   let libraryPage = 0;
 
   function getLibraryFilteredCards(){
+    const lockedFactionIds = new Set(FACTIONS.filter(f=>f.locked).map(f=>f.id));
     let cards = libraryFaction==='all' ? POOL.slice() : POOL.filter(c=>c.faction===libraryFaction);
+    cards = cards.filter(c=>!lockedFactionIds.has(c.faction));
     if(libraryManaFilters.size>0){
       cards = cards.filter(c=>libraryManaFilters.has(c.cost));
       // grouped by mana ascending — "press 2 then 5" shows all 2-cost cards, then all 5-cost cards
@@ -2886,7 +2889,7 @@
 
   function renderLibraryFactionTabs(){
     const tabsEl = document.getElementById('libraryFactionTabs');
-    const all = [ALL_FACTIONS_TAB, ...FACTIONS];
+    const all = [ALL_FACTIONS_TAB, ...FACTIONS.filter(f=>!f.locked)];
     tabsEl.innerHTML = all.map(f=>
       `<button class="faction-tab${f.id===libraryFaction?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
     ).join('');
@@ -3007,7 +3010,7 @@
 
   function renderShopFactionTabs(){
     const tabsEl = document.getElementById('shopFactionTabs');
-    const all = [ALL_FACTIONS_TAB, ...FACTIONS];
+    const all = [ALL_FACTIONS_TAB, ...FACTIONS.filter(f=>!f.locked)];
     const current = shopFaction[shopActiveCurrency];
     tabsEl.innerHTML = all.map(f=>
       `<button class="faction-tab${f.id===current?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
@@ -3531,6 +3534,7 @@
     lunavoice: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="#3a4560" opacity=".3"/><path d="M40 14a20 20 0 1 0 0 36 16 16 0 0 1 0-36z" fill="#c8d4f0" stroke="#8a97c0" stroke-width="1.5"/><circle cx="18" cy="18" r="1.5" fill="#fff3c4"/><circle cx="46" cy="46" r="1" fill="#fff3c4"/></svg>`,
     hermit: `<svg viewBox="0 0 64 64"><path d="M32 12a8 8 0 0 1 8 8c0 3-1 5-3 7 8 3 13 11 13 21H16c0-10 5-18 13-21-2-2-3-4-3-7a8 8 0 0 1 8-8z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><ellipse cx="32" cy="23" rx="3" ry="3.5" fill="#1a2e1e"/><line x1="46" y1="24" x2="50" y2="50" stroke="#8a6d1a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     bambooarcher: `<svg viewBox="0 0 64 64"><path d="M32 20v36" stroke="#7a9c4f" stroke-width="6" stroke-linecap="round"/><path d="M24 32h16M24 44h16" stroke="#5c7a3a" stroke-width="2"/><path d="M32 6l-7 14h14z" fill="#5c6570" stroke="#3a4048" stroke-width="1"/></svg>`,
+    deertaoist: `<svg viewBox="0 0 64 64"><path d="M20 20c-4-8-2-14 4-14 0 6 2 8 4 8M44 20c4-8 2-14-4-14 0 6-2 8-4 8" fill="none" stroke="#8a6d1a" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="32" cy="34" rx="13" ry="16" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><circle cx="27" cy="30" r="1.5" fill="#1a2e1e"/><circle cx="37" cy="30" r="1.5" fill="#1a2e1e"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
