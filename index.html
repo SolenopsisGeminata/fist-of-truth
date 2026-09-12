@@ -2533,6 +2533,7 @@
     {id:'s7', name:'Небесный вихрь', type:'spell', cost:4, bounceToHand:true, rarity:'epic', desc:'Возвращает в руку соперника всех бойцов из выбранной вражеской полосы в виде их исходных карт — любые полученные баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует. С вероятностью 30% призывает Ополченца на случайную свободную ячейку в своей же полосе.', art:'skywhirlwind', faction:'empire'},
     {id:'s8', name:'Яркий свет', type:'spell', cost:2, randomBlind:true, rarity:'rare', desc:'Ослепляет случайного бойца соперника — он не сможет атаковать в этом ходу (получает Защитник на 1 ход). Не действует на бойцов с Чаростойкостью.', art:'brightlight', faction:'empire'},
     {id:'s9', name:'Сумка с припасами', type:'spell', cost:2, buffAtk:1, buffHp:1, buffLifesteal:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного бойца на 1 и даёт ему эффект Кража жизни.', art:'supplybag', faction:'empire'},
+    {id:'s10', name:'Наплечник', type:'spell', cost:1, buffHp:1, drawIfArmored:true, rarity:'rare', desc:'Навсегда увеличивает здоровье выбранного союзного бойца на 1. Если у него уже есть Броня, в руку добавляется 1 карта из своей колоды.', art:'pauldron', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
     {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
@@ -3513,6 +3514,7 @@
     skywhirlwind: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="14" rx="16" ry="8" fill="#5c6570" opacity=".5"/><path d="M32 20c14 0 24 8 24 18s-9 16-20 16-16-5-16-12 5-9 11-9 8 3 8 6" fill="none" stroke="#8fd6ff" stroke-width="4" stroke-linecap="round"/></svg>`,
     brightlight: `<svg viewBox="0 0 64 64"><g stroke="#fff3c4" stroke-width="3" stroke-linecap="round"><line x1="32" y1="32" x2="32" y2="10"/><line x1="32" y1="32" x2="32" y2="54"/><line x1="32" y1="32" x2="10" y2="32"/><line x1="32" y1="32" x2="54" y2="32"/></g><circle cx="32" cy="32" r="10" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/></svg>`,
     supplybag: `<svg viewBox="0 0 64 64"><path d="M20 26h24l4 28a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><path d="M24 26v-6a8 8 0 0 1 16 0v6" fill="none" stroke="#5c4536" stroke-width="2.5"/><circle cx="32" cy="36" r="3" fill="#5c4536"/></svg>`,
+    pauldron: `<svg viewBox="0 0 64 64"><path d="M20 20c0-6 6-10 12-10s12 4 12 10v8c-8-4-16-4-24 0z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M18 28c0-4 3-7 14-7s14 3 14 7v10c-10-6-18-6-28 0z" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><circle cx="32" cy="18" r="2" fill="#3a4048" opacity=".6"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -4677,6 +4679,7 @@
           if(ev.buffHp){ unit.hp += ev.buffHp; unit.maxHp += ev.buffHp; }
           if(ev.buffArmor) unit.armor = (unit.armor||0) + ev.buffArmor;
           if(ev.buffLifesteal) unit.lifesteal = true;
+          if(ev.drewCard) log(`Броня ${unit.name} сработала — в руку добавлена карта из колоды.`);
           if(targetEl){
             const popupParts = [];
             if(ev.buffAtk) popupParts.push(`+${ev.buffAtk}⚔`);
@@ -5506,7 +5509,7 @@
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
-    if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}`;
+    if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.drawIfArmored?' / 🃏 если есть броня':''}`;
     return '';
   }
 
@@ -5520,7 +5523,7 @@
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
-    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''} навсегда`;
+    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''} навсегда`;
   }
 
   function renderFactionTabs(){
