@@ -2582,6 +2582,7 @@
     {id:'c55', name:'Следопыт', type:'creature', cost:1, atk:1, hp:1, synergy:1, rarity:'rare', desc:'Лёгкий разведчик — атака растёт на 1 за каждого союзника по соседству (сверху, снизу, слева, справа).', art:'tracker', faction:'empire'},
     {id:'c56', name:'Мушкетер', type:'creature', cost:4, atk:3, hp:5, musketShot:true, rarity:'rare', desc:'Если перед его атакой союзных бойцов на поле боя больше, чем вражеских, стреляет в случайного бойца соперника, нанося 1 урона.', art:'musketeer', faction:'empire'},
     {id:'c57', name:'Луна, голос будущего', type:'creature', cost:4, atk:0, hp:1, spellResist:true, lunaBlind:true, rarity:'legendary', desc:'Пока эта карта на поле боя, все вражеские бойцы в противоположном ряду не могут атаковать (получают Защитник), кроме бойцов с Чаростойкостью. Эффект пересчитывается каждый ход и исчезает вместе с ней.', art:'lunavoice', faction:'empire'},
+    {id:'c58', name:'Отшельник', type:'creature', cost:1, atk:1, hp:2, legacy:1, rarity:'rare', desc:'Несёт эффект Наследие 1. При гибели (от чего угодно) передаёт случайному соседнему союзнику +1 атаки и +1 здоровья, а также сам эффект Наследие — тот, кто его получает, при своей смерти передаст его дальше. Наследие накапливается при каждой передаче и никогда не действует на изначального носителя.', art:'hermit', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -2618,7 +2619,7 @@
 
   function libraryCardHtml(card){
     const statsHtml = card.type==='creature'
-      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}</div>`
+      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}</div>`
       : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
     return `<div class="hand-card affordable" data-card-id="${card.id}">
       <div class="cost">${card.cost}</div>
@@ -2641,7 +2642,7 @@
   function showCardPopup(card){
     if(!card) return;
     const statsHtml = card.type==='creature'
-      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}</div>`
+      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}</div>`
       : `<div class="card-popup-stats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
     document.getElementById('cardPopupBody').innerHTML = `
       <div class="cost">${card.cost}</div>
@@ -3527,6 +3528,7 @@
     tracker: `<svg viewBox="0 0 64 64"><path d="M24 14c-4 0-6 4-6 10 0 8 4 12 4 20 0 6-4 8-4 12h20c0-6-3-8-3-16 0-10 6-14 6-22 0-4-3-4-5-4-2 0-3 2-5 2s-3-2-7-2z" fill="#8a7020" stroke="#5c4a10" stroke-width="1.5"/></svg>`,
     musketeer: `<svg viewBox="0 0 64 64"><rect x="10" y="30" width="44" height="6" rx="2" fill="#5c4536" stroke="#3a2c22" stroke-width="1.2"/><rect x="10" y="28" width="14" height="10" rx="2" fill="#3a2c22"/><path d="M14 38l-4 12h6l3-12z" fill="#3a2c22"/><rect x="46" y="26" width="4" height="14" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/></svg>`,
     lunavoice: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="#3a4560" opacity=".3"/><path d="M40 14a20 20 0 1 0 0 36 16 16 0 0 1 0-36z" fill="#c8d4f0" stroke="#8a97c0" stroke-width="1.5"/><circle cx="18" cy="18" r="1.5" fill="#fff3c4"/><circle cx="46" cy="46" r="1" fill="#fff3c4"/></svg>`,
+    hermit: `<svg viewBox="0 0 64 64"><path d="M32 12a8 8 0 0 1 8 8c0 3-1 5-3 7 8 3 13 11 13 21H16c0-10 5-18 13-21-2-2-3-4-3-7a8 8 0 0 1 8-8z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><ellipse cx="32" cy="23" rx="3" ry="3.5" fill="#1a2e1e"/><line x1="46" y1="24" x2="50" y2="50" stroke="#8a6d1a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -3764,7 +3766,7 @@
       dawnBuff:!!u.dawnBuff, cookHeal:!!u.cookHeal, cowHeal:!!u.cowHeal, shootHero:!!u.shootHero,
       wallGrow:!!u.wallGrow, firstStrike:!!u.firstStrike, bishopBuff:!!u.bishopBuff, summonOnHeroHit:u.summonOnHeroHit||null,
       priestHeal:!!u.priestHeal, siegeShot:!!u.siegeShot, endOfRoundSummon:u.endOfRoundSummon||null,
-      defender:!!u.defender, cannonShot:!!u.cannonShot, spellResist:!!u.spellResist, trample:!!u.trample, punisherKill:!!u.punisherKill, doubleHeal:!!u.doubleHeal, doubleStrike:!!u.doubleStrike, healTrigger:!!u.healTrigger,
+      defender:!!u.defender, cannonShot:!!u.cannonShot, spellResist:!!u.spellResist, trample:!!u.trample, punisherKill:!!u.punisherKill, doubleHeal:!!u.doubleHeal, doubleStrike:!!u.doubleStrike, healTrigger:!!u.healTrigger, legacyValue:u.legacyValue||0,
       placedThisRound:!!u.placedThisRound,
     };
   }
@@ -4039,7 +4041,7 @@
       const div = document.createElement('div');
       div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable') + (state.selectedCardUid===card.uid ? ' selected':'');
       const statsHtml = card.type==='creature'
-        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}</div>`
+        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}</div>`
         : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
       div.innerHTML = `
         <div class="cost">${card.cost}</div>
@@ -4551,6 +4553,7 @@
       else if(ev.type==='cannonShot') playCannonShotEvent(ev, next);
       else if(ev.type==='powderKegShot') playPowderKegShotEvent(ev, next);
       else if(ev.type==='selfExplosion') playSelfExplosionEvent(ev, next);
+      else if(ev.type==='legacyTransfer') playLegacyTransferEvent(ev, next);
       else if(ev.type==='weaponThrow') playWeaponThrowEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='trampleHit') playTrampleHitEvent(ev, next);
@@ -4886,6 +4889,7 @@
       trample: card?card.trample:false,
       punisherKill: card?card.punisherKill:false,
       healTrigger: card?card.healTrigger:false,
+      legacyValue: card?(card.legacy||0):0,
       doubleStrike: card?card.doubleStrike:false,
       doubleHeal: card?card.doubleHeal:false,
       placedThisRound: false,
@@ -5102,6 +5106,32 @@
       if(mine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
       if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
       setTimeout(()=>{ renderAll(); done(); }, 900);
+    }, 300);
+  }
+
+  // Наследие (Отшельник and anyone who inherits it): on the carrier's
+  // death, a random adjacent ally gets +N atk/+N hp and now carries the
+  // same Наследие N itself (possibly stacked on top of its own). Reuses
+  // the heal-style burst visual; the log calls out the new stacked
+  // total so the chain is easy to follow.
+  function playLegacyTransferEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const targetEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
+    log(`Наследие переходит ${mine?'твоему':'бойцу соперника'}${unit?' — '+unit.name:''}: +${ev.amount} атаки и здоровья (теперь несёт Наследие ${ev.newLegacyValue}).`);
+    setTimeout(()=>{
+      if(unit){
+        unit.atk += ev.amount;
+        unit.hp += ev.amount;
+        unit.maxHp += ev.amount;
+        unit.legacyValue = ev.newLegacyValue;
+        if(targetEl){
+          spawnSpellBurst(targetEl,'heal');
+          spawnDamageNumber(targetEl, `+${ev.amount}⚔ +${ev.amount}♥`, 'heal');
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 1000);
     }, 300);
   }
 
