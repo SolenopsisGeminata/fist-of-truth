@@ -2572,6 +2572,7 @@
     {id:'c51', name:'Кузнец', type:'creature', cost:4, atk:1, hp:6, armor:1, blacksmithBuff:true, rarity:'epic', desc:'В конце каждого хода навсегда увеличивает свою атаку и броню на 1, а также даёт такое же усиление случайному другому союзнику с бронёй, если такой есть.', art:'blacksmith', faction:'empire'},
     {id:'c52', name:'Подрывник', type:'creature', cost:3, atk:1, hp:4, powderKeg:true, explodeOnDeath:true, rarity:'rare', desc:'В конце каждого хода бросает пороховую бочку в случайный квадрат на поле боя соперника. Если там нет бойца, урон достаётся герою соперника. При гибели (от чего угодно) взрывается сам, нанося 5 урона своему же герою.', art:'sapper', faction:'empire'},
     {id:'c53', name:'Статуя', type:'creature', cost:3, atk:1, hp:6, defender:true, statueBuff:true, rarity:'rare', desc:'Защитник: не может атаковать в бою. В начале каждого хода навсегда увеличивает здоровье случайного соседнего союзника (сверху, снизу, слева, справа) на величину, равную своей текущей атаке.', art:'statue', faction:'empire'},
+    {id:'c54', name:'Метеоритный страж', type:'creature', cost:2, atk:2, hp:1, armor:1, weaponThrowOnDeath:true, rarity:'epic', desc:'Воин с наконечником булавы на тросе. При гибели (от чего угодно) бросает своё оружие в случайную ячейку в своей же полосе на стороне соперника, нанося урон, равный своей атаке. Если там пусто, урон достаётся герою соперника.', art:'meteorguard', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3512,6 +3513,7 @@
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
     statue: `<svg viewBox="0 0 64 64"><rect x="18" y="46" width="28" height="10" fill="#8a8378" stroke="#5c5650" stroke-width="1.5"/><path d="M32 12a8 8 0 0 1 8 8v6H24v-6a8 8 0 0 1 8-8z" fill="#a89f92" stroke="#5c5650" stroke-width="1.5"/><path d="M22 26c0 12 4 20 10 24 6-4 10-12 10-24z" fill="#a89f92" stroke="#5c5650" stroke-width="1.5"/><circle cx="28" cy="17" r="1.2" fill="#5c5650" opacity=".6"/><circle cx="36" cy="17" r="1.2" fill="#5c5650" opacity=".6"/></svg>`,
+    meteorguard: `<svg viewBox="0 0 64 64"><circle cx="24" cy="16" r="7" fill="#c9a98a"/><path d="M24 23c-6 2-10 8-10 16v15h20V39c0-8-4-14-10-16z" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><path d="M32 30l8 5" stroke="#5c6570" stroke-width="2"/><circle cx="46" cy="39" r="9" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><path d="M46 28l2 3-2 3-2-3zM57 39l-3 2-3-2 3-2zM35 39l3-2 3 2-3 2zM46 50l-2-3 2-3 2 3z" fill="#3a4048"/></svg>`,
     centurion: `<svg viewBox="0 0 64 64"><path d="M32 10c-9 0-16 6-16 14v6h32v-6c0-8-7-14-16-14z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M8 20h48v4H8z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><rect x="26" y="30" width="12" height="8" fill="#3a2c22"/><path d="M20 44c0-4 5-6 12-6s12 2 12 6v10H20z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     jarlironsides: `<svg viewBox="0 0 64 64"><path d="M16 20l-8-6 4 10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.2"/><path d="M48 20l8-6-4 10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.2"/><path d="M32 8a11 11 0 0 1 11 11v6H21v-6a11 11 0 0 1 11-11z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><rect x="26" y="20" width="12" height="5" fill="#3a2c22"/><path d="M32 28c-11 2-18 3-18 3v14c0 12 8 20 18 25 10-5 18-13 18-25V31s-7-1-18-3z" fill="#5c6570" stroke="#3a4048" stroke-width="2"/><path d="M22 40h20M22 48h20" stroke="#3a4048" stroke-width="1.5" opacity=".6"/></svg>`,
     punisherangel: `<svg viewBox="0 0 64 64"><path d="M32 22c-16-10-26-2-28 8 10-4 20-2 24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><path d="M32 22c16-10 26-2 28 8-10-4-20-2-24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><circle cx="32" cy="16" r="7" fill="none" stroke="#e0b93a" stroke-width="2"/><circle cx="32" cy="20" r="6" fill="#f4d9a0"/><path d="M32 26c-7 2-11 6-11 12v20h22V38c0-6-4-10-11-12z" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.5"/><path d="M32 30l-4 14h5l-3 14 10-18h-6z" fill="#8fd6ff" stroke="#5c85a8" stroke-width="1"/></svg>`,
@@ -4531,6 +4533,7 @@
       else if(ev.type==='cannonShot') playCannonShotEvent(ev, next);
       else if(ev.type==='powderKegShot') playPowderKegShotEvent(ev, next);
       else if(ev.type==='selfExplosion') playSelfExplosionEvent(ev, next);
+      else if(ev.type==='weaponThrow') playWeaponThrowEvent(ev, next);
       else if(ev.type==='trampleHit') playTrampleHitEvent(ev, next);
       else if(ev.type==='punisherKill') playPunisherKillEvent(ev, next);
       else if(ev.type==='reinaBlind') playReinaBlindEvent(ev, next);
@@ -4734,6 +4737,15 @@
     <rect x="6" y="3" width="12" height="18" rx="4" fill="#8a5a34" stroke="#5c4536" stroke-width="1"/>
     <rect x="6" y="7" width="12" height="2" fill="#3a2c22"/>
     <rect x="6" y="15" width="12" height="2" fill="#3a2c22"/>
+  </svg>`;
+
+  // Метеоритный страж: a spiked mace-head on a short tether — thrown
+  // the same way as every other projectile mechanic.
+  const METEOR_HAMMER_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="4" r="1.5" fill="#8a97a3" stroke="#5c6570" stroke-width="0.8"/>
+    <line x1="12" y1="5.5" x2="12" y2="9" stroke="#5c6570" stroke-width="1"/>
+    <circle cx="12" cy="15" r="7" fill="#5c6570" stroke="#3a4048" stroke-width="1.2"/>
+    <path d="M12 8l1.5 2-1.5 2-1.5-2zM17 15l-2 1.5-2-1.5 2-1.5zM7 15l2-1.5 2 1.5-2 1.5zM12 22l-1.5-2 1.5-2 1.5 2z" fill="#3a4048"/>
   </svg>`;
 
   // A small glowing green orb — the shared visual for every "heal the
@@ -4949,6 +4961,44 @@
   // his powder keg (spawnSpellBurst 'dmg') right at his own death cell
   // — the server now fires this the instant he actually dies, wherever
   // that happened, rather than deferring to end of round.
+  // Метеоритный страж: on death, throws his weapon into his own
+  // mirrored lane on the enemy side — the source is his own (now empty)
+  // death cell, since he's already gone from the board by the time this
+  // fires. Otherwise plays exactly like a cannonball/keg throw.
+  function playWeaponThrowEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceEl = findSlotEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    let targetEl, targetUnit = null, targetBoard = null;
+    if(ev.targetHero){
+      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    } else {
+      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    }
+    const targetName = ev.targetHero ? (targetMine?'твоему кулаку':'кулаку соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
+    if(ev.resisted){
+      log(`${shooterMine?'Твой':'Соперника'} Метеоритный страж, погибая, бросает оружие в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`${shooterMine?'Твой':'Соперника'} Метеоритный страж, погибая, бросает своё оружие в ${targetName}, нанося ${ev.amount}.`);
+    }
+    flyProjectileToHero(sourceEl, targetEl, METEOR_HAMMER_SVG, 'cannonball', 600, ()=>{
+      spawnSpellBurst(targetEl, 'dmg');
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
+    });
+  }
+
   function playSelfExplosionEvent(ev, done){
     const mine = ev.side === state.myUsername;
     const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
