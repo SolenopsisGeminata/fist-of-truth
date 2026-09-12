@@ -2536,6 +2536,7 @@
     {id:'s10', name:'Наплечник', type:'spell', cost:1, buffHp:1, drawIfArmored:true, rarity:'rare', desc:'Навсегда увеличивает здоровье выбранного союзного бойца на 1. Если у него уже есть Броня, в руку добавляется 1 карта из своей колоды.', art:'pauldron', faction:'empire'},
     {id:'s11', name:'Свет жизни', type:'spell', cost:4, lifeLight:true, healAmount:10, summonCardId:'c10', rarity:'rare', desc:'Восстанавливает своему герою 10 здоровья. Если после этого здоровье своего героя больше, чем у героя соперника, призывает Ополченца в выбранную ячейку на своём поле боя. Если ячейка уже занята, призыв не срабатывает.', art:'lifelight', faction:'empire'},
     {id:'s12', name:'Вызов стражи', type:'spell', cost:4, guardCall:true, summonCardId:'c11', rarity:'epic', desc:'Призывает по одному Стражу дворца на выбранную ячейку и на случайную свободную ячейку своего поля боя. Если выбранная ячейка уже занята, тот призыв не срабатывает — второй происходит независимо. Срабатывает в фазе Мгновенный призыв.', art:'guardcall', faction:'empire'},
+    {id:'s13', name:'Небесные лучи', type:'spell', cost:4, heavenlyRays:true, rarity:'epic', desc:'Навсегда увеличивает атаку и здоровье всех союзных бойцов на поле боя на 2.', art:'heavenlyrays', faction:'empire'},
     {id:'c13', name:'Повар', type:'creature', cost:3, atk:2, hp:2, cookHeal:true, rarity:'rare', desc:'После каждого боя готовит горячее — в конце хода восстанавливает своему герою здоровье, равное своей атаке.', art:'cook', faction:'empire'},
     {id:'c14', name:'Ополченец с дубиной', type:'creature', cost:3, atk:3, hp:1, rarity:'common', desc:'Взял в руки первое, что нашёл, и бьёт от души — обороняться ему нечем.', art:'club', faction:'empire'},
     {id:'c15', name:'Крепкий работяга', type:'creature', cost:4, atk:3, hp:4, rarity:'common', desc:'Годами работал в шахте — привык терпеть удары и отвечать полной силой.', art:'pickaxe', faction:'empire'},
@@ -3521,6 +3522,7 @@
     pauldron: `<svg viewBox="0 0 64 64"><path d="M20 20c0-6 6-10 12-10s12 4 12 10v8c-8-4-16-4-24 0z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M18 28c0-4 3-7 14-7s14 3 14 7v10c-10-6-18-6-28 0z" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><circle cx="32" cy="18" r="2" fill="#3a4048" opacity=".6"/></svg>`,
     lifelight: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="22" fill="#fff3c4" opacity=".25"/><path d="M32 46C18 36 12 28 12 20a10 10 0 0 1 20-2 10 10 0 0 1 20 2c0 8-6 16-20 26z" fill="#e0685a" stroke="#a8362a" stroke-width="1.5"/></svg>`,
     guardcall: `<svg viewBox="0 0 64 64"><path d="M12 30c0-4 20-14 36-6l-4 8c-10-5-22-2-28 2z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1.5"/><path d="M12 30l-4 8 10 4 4-8z" fill="#e0b93a" stroke="#8a6d1a" stroke-width="1.5"/><circle cx="46" cy="26" r="4" fill="#8a6d1a"/></svg>`,
+    heavenlyrays: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="10" rx="20" ry="6" fill="#fff3c4" opacity=".4"/><path d="M20 12l-8 40h6l10-40z" fill="#fff8e0" opacity=".8"/><path d="M32 12l-2 40h6l2-40z" fill="#fff8e0" opacity=".9"/><path d="M44 12l8 40h-6l-10-40z" fill="#fff8e0" opacity=".8"/></svg>`,
     tracker: `<svg viewBox="0 0 64 64"><path d="M24 14c-4 0-6 4-6 10 0 8 4 12 4 20 0 6-4 8-4 12h20c0-6-3-8-3-16 0-10 6-14 6-22 0-4-3-4-5-4-2 0-3 2-5 2s-3-2-7-2z" fill="#8a7020" stroke="#5c4a10" stroke-width="1.5"/></svg>`,
     musketeer: `<svg viewBox="0 0 64 64"><rect x="10" y="30" width="44" height="6" rx="2" fill="#5c4536" stroke="#3a2c22" stroke-width="1.2"/><rect x="10" y="28" width="14" height="10" rx="2" fill="#3a2c22"/><path d="M14 38l-4 12h6l3-12z" fill="#3a2c22"/><rect x="46" y="26" width="4" height="14" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
@@ -4119,8 +4121,8 @@
       } else if(card.bounceToHand){
         el.hint.textContent = 'Выбери вражескую полосу — все бойцы в ней (кроме Чаростойкости) вернутся сопернику в руку.';
         highlightEnemyLanesForSpell();
-      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall){
-        el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : 'Выбери любую ячейку на своей стороне.'));
+      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays){
+        el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : 'Выбери любую ячейку на своей стороне.')));
         highlightAnyOwnCellForWellspring();
       } else if(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal){
         el.hint.textContent = card.heal ? 'Выбери своего бойца, чтобы вылечить его.' : 'Выбери своего бойца, чтобы усилить его.';
@@ -4233,7 +4235,7 @@
   // player happens to point.
   function castWellspringSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall)) return;
+    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays)) return;
     if(card.cost > state.mana) return;
     // No unit-presence check here on purpose — Родник can land on any
     // cell, empty or occupied, since it never actually touches whatever
@@ -5570,6 +5572,7 @@
     if(card.randomBlind) return 'Ослепить случайного врага';
     if(card.lifeLight) return `+${card.healAmount} HP герою, призыв при перевесе`;
     if(card.guardCall) return `+2 бойца на поле боя`;
+    if(card.heavenlyRays) return `+2⚔ / +2♥ всем союзникам`;
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
@@ -5586,6 +5589,7 @@
     if(card.randomBlind) return `ослепляет случайного врага на ход`;
     if(card.lifeLight) return `+${card.healAmount} HP герою, призывает бойца при перевесе по здоровью`;
     if(card.guardCall) return `призывает 2 Стража дворца на поле боя`;
+    if(card.heavenlyRays) return `+2 атаки и +2 здоровья всем союзным бойцам`;
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
