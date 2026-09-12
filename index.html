@@ -2570,6 +2570,7 @@
     {id:'c49', name:'Имперский кавалерист', type:'creature', cost:5, atk:6, hp:3, punisherKill:true, rarity:'rare', desc:'При появлении на поле боя стремительным наскоком уничтожает первого бойца соперника, появившегося в этот же ход в полосе прямо напротив. На бойцов, появившихся ранее, не действует.', art:'imperialcavalry', faction:'empire'},
     {id:'c50', name:'Священник святого Света', type:'creature', cost:5, atk:2, hp:5, healOnPlay:3, healTrigger:true, rarity:'epic', desc:'При появлении на поле боя восстанавливает своему герою 3 здоровья. Каждый раз, когда исцеляется свой герой (от любого источника), навсегда даёт случайному другому союзнику +1 к атаке и +3 к здоровью.', art:'holypriest', faction:'empire'},
     {id:'c51', name:'Кузнец', type:'creature', cost:4, atk:1, hp:6, armor:1, blacksmithBuff:true, rarity:'epic', desc:'В конце каждого хода навсегда увеличивает свою атаку и броню на 1, а также даёт такое же усиление случайному другому союзнику с бронёй, если такой есть.', art:'blacksmith', faction:'empire'},
+    {id:'c52', name:'Подрывник', type:'creature', cost:3, atk:1, hp:4, powderKeg:true, explodeOnDeath:true, rarity:'rare', desc:'В конце каждого хода бросает пороховую бочку в случайного бойца соперника, нанося 5 урона при взрыве. Когда сам погибает (от чего угодно), взрывается — нанося 5 урона своему же герою.', art:'sapper', faction:'empire'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3508,6 +3509,7 @@
     skywhirlwind: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="14" rx="16" ry="8" fill="#5c6570" opacity=".5"/><path d="M32 20c14 0 24 8 24 18s-9 16-20 16-16-5-16-12 5-9 11-9 8 3 8 6" fill="none" stroke="#8fd6ff" stroke-width="4" stroke-linecap="round"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
+    sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
     centurion: `<svg viewBox="0 0 64 64"><path d="M32 10c-9 0-16 6-16 14v6h32v-6c0-8-7-14-16-14z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M8 20h48v4H8z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/><rect x="26" y="30" width="12" height="8" fill="#3a2c22"/><path d="M20 44c0-4 5-6 12-6s12 2 12 6v10H20z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     jarlironsides: `<svg viewBox="0 0 64 64"><path d="M16 20l-8-6 4 10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.2"/><path d="M48 20l8-6-4 10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.2"/><path d="M32 8a11 11 0 0 1 11 11v6H21v-6a11 11 0 0 1 11-11z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><rect x="26" y="20" width="12" height="5" fill="#3a2c22"/><path d="M32 28c-11 2-18 3-18 3v14c0 12 8 20 18 25 10-5 18-13 18-25V31s-7-1-18-3z" fill="#5c6570" stroke="#3a4048" stroke-width="2"/><path d="M22 40h20M22 48h20" stroke="#3a4048" stroke-width="1.5" opacity=".6"/></svg>`,
     punisherangel: `<svg viewBox="0 0 64 64"><path d="M32 22c-16-10-26-2-28 8 10-4 20-2 24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><path d="M32 22c16-10 26-2 28 8-10-4-20-2-24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><circle cx="32" cy="16" r="7" fill="none" stroke="#e0b93a" stroke-width="2"/><circle cx="32" cy="20" r="6" fill="#f4d9a0"/><path d="M32 26c-7 2-11 6-11 12v20h22V38c0-6-4-10-11-12z" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.5"/><path d="M32 30l-4 14h5l-3 14 10-18h-6z" fill="#8fd6ff" stroke="#5c85a8" stroke-width="1"/></svg>`,
@@ -4525,6 +4527,8 @@
       else if(ev.type==='heroShot') playHeroShotEvent(ev, next);
       else if(ev.type==='unitShot') playUnitShotEvent(ev, next);
       else if(ev.type==='cannonShot') playCannonShotEvent(ev, next);
+      else if(ev.type==='powderKegShot') playPowderKegShotEvent(ev, next);
+      else if(ev.type==='selfExplosion') playSelfExplosionEvent(ev, next);
       else if(ev.type==='trampleHit') playTrampleHitEvent(ev, next);
       else if(ev.type==='punisherKill') playPunisherKillEvent(ev, next);
       else if(ev.type==='reinaBlind') playReinaBlindEvent(ev, next);
@@ -4722,6 +4726,14 @@
     <circle cx="9" cy="9" r="2.5" fill="#5c5248" opacity=".6"/>
   </svg>`;
 
+  // Подрывник: a small wooden powder keg, thrown the same way as
+  // Имперская пушка's cannonball, exploding on contact.
+  const KEG_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="3" width="12" height="18" rx="4" fill="#8a5a34" stroke="#5c4536" stroke-width="1"/>
+    <rect x="6" y="7" width="12" height="2" fill="#3a2c22"/>
+    <rect x="6" y="15" width="12" height="2" fill="#3a2c22"/>
+  </svg>`;
+
   // A small glowing green orb — the shared visual for every "heal the
   // hero" trigger (Монахиня's battlecry, Повар/Корова's end-of-round),
   // flying from whichever cell caused it to the hero being healed.
@@ -4886,6 +4898,49 @@
       }
       setTimeout(()=>{ renderAll(); done(); }, 900);
     });
+  }
+
+  // Подрывник: a powder keg thrown at a random enemy unit anywhere on
+  // their board, exploding on contact — reuses flyProjectileToHero
+  // exactly like Имперская пушка's cannonball, just with the keg
+  // sprite. The server only ever picks a genuine unit target (never an
+  // empty cell or a Чаростойкость one), so there's no resisted/empty
+  // case to handle here at all.
+  function playPowderKegShotEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const shooterName = sourceUnit ? sourceUnit.name : 'Подрывник';
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+    const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    log(`${shooterMine?'Твой':'Соперника'} «${shooterName}» бросает пороховую бочку в ${targetUnit?targetUnit.name:'вражеского бойца'}, нанося ${ev.amount}.`);
+    flyProjectileToHero(sourceEl, targetEl, KEG_SVG, 'cannonball', 600, ()=>{
+      spawnSpellBurst(targetEl, 'dmg');
+      if(targetUnit){
+        targetUnit.hp -= ev.amount;
+        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+        if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); targetBoard[ev.targetLaneIdx][ev.targetDepthIdx] = null; }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
+    });
+  }
+
+  // Подрывник's own death trigger: he's already gone from the board by
+  // the time this fires (checked at the very end of resolution), so the
+  // blast is shown at his OWN hero rather than at a specific cell.
+  function playSelfExplosionEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    log(`${mine?'Твой':'Вражеский'} Подрывник взрывается, нанося ${ev.amount} урона ${mine?'твоему':'вражескому'} герою.`);
+    spawnSpellBurst(heroEl, 'dmg');
+    setTimeout(()=>{
+      if(mine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+      if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    }, 300);
   }
 
   function playPvpRallyBuffEvent(ev, batchSize, done){
