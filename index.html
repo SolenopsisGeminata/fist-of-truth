@@ -2629,6 +2629,7 @@
     {id:'s18', name:'Песнь Луне', type:'spell', cost:3, songToTheMoon:true, rarity:'rare', desc:'Увеличивает атаку случайного союзника на 1, уменьшает атаку случайного вражеского бойца на 1 (не действует на Чаростойкость) и добавляет в руку 1 карту из своей колоды.', art:'songmoon', faction:'zen'},
     {id:'s19', name:'Сила гор', type:'spell', cost:3, mountainStrength:true, rarity:'rare', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью.', art:'mountainstrength', faction:'zen'},
     {id:'c76', name:'Даос с метлой', type:'creature', cost:3, atk:4, hp:2, broomOnPlay:true, rarity:'epic', desc:'При появлении в первой ячейке любой полосы получает эффект Наследие 2. При появлении в последней ячейке возвращает первого стоящего напротив бойца соперника в его руку в виде исходной карты, теряя все баффы и дебаффы. В средней ячейке появляется как обычный боец.', art:'broomdaoist', faction:'zen'},
+    {id:'c77', name:'Музыкальный Даос', type:'creature', cost:3, atk:3, hp:3, musicalDaoist:true, rarity:'epic', desc:'В начале каждого раунда, пока жив, наносит 1 урона всем бойцам соперника на поле боя.', art:'musicaldaoist', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3601,6 +3602,7 @@
     songmoon: `<svg viewBox="0 0 64 64"><path d="M40 14a20 20 0 1 0 0 36 16 16 0 0 1 0-36z" fill="#c8d4f0" stroke="#8a97c0" stroke-width="1.5"/><circle cx="18" cy="42" r="4" fill="#7a9c4f"/><path d="M22 42V22l10-3v20" stroke="#7a9c4f" stroke-width="2" fill="none"/><circle cx="32" cy="42" r="4" fill="#7a9c4f"/></svg>`,
     mountainstrength: `<svg viewBox="0 0 64 64"><path d="M8 50L24 20l10 14 8-10 14 26z" fill="#6a7a8a" stroke="#3a4550" stroke-width="1.5"/><path d="M24 20l4 8-4 4-6-6z" fill="#e9e0cf" opacity=".7"/></svg>`,
     broomdaoist: `<svg viewBox="0 0 64 64"><path d="M28 12a7 7 0 0 1 7 7c0 3-1 5-3 6 6 3 10 9 10 18H20c0-9 4-15 10-18-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="42" y1="20" x2="54" y2="52" stroke="#8a5a34" stroke-width="2.5" stroke-linecap="round"/><path d="M50 46l4 2 2 6-6-2-4-4z" fill="#c9a98a" stroke="#8a6d1a" stroke-width="1"/></svg>`,
+    musicaldaoist: `<svg viewBox="0 0 64 64"><circle cx="26" cy="16" r="7" fill="#c9a98a"/><path d="M26 24c-8 2-12 8-12 18h24c0-10-4-16-12-18z" fill="#5c8a7a" stroke="#3a5c50" stroke-width="1.5"/><line x1="34" y1="24" x2="54" y2="38" stroke="#8a5a34" stroke-width="2.5" stroke-linecap="round"/><circle cx="52" cy="24" r="3" fill="#c9a98a"/><circle cx="46" cy="30" r="1.5" fill="#3a2c22"/><circle cx="50" cy="34" r="1.5" fill="#3a2c22"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -4681,6 +4683,7 @@
       else if(ev.type==='drunkenRandomHit') playDrunkenRandomHitEvent(ev, next);
       else if(ev.type==='bambooShot') playBambooShotEvent(ev, next);
       else if(ev.type==='broomBounce') playBroomBounceEvent(ev, next);
+      else if(ev.type==='musicalDaoistHit') playMusicalDaoistHitEvent(ev, next);
       else if(ev.type==='treeWrath') playTreeWrathEvent(ev, next);
       else if(ev.type==='peachGiven') playPeachGivenEvent(ev, next);
       else if(ev.type==='songToTheMoon') playSongToTheMoonEvent(ev, next);
@@ -5761,6 +5764,34 @@
   // log line explaining the enemy is blinded for this round only — no
   // per-enemy visual needed since the effect itself is invisible until
   // combat (where those units simply won't swing).
+  // Музыкальный Даос: 1 damage to EVERY enemy unit at the start of the
+  // round — fires once per hit, kept brief since it can repeat many
+  // times in a single round. Resisted hits stay silent (no log spam)
+  // but still play the visual beat.
+  function playMusicalDaoistHitEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = mine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const sourceName = sourceUnit ? sourceUnit.name : 'Музыкальный Даос';
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+    const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    if(!ev.resisted){
+      log(`«${sourceName}» наигрывает мелодию — ${targetUnit?targetUnit.name:'боец'} получает ${ev.amount}.`);
+    }
+    setTimeout(()=>{
+      if(!ev.resisted && targetUnit){
+        targetUnit.hp -= ev.amount;
+        if(targetEl){
+          spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died) targetEl.classList.add('unit-dying');
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 900 : 250);
+    }, 120);
+  }
+
   function playReinaBlindEvent(ev, done){
     const mine = ev.side === state.myUsername;
     const board = mine ? state.playerBoard : state.enemyBoard;
