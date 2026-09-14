@@ -2590,6 +2590,7 @@
     {id:'c63', name:'Частокол', type:'creature', cost:2, atk:1, hp:5, defender:true, counterattack:true, rarity:'rare', desc:'Защитник: не может атаковать в бою. Контратака: при получении урона наносит атакующему урон, равный своей атаке.', art:'palisade', faction:'zen'},
     {id:'c64', name:'Бамбуковый страж', type:'creature', cost:2, atk:1, hp:5, bambooGuardian:true, rarity:'rare', desc:'Когда этому бойцу передаётся эффект Наследие, он стреляет бамбуковым копьём в случайного бойца соперника, нанося 2 урона, а сам обращает часть Наследия в силу: +1 атаки, −1 здоровья.', art:'bambooguardian', faction:'zen'},
     {id:'c65', name:'Монах-аскет', type:'creature', cost:3, atk:2, hp:2, legacy:1, monkGrow:true, rarity:'common', desc:'Часть стартовой колоды фракции Дзен. Несёт эффект Наследие 1. В конце каждого хода навсегда увеличивает свою атаку и здоровье на 1.', art:'asceticmonk', faction:'zen'},
+    {id:'s14', name:'Небесный вихрь', type:'spell', cost:2, bounceCellAndNeighbor:true, rarity:'rare', desc:'Возвращает в руку соперника бойца из выбранной вражеской ячейки и бойца из случайной соседней ячейки — в виде их исходных карт, все баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует.', art:'newwhirlwind', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3545,6 +3546,7 @@
     palisade: `<svg viewBox="0 0 64 64"><rect x="10" y="26" width="10" height="30" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M10 26l5-10 5 10z" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><rect x="27" y="20" width="10" height="36" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><path d="M27 20l5-12 5 12z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><rect x="44" y="26" width="10" height="30" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M44 26l5-10 5 10z" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/></svg>`,
     bambooguardian: `<svg viewBox="0 0 64 64"><path d="M32 10L14 18v14c0 14 8 22 18 26 10-4 18-12 18-26V18z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><path d="M32 20v28" stroke="#7a9c4f" stroke-width="4" stroke-linecap="round"/><path d="M32 16l-4 8h8z" fill="#5c6570"/></svg>`,
     asceticmonk: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="8" fill="#c9a98a"/><path d="M32 26c-12 4-18 12-18 24h36c0-12-6-20-18-24z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><path d="M18 50c0-8 6-16 14-18M46 50c0-8-6-16-14-18" fill="none" stroke="#4f8a5b" stroke-width="1.5"/></svg>`,
+    newwhirlwind: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="14" rx="16" ry="8" fill="#7a9c4f" opacity=".35"/><path d="M32 20c14 0 24 8 24 18s-9 16-20 16-16-5-16-12 5-9 11-9 8 3 8 6" fill="none" stroke="#4f8a5b" stroke-width="4" stroke-linecap="round"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -4141,6 +4143,9 @@
       } else if(card.bounceToHand){
         el.hint.textContent = 'Выбери вражескую полосу — все бойцы в ней (кроме Чаростойкости) вернутся сопернику в руку.';
         highlightEnemyLanesForSpell();
+      } else if(card.bounceCellAndNeighbor){
+        el.hint.textContent = 'Выбери вражескую ячейку — боец в ней и в случайной соседней ячейке вернутся сопернику в руку.';
+        highlightEnemyCellsForSpell();
       } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays){
         el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : 'Выбери любую ячейку на своей стороне.')));
         highlightAnyOwnCellForWellspring();
@@ -4187,6 +4192,31 @@
         castWellspringSpell(parseInt(s.dataset.lane,10), parseInt(s.dataset.depth,10));
       };
     });
+  }
+
+  // Небесный вихрь: the first spell to target a SPECIFIC enemy cell
+  // (every prior enemy-targeting spell was lane-only or fully random)
+  // — highlights every individual slot on the enemy side, not the
+  // whole lane container.
+  function highlightEnemyCellsForSpell(){
+    const slots = el.battlefield.querySelectorAll('.slot[data-mine="false"]');
+    slots.forEach(s=>{
+      s.style.cursor = 'pointer';
+      s.classList.add('spell-target');
+      s.onclick = (ev)=>{
+        ev.stopPropagation();
+        castEnemyCellSpell(parseInt(s.dataset.lane,10), parseInt(s.dataset.depth,10));
+      };
+    });
+  }
+  function castEnemyCellSpell(laneIdx, depthIdx){
+    const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
+    if(!card || !card.bounceCellAndNeighbor) return;
+    if(card.cost > state.mana) return;
+    state.selectedCardUid = null;
+    clearLaneHandlers();
+    pvpSendAction({ type:'cast_spell', uid: card.uid, lane: laneIdx, depth: depthIdx });
+    renderAll();
   }
 
   function pvpSendAction(obj){
@@ -4269,6 +4299,7 @@
   function clearLaneHandlers(){
     el.battlefield.querySelectorAll('.enemy-side').forEach(s=>{ s.onclick=null; s.style.cursor=''; });
     el.battlefield.querySelectorAll('.slot[data-mine="true"]').forEach(s=>{ if(s.onclick){ s.onclick=null; s.style.cursor=''; } });
+    el.battlefield.querySelectorAll('.slot[data-mine="false"]').forEach(s=>{ if(s.onclick){ s.onclick=null; s.style.cursor=''; } });
     el.battlefield.querySelectorAll('.slot.spell-target').forEach(s=>s.classList.remove('spell-target'));
   }
 
@@ -4658,6 +4689,29 @@
         } else if(unit){
           log(`«${label}» уносит ${unit.name} обратно в руку ${targetMine?'твоему':'вражескому'} игроку.`);
           board[ev.laneIdx][ev.targetDepth] = null;
+        }
+        setTimeout(()=>{ renderAll(); done(); }, 400);
+      }, 350);
+      return;
+    }
+    if(ev.kind==='bounceCellAndNeighbor'){
+      // Небесный вихрь: hits up to 2 enemy cells (the specifically
+      // targeted one, plus one random adjacent one) — each
+      // independently empty, resisted, or bounced. Reuses the exact
+      // same whirlwind visual as Воздушная буря, just per TARGET cell
+      // instead of iterating a whole lane.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.targetLaneIdx] ? board[ev.targetLaneIdx][ev.targetDepthIdx] : null;
+      const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx) || findSlotEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+      spawnWhirlwind(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» проносится над пустой ячейкой.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          log(`«${label}» уносит ${unit.name} обратно в руку ${targetMine?'твоему':'вражескому'} игроку.`);
+          board[ev.targetLaneIdx][ev.targetDepthIdx] = null;
         }
         setTimeout(()=>{ renderAll(); done(); }, 400);
       }, 350);
@@ -5724,6 +5778,7 @@
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.wrathDmg) return '−'+card.wrathDmg+' HP по ряду';
     if(card.bounceToHand) return 'Вернуть в руку · ряд';
+    if(card.bounceCellAndNeighbor) return 'Вернуть в руку · ячейка + сосед';
     if(card.randomBlind) return 'Ослепить случайного врага';
     if(card.lifeLight) return `+${card.healAmount} HP герою, призыв при перевесе`;
     if(card.guardCall) return `+2 бойца на поле боя`;
@@ -5741,6 +5796,7 @@
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
     if(card.bounceToHand) return `возвращает ряд в руку`;
+    if(card.bounceCellAndNeighbor) return `возвращает ячейку и соседа в руку`;
     if(card.randomBlind) return `ослепляет случайного врага на ход`;
     if(card.lifeLight) return `+${card.healAmount} HP герою, призывает бойца при перевесе по здоровью`;
     if(card.guardCall) return `призывает 2 Стража дворца на поле боя`;
