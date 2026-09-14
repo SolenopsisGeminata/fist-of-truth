@@ -1608,6 +1608,28 @@
     25%{opacity:1;}
     100%{opacity:0; transform:scale(.2) rotate(340deg);}
   }
+  .root-burst{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    pointer-events:none;
+    z-index:14;
+    overflow:hidden;
+  }
+  .root-burst svg{
+    width:55%;
+    height:85%;
+    animation: root-burst-anim .8s ease-in-out;
+    transform-origin:bottom center;
+  }
+  @keyframes root-burst-anim{
+    0%{opacity:0; transform:scaleY(0);}
+    35%{opacity:1; transform:scaleY(1);}
+    65%{opacity:1; transform:scaleY(1);}
+    100%{opacity:0; transform:scaleY(0);}
+  }
   .spell-burst svg{
     width:135%;
     height:135%;
@@ -2591,6 +2613,7 @@
     {id:'c64', name:'Бамбуковый страж', type:'creature', cost:2, atk:1, hp:5, bambooGuardian:true, rarity:'rare', desc:'Когда этому бойцу передаётся эффект Наследие, он стреляет бамбуковым копьём в случайного бойца соперника, нанося 2 урона, а сам обращает часть Наследия в силу: +1 атаки, −1 здоровья.', art:'bambooguardian', faction:'zen'},
     {id:'c65', name:'Монах-аскет', type:'creature', cost:3, atk:2, hp:2, legacy:1, monkGrow:true, rarity:'common', desc:'Часть стартовой колоды фракции Дзен. Несёт эффект Наследие 1. В конце каждого хода навсегда увеличивает свою атаку и здоровье на 1.', art:'asceticmonk', faction:'zen'},
     {id:'s14', name:'Небесный вихрь', type:'spell', cost:2, bounceCellAndNeighbor:true, rarity:'rare', desc:'Возвращает в руку соперника бойца из выбранной вражеской ячейки и бойца из случайной соседней ячейки — в виде их исходных карт, все баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует.', art:'newwhirlwind', faction:'zen'},
+    {id:'s15', name:'Ярость древа', type:'spell', cost:2, treeWrath:true, treeWrathAmount:4, rarity:'rare', desc:'Наносит 4 урона по случайной ячейке в выбранной вражеской полосе. Если ячейка пуста, урон достаётся только герою соперника. Если там боец, урон получает и он, и герой соперника одновременно.', art:'treewrath', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3547,6 +3570,7 @@
     bambooguardian: `<svg viewBox="0 0 64 64"><path d="M32 10L14 18v14c0 14 8 22 18 26 10-4 18-12 18-26V18z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><path d="M32 20v28" stroke="#7a9c4f" stroke-width="4" stroke-linecap="round"/><path d="M32 16l-4 8h8z" fill="#5c6570"/></svg>`,
     asceticmonk: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="8" fill="#c9a98a"/><path d="M32 26c-12 4-18 12-18 24h36c0-12-6-20-18-24z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><path d="M18 50c0-8 6-16 14-18M46 50c0-8-6-16-14-18" fill="none" stroke="#4f8a5b" stroke-width="1.5"/></svg>`,
     newwhirlwind: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="14" rx="16" ry="8" fill="#7a9c4f" opacity=".35"/><path d="M32 20c14 0 24 8 24 18s-9 16-20 16-16-5-16-12 5-9 11-9 8 3 8 6" fill="none" stroke="#4f8a5b" stroke-width="4" stroke-linecap="round"/></svg>`,
+    treewrath: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="54" rx="20" ry="5" fill="#3a2c22" opacity=".5"/><path d="M32 56V22c-6-2-10-8-8-15 2 4 5 6 7 3-1-6 3-11 9-12-4 5-3 9 0 11 4-6 10-7 14-3-5 2-7 6-4 9 4-1 7 3 6 8-4-2-8-1-10 3v30z" fill="#6b4a2d" stroke="#3a2c22" stroke-width="1.3"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -4140,6 +4164,9 @@
       } else if(card.wrathDmg){
         el.hint.textContent = 'Выбери полосу — молнии ударят по всем вражеским бойцам в ней.';
         highlightEnemyLanesForSpell();
+      } else if(card.treeWrath){
+        el.hint.textContent = 'Выбери полосу — корень ударит по случайной ячейке в ней, задев и героя соперника.';
+        highlightEnemyLanesForSpell();
       } else if(card.bounceToHand){
         el.hint.textContent = 'Выбери вражескую полосу — все бойцы в ней (кроме Чаростойкости) вернутся сопернику в руку.';
         highlightEnemyLanesForSpell();
@@ -4258,7 +4285,7 @@
 
   function castDamageSpell(laneIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.dmg || card.wrathDmg || card.bounceToHand)) return;
+    if(!card || !(card.dmg || card.wrathDmg || card.bounceToHand || card.treeWrath)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -4401,6 +4428,21 @@
     const wrap = document.createElement('div');
     wrap.className = 'whirlwind-effect';
     wrap.innerHTML = WHIRLWIND_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 800);
+  }
+
+  // Ярость древа: a jagged tree root bursts up from the ground at the
+  // target cell, then sinks back down — CSS scaleY handles the
+  // burst/retreat, this just injects the root shape itself.
+  const ROOT_BURST_SVG = `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 100V34c-8-2-13-9-11-18 3 5 7 7 9 4-1-8 4-14 12-15-5 6-4 11 0 13 5-8 13-9 18-4-7 3-9 8-6 12 6-1 9 4 8 10-6-3-11-1-13 4v60z" fill="#6b4a2d" stroke="#3a2c22" stroke-width="1.3"/>
+  </svg>`;
+  function spawnRootBurst(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'root-burst';
+    wrap.innerHTML = ROOT_BURST_SVG;
     container.appendChild(wrap);
     setTimeout(()=>{ wrap.remove(); }, 800);
   }
@@ -4605,6 +4647,7 @@
       else if(ev.type==='weaponThrow') playWeaponThrowEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='bambooShot') playBambooShotEvent(ev, next);
+      else if(ev.type==='treeWrath') playTreeWrathEvent(ev, next);
       else if(ev.type==='counterattack') playCounterattackEvent(ev, next);
       else if(ev.type==='trampleHit') playTrampleHitEvent(ev, next);
       else if(ev.type==='punisherKill') playPunisherKillEvent(ev, next);
@@ -5219,6 +5262,39 @@
     });
   }
 
+  // Ярость древа: a root bursts from the ground at a random cell in
+  // the chosen enemy lane. The DEFENDING hero always takes the hit
+  // regardless of what's in that cell; if a (non-Чаростойкость) unit
+  // is there too, it takes the SAME amount as well, on top of the hero
+  // damage rather than instead of it.
+  function playTreeWrathEvent(ev, done){
+    const targetMine = ev.targetSide === state.myUsername;
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = ev.targetHero ? null : (targetBoard[ev.laneIdx] && targetBoard[ev.laneIdx][ev.targetDepthIdx]);
+    const targetEl = ev.targetHero
+      ? (targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy'))
+      : (findUnitEl(ev.laneIdx, targetMine, ev.targetDepthIdx) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepthIdx));
+    const heroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    if(ev.targetHero){
+      log(`«Ярость древа» бьёт корнем по пустой ячейке — герой ${targetMine?'твой':'соперника'} получает ${ev.amount}.`);
+    } else if(ev.resisted){
+      log(`«Ярость древа» бьёт корнем в ${targetUnit?targetUnit.name:'бойца'} — Чаростойкость спасает его, но герой ${targetMine?'твой':'соперника'} всё равно получает ${ev.amount}.`);
+    } else {
+      log(`«Ярость древа» бьёт корнем в ${targetUnit?targetUnit.name:'бойца'}, нанося ${ev.amount}, и одновременно ${ev.amount} герою ${targetMine?'твоему':'соперника'}.`);
+    }
+    spawnRootBurst(targetEl);
+    setTimeout(()=>{
+      if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+      if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
+      if(!ev.targetHero && !ev.resisted && targetUnit){
+        targetUnit.hp -= ev.amount;
+        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+        if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
+    }, 350);
+  }
+
   // Контратака (Частокол): when a unit carrying this trait takes damage
   // in normal combat, it strikes back at the attacker for its own
   // attack value — no projectile, just a melee-range retaliation burst
@@ -5777,6 +5853,7 @@
   function spellStatsText(card){
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.wrathDmg) return '−'+card.wrathDmg+' HP по ряду';
+    if(card.treeWrath) return `−${card.treeWrathAmount} юниту и герою`;
     if(card.bounceToHand) return 'Вернуть в руку · ряд';
     if(card.bounceCellAndNeighbor) return 'Вернуть в руку · ячейка + сосед';
     if(card.randomBlind) return 'Ослепить случайного врага';
@@ -5795,6 +5872,7 @@
     if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}${card.lifesteal?' · 🩸 при ударе':''}${card.synergy?' · 🔗 синергия':''}${card.firstStrike?' · ⚡ первый удар':''}${card.defender?' · 🛑 защитник':''}${card.spellResist?' · 🔮 чаростойкость':''}${card.trample?' · 🐾 топот':''}${card.doubleHeal?' · 💞 двойное омоложение':''}${card.doubleStrike?' · ⚔️⚔️ двойной удар':''}${card.healTrigger?' · 🕊️ священный свет':''}`;
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
+    if(card.treeWrath) return `−${card.treeWrathAmount} случайному бойцу и герою`;
     if(card.bounceToHand) return `возвращает ряд в руку`;
     if(card.bounceCellAndNeighbor) return `возвращает ячейку и соседа в руку`;
     if(card.randomBlind) return `ослепляет случайного врага на ход`;
