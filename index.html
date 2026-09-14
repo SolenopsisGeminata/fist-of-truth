@@ -2625,6 +2625,7 @@
     {id:'c73', name:'Прекрасная официантка', type:'creature', cost:3, atk:2, hp:2, waitressOnPlay:true, rarity:'rare', desc:'При появлении в первой ячейке любой полосы увеличивает атаку случайного союзника (возможно, свою собственную) на 2. При появлении в последней ячейке увеличивает броню случайного союзника на 3. В средней ячейке появляется как обычный боец.', art:'waitress', faction:'zen'},
     {id:'c74', name:'Пьяный ученик', type:'creature', cost:3, atk:3, hp:5, drunkenDisciple:true, rarity:'rare', desc:'Перед тем как атакует, наносит 1 урона себе и 1 урона случайному юниту на поле боя (может быть как союзным, так и вражеским).', art:'drunkdisciple', faction:'zen'},
     {id:'c75', name:'Сборщик трав', type:'creature', cost:3, atk:2, hp:3, legacy:1, healOnPlay:2, rarity:'rare', desc:'При появлении на поле боя восстанавливает своему герою 2 здоровья. Несёт эффект Наследие 1.', art:'herbcollector', faction:'zen'},
+    {id:'s17', name:'Двойной удар', type:'spell', cost:3, buffAtk:1, buffHp:1, buffDoubleStrike:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 1 и даёт ему эффект Двойной удар — он атакует дважды за раунд.', art:'doublestrike', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3593,6 +3594,7 @@
     waitress: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#e8b8a8"/><path d="M32 24c-8 2-12 10-12 20h24c0-10-4-18-12-20z" fill="#c98a9a" stroke="#8a5060" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="10" ry="2.5" fill="#e9e0cf" stroke="#8a5060" stroke-width="1"/></svg>`,
     drunkdisciple: `<svg viewBox="0 0 64 64"><g transform="rotate(-8 32 32)"><circle cx="30" cy="18" r="7" fill="#e8b8a8"/><path d="M30 26c-10 3-14 12-14 26h28c0-14-4-23-14-26z" fill="#8a6d1a" stroke="#5c4536" stroke-width="1.5"/></g><path d="M44 40c2-4 6-4 6 0s-3 6-3 10-4 2-3-2 2-4 0-8z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1"/></svg>`,
     herbcollector: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#c9a98a"/><path d="M32 24c-8 2-12 8-12 16h24c0-8-4-14-12-16z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><ellipse cx="42" cy="44" rx="10" ry="6" fill="#8a5a34" stroke="#5c4536" stroke-width="1.2"/><path d="M36 40c2-4 6-6 10-4M40 38c2-3 5-4 8-3" fill="none" stroke="#7a9c4f" stroke-width="1.5"/></svg>`,
+    doublestrike: `<svg viewBox="0 0 64 64"><line x1="12" y1="44" x2="36" y2="16" stroke="#c9ccd1" stroke-width="4" stroke-linecap="round"/><path d="M34 12l6 4-4 6z" fill="#8a6d1a"/><line x1="28" y1="44" x2="52" y2="16" stroke="#c9ccd1" stroke-width="4" stroke-linecap="round" opacity=".55"/><path d="M50 12l6 4-4 6z" fill="#8a6d1a" opacity=".55"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -4198,7 +4200,7 @@
       } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays){
         el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : 'Выбери любую ячейку на своей стороне.')));
         highlightAnyOwnCellForWellspring();
-      } else if(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal){
+      } else if(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal || card.buffDoubleStrike){
         el.hint.textContent = card.heal ? 'Выбери своего бойца, чтобы вылечить его.' : 'Выбери своего бойца, чтобы усилить его.';
         highlightOwnUnitsForHeal();
       }
@@ -4317,7 +4319,7 @@
 
   function castHealSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal)) return;
+    if(!card || !(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal || card.buffDoubleStrike)) return;
     if(card.cost > state.mana) return;
     const unit = state.playerBoard[laneIdx][depthIdx];
     if(!unit) return;
@@ -4852,6 +4854,7 @@
           if(ev.buffHp){ unit.hp += ev.buffHp; unit.maxHp += ev.buffHp; }
           if(ev.buffArmor) unit.armor = (unit.armor||0) + ev.buffArmor;
           if(ev.buffLifesteal) unit.lifesteal = true;
+          if(ev.buffDoubleStrike) unit.doubleStrike = true;
           if(ev.drewCard) log(`Броня ${unit.name} сработала — в руку добавлена карта из колоды.`);
           if(targetEl){
             const popupParts = [];
@@ -4859,6 +4862,7 @@
             if(ev.buffHp) popupParts.push(`+${ev.buffHp}♥`);
             if(ev.buffArmor) popupParts.push(`+${ev.buffArmor}🛡`);
             if(ev.buffLifesteal) popupParts.push(`🩸`);
+            if(ev.buffDoubleStrike) popupParts.push(`⚔️⚔️`);
             spawnSpellBurst(targetEl,'heal');
             spawnDamageNumber(targetEl, popupParts.join(' '), 'heal');
           }
@@ -5988,7 +5992,7 @@
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
-    if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.drawIfArmored?' / 🃏 если есть броня':''}`;
+    if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.drawIfArmored?' / 🃏 если есть броня':''}`;
     return '';
   }
 
@@ -6007,7 +6011,7 @@
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
-    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''} навсегда`;
+    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''} навсегда`;
   }
 
   function renderFactionTabs(){
