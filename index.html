@@ -2530,7 +2530,7 @@
     {id:'s4', name:'Отряд ополченцев', type:'spell', cost:3, instantSummon:true, summonCardId:'c10', summonCount:3, rarity:'rare', desc:'Мгновенный призыв: срабатывает раньше фаз баффов и заклинаний — призывает 3 Ополченцев на случайные свободные ячейки своего поля боя, по одному на ячейку.', art:'militiasquad', faction:'empire'},
     {id:'s5', name:'Гнев небес', type:'spell', cost:5, wrathDmg:7, rarity:'rare', desc:'Молнии последовательно бьют по всем ячейкам выбранной вражеской полосы, нанося 7 урона каждому бойцу в ней. Пустая ячейка тоже получает удар молнии, но без урона.', art:'heavenswrath', faction:'empire'},
     {id:'s6', name:'Крестьянское ополчение', type:'spell', cost:5, endOfRoundSpell:true, summonCardId:'c1', summonCount:5, healAmount:5, rarity:'epic', desc:'В конце этого хода, уже после боя, призывает 5 Крестьян на случайные свободные ячейки своего поля боя и восстанавливает своему герою 5 здоровья.', art:'peasantmilitia', faction:'empire'},
-    {id:'s7', name:'Небесный вихрь', type:'spell', cost:4, bounceToHand:true, rarity:'epic', desc:'Возвращает в руку соперника всех бойцов из выбранной вражеской полосы в виде их исходных карт — любые полученные баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует. С вероятностью 30% призывает Ополченца на случайную свободную ячейку в своей же полосе.', art:'skywhirlwind', faction:'empire'},
+    {id:'s7', name:'Воздушная буря', type:'spell', cost:4, bounceToHand:true, rarity:'epic', desc:'Возвращает в руку соперника всех бойцов из выбранной вражеской полосы в виде их исходных карт — любые полученные баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует. С вероятностью 30% призывает Ополченца на случайную свободную ячейку в своей же полосе.', art:'skywhirlwind', faction:'empire'},
     {id:'s8', name:'Яркий свет', type:'spell', cost:2, randomBlind:true, rarity:'rare', desc:'Ослепляет случайного бойца соперника — он не сможет атаковать в этом ходу (получает Защитник на 1 ход). Не действует на бойцов с Чаростойкостью.', art:'brightlight', faction:'empire'},
     {id:'s9', name:'Сумка с припасами', type:'spell', cost:2, buffAtk:1, buffHp:1, buffLifesteal:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного бойца на 1 и даёт ему эффект Кража жизни.', art:'supplybag', faction:'empire'},
     {id:'s10', name:'Наплечник', type:'spell', cost:1, buffHp:1, drawIfArmored:true, rarity:'rare', desc:'Навсегда увеличивает здоровье выбранного союзного бойца на 1. Если у него уже есть Броня, в руку добавляется 1 карта из своей колоды.', art:'pauldron', faction:'empire'},
@@ -2589,6 +2589,7 @@
     {id:'c62', name:'Травница', type:'creature', cost:2, atk:2, hp:2, herbalist:true, rarity:'rare', desc:'При появлении в первой ячейке любой полосы восстанавливает своему герою здоровье, равное своей атаке. При появлении в последней ячейке наносит герою соперника урон, равный своей атаке. В средней ячейке появляется как обычный боец.', art:'herbalist', faction:'zen'},
     {id:'c63', name:'Частокол', type:'creature', cost:2, atk:1, hp:5, defender:true, counterattack:true, rarity:'rare', desc:'Защитник: не может атаковать в бою. Контратака: при получении урона наносит атакующему урон, равный своей атаке.', art:'palisade', faction:'zen'},
     {id:'c64', name:'Бамбуковый страж', type:'creature', cost:2, atk:1, hp:5, bambooGuardian:true, rarity:'rare', desc:'Когда этому бойцу передаётся эффект Наследие, он стреляет бамбуковым копьём в случайного бойца соперника, нанося 2 урона, а сам обращает часть Наследия в силу: +1 атаки, −1 здоровья.', art:'bambooguardian', faction:'zen'},
+    {id:'c65', name:'Монах-аскет', type:'creature', cost:3, atk:2, hp:2, legacy:1, monkGrow:true, rarity:'common', desc:'Часть стартовой колоды фракции Дзен. Несёт эффект Наследие 1. В конце каждого хода навсегда увеличивает свою атаку и здоровье на 1.', art:'asceticmonk', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3543,6 +3544,7 @@
     herbalist: `<svg viewBox="0 0 64 64"><path d="M20 40a12 8 0 0 0 24 0z" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><path d="M22 40c0-14 4-20 10-20s10 6 10 20" fill="none" stroke="#5c6570" stroke-width="1.5"/><path d="M32 8c-6 4-8 10-6 16 4-2 8-6 9-12 3 5 2 11-2 15 6-1 10-6 10-12 0-6-5-9-11-7z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.2"/></svg>`,
     palisade: `<svg viewBox="0 0 64 64"><rect x="10" y="26" width="10" height="30" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M10 26l5-10 5 10z" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><rect x="27" y="20" width="10" height="36" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><path d="M27 20l5-12 5 12z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><rect x="44" y="26" width="10" height="30" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M44 26l5-10 5 10z" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/></svg>`,
     bambooguardian: `<svg viewBox="0 0 64 64"><path d="M32 10L14 18v14c0 14 8 22 18 26 10-4 18-12 18-26V18z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><path d="M32 20v28" stroke="#7a9c4f" stroke-width="4" stroke-linecap="round"/><path d="M32 16l-4 8h8z" fill="#5c6570"/></svg>`,
+    asceticmonk: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="8" fill="#c9a98a"/><path d="M32 26c-12 4-18 12-18 24h36c0-12-6-20-18-24z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><path d="M18 50c0-8 6-16 14-18M46 50c0-8-6-16-14-18" fill="none" stroke="#4f8a5b" stroke-width="1.5"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -4357,7 +4359,7 @@
     setTimeout(()=>{ wrap.remove(); }, 1400);
   }
 
-  // Небесный вихрь: a spinning vortex over the cell, shrinking away as
+  // Воздушная буря: a spinning vortex over the cell, shrinking away as
   // the unit gets sucked back into its owner's hand.
   const WHIRLWIND_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <path d="M50 10c20 0 36 12 36 28s-14 24-30 24-24-8-24-18 8-14 16-14 12 4 12 9" fill="none" stroke="#8fd6ff" stroke-width="4" stroke-linecap="round"/>
@@ -4638,7 +4640,7 @@
       return;
     }
     if(ev.kind==='skyWhirlwind'){
-      // Небесный вихрь: struck cell may be empty, hold a normal unit
+      // Воздушная буря: struck cell may be empty, hold a normal unit
       // (bounced back to its owner's hand, losing every buff), or hold a
       // Чаростойкость unit (left untouched). We don't track the
       // opponent's exact hand contents client-side, only the board
