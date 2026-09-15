@@ -2685,6 +2685,7 @@
     {id:'c89', name:'Овца-воин', type:'creature', cost:5, atk:4, hp:6, healOnPlay:6, warriorSheep:true, rarity:'rare', desc:'При появлении на поле боя и при получении эффекта Наследие восстанавливает своему герою 6 здоровья.', art:'warriorsheep', faction:'zen'},
     {id:'c90', name:'Смелый учитель', type:'creature', cost:5, atk:1, hp:8, braveTeacher:true, rarity:'rare', desc:'При появлении на поле боя увеличивает атаку случайного соседнего союзника на величину, равную его текущему здоровью.', art:'braveteacher', faction:'zen'},
     {id:'c91', name:'Отшельник-Даос', type:'creature', cost:5, atk:7, hp:3, drawOnDeath:true, copyOnLegacy:true, rarity:'epic', desc:'При гибели добавляет 1 карту в руку игрока из его колоды. При получении эффекта Наследие копирует себя на случайную соседнюю свободную клетку (копия без эффекта Наследие).', art:'hermitstaffdaoist', faction:'zen'},
+    {id:'c92', name:'Мастер сюрикенов', type:'creature', cost:5, atk:5, hp:2, shurikenMaster:true, rarity:'epic', desc:'Перед своей атакой метает сюрикен в противоположную полосу соперника, нанося находящимся там бойцам по 2 урона последовательно, начиная от ближайшего и заканчивая последним.', art:'shurikenmaster', faction:'zen'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
     {id:'s23', name:'Персиковый рай', type:'spell', cost:4, healHero:6, drawCard:3, rarity:'epic', desc:'Восстанавливает своему герою 6 здоровья и добавляет в руку игрока 3 карты из своей колоды.', art:'peachparadise', faction:'zen'},
     {id:'s24', name:'Сила гор Тянь-Шань', type:'spell', cost:4, mountainStrength:true, mountainArmor:3, rarity:'epic', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью, и даёт ему 3 брони.', art:'tianshanstrength', faction:'zen'},
@@ -3678,6 +3679,7 @@
     warriorsheep: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="16" ry="14" fill="#e9e0cf" stroke="#a89878" stroke-width="1.5"/><circle cx="20" cy="24" r="6" fill="#e9e0cf" stroke="#a89878" stroke-width="1.2"/><circle cx="44" cy="24" r="6" fill="#e9e0cf" stroke="#a89878" stroke-width="1.2"/><ellipse cx="32" cy="36" rx="7" ry="6" fill="#5c4536"/><path d="M22 20c-2-4 0-8 4-8M42 20c2-4 0-8-4-8" fill="none" stroke="#8a6d1a" stroke-width="2" stroke-linecap="round"/></svg>`,
     braveteacher: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#c9a98a"/><path d="M32 24c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#4a6a8a" stroke="#2a4560" stroke-width="1.5"/><rect x="24" y="36" width="16" height="10" rx="1" fill="#e9e0cf" stroke="#a89878" stroke-width="1"/><line x1="26" y1="39" x2="38" y2="39" stroke="#8a7050" stroke-width="1"/><line x1="26" y1="42" x2="38" y2="42" stroke="#8a7050" stroke-width="1"/></svg>`,
     hermitstaffdaoist: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#c9a98a"/><path d="M32 24c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#5c7a5c" stroke="#3a5c3a" stroke-width="1.5"/><rect x="42" y="30" width="10" height="14" rx="2" fill="#8a6d1a" stroke="#5c4536" stroke-width="1"/><line x1="44" y1="34" x2="50" y2="34" stroke="#e9e0cf" stroke-width="1"/></svg>`,
+    shurikenmaster: `<svg viewBox="0 0 64 64"><path d="M32 12a7 7 0 0 1 7 7c0 3-1 5-3 6 7 3 11 10 11 21H21c0-11 4-18 11-21-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#3a3a42" stroke="#1a1a1e" stroke-width="1.5"/><rect x="24" y="26" width="16" height="5" fill="#1a1a1e"/><path d="M46 38l3 6 6 3-6 3-3 6-3-6-6-3 6-3z" fill="#c9ccd1" stroke="#3a3a3e" stroke-width="1"/></svg>`,
     bambooshield: `<svg viewBox="0 0 64 64"><rect x="12" y="20" width="8" height="36" rx="2" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="12" y1="30" x2="20" y2="30" stroke="#4f8a5b" stroke-width="1"/><line x1="12" y1="42" x2="20" y2="42" stroke="#4f8a5b" stroke-width="1"/><rect x="28" y="12" width="8" height="44" rx="2" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="28" y1="24" x2="36" y2="24" stroke="#4f8a5b" stroke-width="1"/><line x1="28" y1="38" x2="36" y2="38" stroke="#4f8a5b" stroke-width="1"/><rect x="44" y="18" width="8" height="38" rx="2" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="44" y1="28" x2="52" y2="28" stroke="#4f8a5b" stroke-width="1"/><line x1="44" y1="42" x2="52" y2="42" stroke="#4f8a5b" stroke-width="1"/></svg>`,
     peachparadise: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#fff3c4" opacity=".2"/><circle cx="24" cy="30" r="9" fill="#e8927c" stroke="#c96a52" stroke-width="1.2"/><circle cx="40" cy="26" r="7" fill="#e8927c" stroke="#c96a52" stroke-width="1.2"/><circle cx="34" cy="42" r="8" fill="#e8927c" stroke="#c96a52" stroke-width="1.2"/><path d="M24 21l3-6M40 19l2-5M34 34l2-5" stroke="#5c4536" stroke-width="1.5" stroke-linecap="round"/><path d="M28 15l4 2-3 4z" fill="#7a9c4f"/></svg>`,
     tianshanstrength: `<svg viewBox="0 0 64 64"><path d="M4 50L16 24l8 10 8-14 6 8 8-12 14 34z" fill="#7a8a9a" stroke="#4a5560" stroke-width="1.5"/><path d="M24 34l4 6-4 4-4-4z" fill="#e9e0cf" opacity=".8"/><path d="M38 22l3 5-3 3-3-3z" fill="#e9e0cf" opacity=".8"/><path d="M32 48a8 8 0 0 0 8-8h-16a8 8 0 0 0 8 8z" fill="none" stroke="#c9a227" stroke-width="1.5" opacity=".7"/></svg>`,
@@ -4785,6 +4787,7 @@
       else if(ev.type==='weaponThrow') playWeaponThrowEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
+      else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
       else if(ev.type==='drunkenSelfHit') playDrunkenSelfHitEvent(ev, next);
       else if(ev.type==='drunkenRandomHit') playDrunkenRandomHitEvent(ev, next);
       else if(ev.type==='bambooShot') playBambooShotEvent(ev, next);
@@ -5092,6 +5095,14 @@
     <path d="M4 20L16 8l2 2-12 12z" fill="#c9ccd1" stroke="#8a97a3" stroke-width="1"/>
     <path d="M16 8l3-3 2 2-3 3z" fill="#8a6d1a"/>
     <path d="M4 20l-2 2h2l2-2z" fill="#5c4536"/>
+  </svg>`;
+
+  // Мастер сюрикенов: a four-pointed throwing star, bounces between
+  // every enemy in the opposing lane in sequence, disappearing after
+  // the last one — no burst on landing, just moves straight on.
+  const SHURIKEN_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#c9ccd1" stroke="#3a3a3e" stroke-width="1"/>
+    <circle cx="12" cy="12" r="2" fill="#3a3a3e"/>
   </svg>`;
 
   // Бамбуковый стрелок: a straight bamboo spear, thrown the same way as
@@ -5417,7 +5428,48 @@
     });
   }
 
-  // Бамбуковый стрелок: a straight bamboo spear thrown at his own
+  // Мастер сюрикенов: the shuriken bounces from wherever it last was
+  // (himself, for the very first hit each throw) to the next enemy in
+  // the lane — shurikenBounceFrom tracks that "last position" per
+  // throwing unit so consecutive shurikenHit events chain correctly
+  // even if two Мастер сюрикенов attack in the same round.
+  const shurikenBounceFrom = {};
+  function playShurikenHitEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = mine ? state.playerBoard : state.enemyBoard;
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = targetBoard[ev.laneIdx] ? targetBoard[ev.laneIdx][ev.targetDepthIdx] : null;
+    const targetEl = targetUnit ? findUnitEl(ev.laneIdx, targetMine, ev.targetDepthIdx) : findSlotEl(ev.laneIdx, targetMine, ev.targetDepthIdx);
+    const targetName = targetUnit ? targetUnit.name : 'бойца';
+
+    const key = ev.sourceUid+':'+ev.targetSide;
+    const lastDepth = shurikenBounceFrom[key];
+    const fromEl = (lastDepth===undefined)
+      ? findUnitEl(ev.laneIdx, mine, ev.sourceDepthIdx)
+      : findUnitEl(ev.laneIdx, targetMine, lastDepth);
+    shurikenBounceFrom[key] = ev.targetDepthIdx;
+    if(ev.targetDepthIdx >= 2) delete shurikenBounceFrom[key]; // reached the last enemy in the lane -- shuriken disappears, reset for next throw
+
+    const sourceBoardUnit = sourceBoard[ev.laneIdx] ? sourceBoard[ev.laneIdx][ev.sourceDepthIdx] : null;
+    const sourceName = sourceBoardUnit ? sourceBoardUnit.name : 'Мастер сюрикенов';
+    if(ev.resisted){
+      log(`«${sourceName}» отправляет сюрикен в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`«${sourceName}» отправляет сюрикен в ${targetName}, нанося ${ev.amount}.`);
+    }
+    flyProjectileToHero(fromEl, targetEl, SHURIKEN_SVG, 'cannonball', 250, ()=>{
+      if(!ev.resisted && targetUnit){
+        targetUnit.hp -= ev.amount;
+        if(targetEl){
+          spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died) targetEl.classList.add('unit-dying');
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 900 : 200);
+    });
+  }
+
   // mirrored lane — a genuine unit target, or the hero if the picked
   // square is empty. Disappears on contact, no explosion burst
   // (matching the request's wording), same as Мушкетер's ball.
