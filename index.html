@@ -2636,6 +2636,7 @@
     {id:'c81', name:'Спокойная монахиня', type:'creature', cost:4, atk:2, hp:3, legacy:2, calmNunOnPlay:true, rarity:'rare', desc:'При появлении на поле боя удваивает здоровье случайного соседнего союзника. Несёт эффект Наследие 2.', art:'calmnun', faction:'zen'},
     {id:'c82', name:'Амбар долины', type:'creature', cost:4, atk:0, hp:8, valleyBarn:true, rarity:'rare', desc:'В начале каждого раунда, пока жив, увеличивает атаку и здоровье случайного союзника (кроме себя) на 1.', art:'valleybarn', faction:'zen'},
     {id:'s20', name:'Ураган', type:'spell', cost:4, bounceToHand:true, rarity:'rare', desc:'Возвращает всех бойцов из выбранной вражеской полосы сопернику в руку в виде их исходных карт — все баффы и дебаффы теряются. На бойцов с Чаростойкостью не действует.', art:'hurricane', faction:'zen'},
+    {id:'s21', name:'Бурный рост', type:'spell', cost:4, buffAtk:2, buffHp:4, buffHeroHeal:4, rarity:'rare', desc:'Навсегда увеличивает атаку выбранного союзного бойца на 2 и здоровье на 4, а также восстанавливает своему герою 4 здоровья.', art:'vigorousgrowth', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3615,6 +3616,7 @@
     calmnun: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#e8d4c0"/><path d="M32 24c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#9aa8c8" stroke="#6570a0" stroke-width="1.5"/><circle cx="32" cy="20" r="9" fill="none" stroke="#e0d4f0" stroke-width="1" opacity=".6"/></svg>`,
     valleybarn: `<svg viewBox="0 0 64 64"><path d="M8 30L32 12l24 18v22H8z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><rect x="26" y="36" width="12" height="16" fill="#5c4536"/><path d="M8 30L32 12l24 18" fill="none" stroke="#356140" stroke-width="2.5"/></svg>`,
     hurricane: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="20" ry="10" fill="#4a5568" opacity=".5"/><path d="M32 26c16 0 26 9 26 20s-10 18-22 18-18-6-18-13 6-10 12-10 9 3 9 7" fill="none" stroke="#2d3748" stroke-width="4.5" stroke-linecap="round"/><path d="M30 44l-4 8h5l-3 6" stroke="#e0b93a" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+    vigorousgrowth: `<svg viewBox="0 0 64 64"><path d="M32 54V26" stroke="#4f8a5b" stroke-width="3" stroke-linecap="round"/><path d="M32 30c-10 0-16-8-16-18 10 0 16 6 16 14M32 26c10 0 16-8 16-18-10 0-16 6-16 14M32 40c-8 0-13-6-13-14 8 0 13 5 13 11M32 36c8 0 13-6 13-14-8 0-13 5-13 11" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.2"/></svg>`,
     holypriest: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="none" stroke="#fff3c4" stroke-width="2" opacity=".8"/><circle cx="32" cy="18" r="6" fill="#f4d9a0"/><path d="M32 26c-8 2-13 7-13 14v14h26V40c0-7-5-12-13-14z" fill="#fff8e0" stroke="#e0b93a" stroke-width="1.5"/><path d="M32 34v14M25 41h14" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     blacksmith: `<svg viewBox="0 0 64 64"><path d="M14 44h36l-4 8H18z" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="24" y="36" width="16" height="8" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><rect x="30" y="20" width="4" height="18" fill="#3a2c22"/><path d="M22 12l16 10-4 6-16-10z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/></svg>`,
     sapper: `<svg viewBox="0 0 64 64"><rect x="18" y="20" width="28" height="34" rx="6" fill="#8a5a34" stroke="#5c4536" stroke-width="2"/><rect x="18" y="28" width="28" height="4" fill="#3a2c22"/><rect x="18" y="42" width="28" height="4" fill="#3a2c22"/><path d="M32 20v-8" stroke="#5c4536" stroke-width="2" stroke-linecap="round"/><path d="M32 12c2-2 2-4 0-6-2 2-2 4 0 6z" fill="#e0b93a"/><circle cx="32" cy="6" r="3" fill="#c9432e"/></svg>`,
@@ -6148,7 +6150,7 @@
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
-    if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.drawIfArmored?' / 🃏 если есть броня':''}`;
+    if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ герою':''}${card.drawIfArmored?' / 🃏 если есть броня':''}`;
     return '';
   }
 
@@ -6169,7 +6171,7 @@
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
-    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''} навсегда`;
+    return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ своему герою':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''} навсегда`;
   }
 
   function renderFactionTabs(){
