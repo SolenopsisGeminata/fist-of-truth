@@ -1251,6 +1251,44 @@
   .hero.player{flex-direction:row-reverse; text-align:left;}
   .fist-icon{width:40px;height:40px;flex-shrink:0;}
   .hero-info{flex:1;}
+  .opponent-cards{
+    display:flex;
+    gap:3px;
+    flex-shrink:0;
+    max-width:130px;
+    flex-wrap:wrap;
+    justify-content:flex-start;
+  }
+  .opponent-card-back{
+    width:16px;
+    height:22px;
+    border-radius:2px;
+    background:linear-gradient(135deg,#3a3428,#241f18);
+    border:1px solid var(--brass-dim);
+    flex-shrink:0;
+    box-sizing:border-box;
+  }
+  .opponent-card-revealed{
+    width:16px;
+    height:22px;
+    border-radius:2px;
+    background:var(--bone);
+    border:1px solid var(--brass);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    box-sizing:border-box;
+    overflow:hidden;
+    cursor:default;
+  }
+  .opponent-card-revealed svg{width:80%;height:80%;}
+  .opponent-cards.insight-flip{animation:insight-flip-anim .7s ease;}
+  @keyframes insight-flip-anim{
+    0%{transform:scale(1);}
+    40%{transform:scale(1.25) rotateY(180deg);}
+    100%{transform:scale(1);}
+  }
   .hero-name{
     font-family:'Oswald',sans-serif;
     font-weight:600;
@@ -2392,6 +2430,7 @@
         <div class="hero-name">Соперник</div>
         <div class="hpbar-wrap"><div class="hpbar" id="enemyHpBar" style="width:100%"></div><div class="hp-label" id="enemyHpLabel">30</div></div>
       </div>
+      <div class="opponent-cards" id="opponentCardsBlock"></div>
     </div>
   </div>
 
@@ -2641,6 +2680,7 @@
     {id:'c84', name:'Небесный воин', type:'creature', cost:4, atk:4, hp:3, firstStrike:true, heavenlyWarrior:true, rarity:'rare', desc:'Несёт эффект Первый удар. При попадании обычным ударом по герою соперника с вероятностью 50% возвращает случайного вражеского бойца в его руку в виде исходной карты, теряя все баффы и дебаффы.', art:'heavenlywarrior', faction:'zen'},
     {id:'c85', name:'Аист с пером', type:'creature', cost:3, atk:0, hp:4, stork:true, rarity:'epic', desc:'В конце каждого хода, пока жив, копирует случайного бойца соперника и добавляет копию его карты в свою руку (не в руку соперника).', art:'storkfeather', faction:'zen'},
     {id:'c86', name:'Дракон в доспехах', type:'creature', cost:4, atk:3, hp:5, armor:2, rockEffect:true, armoredDragon:true, rarity:'epic', desc:'Несёт эффект Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума. При получении эффекта Наследие дополнительно увеличивает свои атаку и здоровье на 2.', art:'armoreddragon', faction:'zen'},
+    {id:'c87', name:'Таинственная служанка Сюань', type:'creature', cost:4, atk:1, hp:1, insightEffect:1, mysteriousMaid:true, rarity:'legendary', desc:'Несёт эффект Понимание 1. При появлении на поле боя и при попадании обычным ударом по герою соперника увеличивает атаку всех союзников на 1 и уменьшает атаку всех вражеских бойцов на 1.', art:'mysteriousmaid', faction:'zen'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
     {id:'s23', name:'Персиковый рай', type:'spell', cost:4, healHero:6, drawCard:3, rarity:'epic', desc:'Восстанавливает своему герою 6 здоровья и добавляет в руку игрока 3 карты из своей колоды.', art:'peachparadise', faction:'zen'},
     {id:'s24', name:'Сила гор Тянь-Шань', type:'spell', cost:4, mountainStrength:true, mountainArmor:3, rarity:'epic', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью, и даёт ему 3 брони.', art:'tianshanstrength', faction:'zen'},
@@ -2683,7 +2723,7 @@
 
   function libraryCardHtml(card){
     const statsHtml = card.type==='creature'
-      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}</div>`
+      ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}${card.insightEffect?`<span class="stat-insight" title="Понимание ${card.insightEffect}: при розыгрыше раскрывает столько карт из руки соперника лицевой стороной вверх">👁️${card.insightEffect}</span>`:''}</div>`
       : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
     return `<div class="hand-card affordable" data-card-id="${card.id}">
       <div class="cost">${card.cost}</div>
@@ -2706,7 +2746,7 @@
   function showCardPopup(card){
     if(!card) return;
     const statsHtml = card.type==='creature'
-      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}</div>`
+      ? `<div class="card-popup-stats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}${card.insightEffect?`<span class="stat-insight" title="Понимание ${card.insightEffect}: при розыгрыше раскрывает столько карт из руки соперника лицевой стороной вверх">👁️${card.insightEffect}</span>`:''}</div>`
       : `<div class="card-popup-stats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
     document.getElementById('cardPopupBody').innerHTML = `
       <div class="cost">${card.cost}</div>
@@ -3629,6 +3669,7 @@
     heavenlywarrior: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#fff3c4" opacity=".2"/><path d="M32 14a7 7 0 0 1 7 7c0 3-1 5-3 6 7 3 11 10 11 21H21c0-11 4-18 11-21-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#c8d4f0" stroke="#8a97c0" stroke-width="1.5"/><line x1="32" y1="34" x2="32" y2="50" stroke="#e0b93a" stroke-width="3" stroke-linecap="round"/><path d="M32 30l4-4-4-4-4 4z" fill="#e0b93a"/></svg>`,
     storkfeather: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="12" ry="16" fill="#e9e0cf" stroke="#a89878" stroke-width="1.5"/><path d="M32 24c-4-8-2-14 4-16-2 6 0 10 2 12" fill="none" stroke="#e0524a" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="20" r="6" fill="#e9e0cf" stroke="#a89878" stroke-width="1.5"/><path d="M44 30c4-6 10-8 14-6-4 2-6 6-6 10" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.2"/></svg>`,
     armoreddragon: `<svg viewBox="0 0 64 64"><path d="M20 40c-6-10-4-22 6-28-2 6 0 10 4 12 2-8 8-14 16-14-4 6-4 12 0 16 6-2 12 0 14 6-6 0-10 2-12 6 4 2 6 6 6 10-6-4-12-4-16 0-4-6-10-8-18-8z" fill="#6a7a8a" stroke="#3a4550" stroke-width="1.5"/><circle cx="26" cy="30" r="2" fill="#e0524a"/><path d="M22 42l4 6-6 2z" fill="#8a6d1a"/></svg>`,
+    mysteriousmaid: `<svg viewBox="0 0 64 64"><path d="M32 12a7 7 0 0 1 7 7c0 3-1 5-3 6 7 3 11 10 11 21H21c0-11 4-18 11-21-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#6a4a7a" stroke="#402a4a" stroke-width="1.5"/><path d="M24 34a8 5 0 0 0 16 0" fill="none" stroke="#c9a227" stroke-width="1.5"/><circle cx="32" cy="34" r="2" fill="#c9a227"/></svg>`,
     bambooshield: `<svg viewBox="0 0 64 64"><rect x="12" y="20" width="8" height="36" rx="2" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="12" y1="30" x2="20" y2="30" stroke="#4f8a5b" stroke-width="1"/><line x1="12" y1="42" x2="20" y2="42" stroke="#4f8a5b" stroke-width="1"/><rect x="28" y="12" width="8" height="44" rx="2" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="28" y1="24" x2="36" y2="24" stroke="#4f8a5b" stroke-width="1"/><line x1="28" y1="38" x2="36" y2="38" stroke="#4f8a5b" stroke-width="1"/><rect x="44" y="18" width="8" height="38" rx="2" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.5"/><line x1="44" y1="28" x2="52" y2="28" stroke="#4f8a5b" stroke-width="1"/><line x1="44" y1="42" x2="52" y2="42" stroke="#4f8a5b" stroke-width="1"/></svg>`,
     peachparadise: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#fff3c4" opacity=".2"/><circle cx="24" cy="30" r="9" fill="#e8927c" stroke="#c96a52" stroke-width="1.2"/><circle cx="40" cy="26" r="7" fill="#e8927c" stroke="#c96a52" stroke-width="1.2"/><circle cx="34" cy="42" r="8" fill="#e8927c" stroke="#c96a52" stroke-width="1.2"/><path d="M24 21l3-6M40 19l2-5M34 34l2-5" stroke="#5c4536" stroke-width="1.5" stroke-linecap="round"/><path d="M28 15l4 2-3 4z" fill="#7a9c4f"/></svg>`,
     tianshanstrength: `<svg viewBox="0 0 64 64"><path d="M4 50L16 24l8 10 8-14 6 8 8-12 14 34z" fill="#7a8a9a" stroke="#4a5560" stroke-width="1.5"/><path d="M24 34l4 6-4 4-4-4z" fill="#e9e0cf" opacity=".8"/><path d="M38 22l3 5-3 3-3-3z" fill="#e9e0cf" opacity=".8"/><path d="M32 48a8 8 0 0 0 8-8h-16a8 8 0 0 0 8 8z" fill="none" stroke="#c9a227" stroke-width="1.5" opacity=".7"/></svg>`,
@@ -3932,6 +3973,8 @@
     state.playerBoard = hydrateBoard(snapshot.myBoard);
     state.enemyBoard = hydrateBoard(snapshot.opponentBoard);
     state.playerHand = (snapshot.myHand||[]).map(hydrateHandCard);
+    state.opponentHandCount = snapshot.opponentHandCount || 0;
+    state.revealedOpponentCards = (snapshot.revealedOpponentCards||[]).map(hydrateHandCard);
     if(snapshot.opponentName) state.opponentName = snapshot.opponentName;
     state.sacrificesThisRound = snapshot.mySacrifices||0;
     state.pendingSpells = (snapshot.pendingSpells||[]).map(sp=>({
@@ -3966,6 +4009,7 @@
     enemyHpBar: document.getElementById('enemyHpBar'),
     playerHpLabel: document.getElementById('playerHpLabel'),
     enemyHpLabel: document.getElementById('enemyHpLabel'),
+    opponentCardsBlock: document.getElementById('opponentCardsBlock'),
     logLine: document.getElementById('logLine'),
     pendingSpells: document.getElementById('pendingSpells'),
     hint: document.getElementById('hint'),
@@ -4145,7 +4189,7 @@
       const div = document.createElement('div');
       div.className = 'hand-card ' + (affordable ? 'affordable':'unaffordable') + (state.selectedCardUid===card.uid ? ' selected':'');
       const statsHtml = card.type==='creature'
-        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}</div>`
+        ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}${card.insightEffect?`<span class="stat-insight" title="Понимание ${card.insightEffect}: при розыгрыше раскрывает столько карт из руки соперника лицевой стороной вверх">👁️${card.insightEffect}</span>`:''}</div>`
         : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
       div.innerHTML = `
         <div class="cost">${card.cost}</div>
@@ -4179,6 +4223,30 @@
     el.enemyHpLabel.textContent = `${Math.max(0,state.enemyHp)}`;
     const enemyNameEl = document.querySelector('.hero.enemy .hero-name');
     if(enemyNameEl) enemyNameEl.textContent = state.opponentName || 'Соперник';
+    renderOpponentCards();
+  }
+
+  // Понимание: shows a card back for every card in the opponent's hand
+  // that hasn't been revealed to us, plus a face-up card (using its
+  // real art/name) for every one that HAS — via state.revealedOpponentCards,
+  // populated straight from the server's own per-player filtered
+  // snapshot, so this never shows anything the server hasn't
+  // explicitly revealed to THIS player.
+  function renderOpponentCards(){
+    if(!el.opponentCardsBlock) return;
+    const total = state.opponentHandCount||0;
+    const revealed = state.revealedOpponentCards||[];
+    const revealedUids = new Set(revealed.map(c=>c.uid));
+    const backCount = Math.max(0, total - revealed.length);
+    let html = '';
+    for(const card of revealed){
+      const art = ICONS[card.art] || '';
+      html += `<div class="opponent-card-revealed" title="${card.name}">${art}</div>`;
+    }
+    for(let i=0;i<backCount;i++){
+      html += `<div class="opponent-card-back"></div>`;
+    }
+    el.opponentCardsBlock.innerHTML = html;
   }
 
   function renderPendingSpells(){
@@ -4718,6 +4786,8 @@
       else if(ev.type==='treeWrath') playTreeWrathEvent(ev, next);
       else if(ev.type==='peachGiven') playPeachGivenEvent(ev, next);
       else if(ev.type==='storkCopy') playStorkCopyEvent(ev, next);
+      else if(ev.type==='insightReveal') playInsightRevealEvent(ev, next);
+      else if(ev.type==='maidenShift') playMaidenShiftEvent(ev, next);
       else if(ev.type==='songToTheMoon') playSongToTheMoonEvent(ev, next);
       else if(ev.type==='mountainStrength') playMountainStrengthEvent(ev, next);
       else if(ev.type==='counterattack') playCounterattackEvent(ev, next);
@@ -5622,6 +5692,55 @@
     const copiedName = copiedDef ? copiedDef.name : 'бойца';
     log(`${mine?'Твой':'Соперника'} «${storkName}» перенимает облик ${copiedName} — ${mine?'ты получаешь':'соперник получает'} копию карты в руку.`);
     setTimeout(()=>{ done(); }, 500);
+  }
+
+  // Понимание: purely a log + a brief flip flourish on the opponent-cards
+  // block — the actual revealed card CONTENTS already come from the
+  // server's own per-player filtered snapshot (state.revealedOpponentCards),
+  // applied and rendered separately, so this event never needs to guess
+  // at what was revealed.
+  function playInsightRevealEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    if(ev.count > 0){
+      log(`${mine?'Ты':'Соперник'} применяет эффект Понимание — ${mine?'тебе открывается':'сопернику открывается'} ${ev.count} ${ev.count===1?'карта':'карты'} из руки ${mine?'соперника':'твоей'}.`);
+    } else {
+      log(`${mine?'Ты':'Соперник'} применяет эффект Понимание, но открывать уже нечего.`);
+    }
+    if(el.opponentCardsBlock){
+      el.opponentCardsBlock.classList.add('insight-flip');
+      setTimeout(()=>{ el.opponentCardsBlock && el.opponentCardsBlock.classList.remove('insight-flip'); }, 700);
+    }
+    setTimeout(()=>{ done(); }, 500);
+  }
+
+  // Таинственная служанка Сюань: the ally side of this shift already
+  // arrives as individual rallyBuff events (one per ally, reusing the
+  // existing animation) — this event covers the OTHER half, applying
+  // -1 attack (floored at 0) to EVERY enemy unit at once.
+  function playMaidenShiftEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = (() => {
+      for(let l=0;l<3;l++) for(let d=0;d<3;d++){ const u=board[l]&&board[l][d]; if(u&&u.uid===ev.sourceUid) return u; }
+      return null;
+    })();
+    const sourceName = sourceUnit ? sourceUnit.name : 'Таинственная служанка Сюань';
+    log(`«${sourceName}» шепчет тайное слово — союзники получают +1 атаки, вражеские бойцы теряют 1 атаки.`);
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    setTimeout(()=>{
+      for(let l=0;l<3;l++){
+        for(let d=0;d<3;d++){
+          const u = targetBoard[l][d];
+          if(u){
+            u.atk = Math.max(0, u.atk-1);
+            const elU = findUnitEl(l, targetMine, d);
+            if(elU) spawnDamageNumber(elU, '-1⚔', 'dmg');
+          }
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 500);
+    }, 250);
   }
 
   // Песнь Луне: buffs a random ally +1 atk, debuffs a random enemy -1
