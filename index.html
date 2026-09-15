@@ -2670,7 +2670,7 @@
     {id:'c76', name:'Даос с метлой', type:'creature', cost:3, atk:4, hp:2, broomOnPlay:true, rarity:'epic', desc:'При появлении в первой ячейке любой полосы получает эффект Наследие 2. При появлении в последней ячейке возвращает первого стоящего напротив бойца соперника в его руку в виде исходной карты, теряя все баффы и дебаффы. В средней ячейке появляется как обычный боец.', art:'broomdaoist', faction:'zen'},
     {id:'c77', name:'Музыкальный Даос', type:'creature', cost:3, atk:3, hp:3, musicalDaoist:true, rarity:'epic', desc:'В начале каждого раунда, пока жив, наносит 1 урона всем бойцам соперника на поле боя.', art:'musicaldaoist', faction:'zen'},
     {id:'c78', name:'Стойкий Даос', type:'creature', cost:3, atk:2, hp:2, spellResist:true, steadfastDaoist:true, rarity:'epic', desc:'При попадании обычным ударом по герою соперника навсегда увеличивает свою атаку и здоровье на 1.', art:'steadfastdaoist', faction:'zen'},
-    {id:'c79', name:'Сосновый страж', type:'creature', cost:4, atk:1, hp:6, fixedHeal:2, rarity:'common', desc:'Часть стартовой колоды фракции Дзен. В конце каждого хода восстанавливает своему герою 2 здоровья.', art:'pineguardian', faction:'zen'},
+    {id:'c79', name:'Сосновый отшельник', type:'creature', cost:4, atk:1, hp:6, fixedHeal:2, rarity:'common', desc:'Часть стартовой колоды фракции Дзен. В конце каждого хода восстанавливает своему герою 2 здоровья.', art:'pineguardian', faction:'zen'},
     {id:'c80', name:'Даос с колокольчиком', type:'creature', cost:4, atk:2, hp:1, bellOnPlay:true, rarity:'rare', desc:'При появлении на поле боя возвращает случайного бойца соперника в его руку в виде исходной карты, теряя все баффы и дебаффы.', art:'belldaoist', faction:'zen'},
     {id:'c81', name:'Спокойная монахиня', type:'creature', cost:4, atk:2, hp:3, legacy:2, calmNunOnPlay:true, rarity:'rare', desc:'При появлении на поле боя удваивает здоровье случайного соседнего союзника. Несёт эффект Наследие 2.', art:'calmnun', faction:'zen'},
     {id:'c82', name:'Амбар долины', type:'creature', cost:4, atk:0, hp:8, valleyBarn:true, rarity:'rare', desc:'В начале каждого раунда, пока жив, увеличивает атаку и здоровье случайного союзника (кроме себя) на 1.', art:'valleybarn', faction:'zen'},
@@ -2694,6 +2694,7 @@
     {id:'c96', name:'Бессмертный фикус', type:'creature', cost:5, atk:0, hp:25, peachOrchard:'s27', rarity:'legendary', desc:'В конце хода добавляет карту «Росток Женьшеня» в руку игрока.', art:'immortalficus', faction:'zen'},
     {id:'c97', name:'Бессмертный тигр', type:'creature', cost:6, atk:7, hp:7, immortalTiger:true, rarity:'epic', desc:'Перед атакой: если на союзном поле боя ровно 5 союзников, получает +3 атаки и +3 здоровья, а также эффект Топот. Срабатывает только 1 раз за матч.', art:'immortaltiger', faction:'zen'},
     {id:'c98', name:'Архат в доспехах', type:'creature', cost:6, atk:6, hp:6, armor:4, armoredArhat:true, rarity:'epic', desc:'При получении эффекта Наследие получает обычный бонус от переданного Наследия (сохраняя сам эффект Наследие), а также дополнительно получает эффекты Щит и Кража жизни. Эффект Щит: невосприимчив ко всем баффам, дебаффам, заклинаниям и механикам других юнитов, направленным против этого юнита.', art:'armoredarhat', faction:'zen'},
+    {id:'s28', name:'Сосновый лес', type:'spell', cost:6, pineForest:true, rarity:'epic', desc:'Призывает на целевую и на случайную клетку по одному Сосновому отшельнику. С вероятностью 60% призывает ещё одного Соснового отшельника на случайную клетку.', art:'pineforest', faction:'zen'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
     {id:'s23', name:'Персиковый рай', type:'spell', cost:4, healHero:6, drawCard:3, rarity:'epic', desc:'Восстанавливает своему герою 6 здоровья и добавляет в руку игрока 3 карты из своей колоды.', art:'peachparadise', faction:'zen'},
     {id:'s24', name:'Сила гор Тянь-Шань', type:'spell', cost:4, mountainStrength:true, mountainArmor:3, rarity:'epic', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью, и даёт ему 3 брони.', art:'tianshanstrength', faction:'zen'},
@@ -3673,6 +3674,7 @@
     musicaldaoist: `<svg viewBox="0 0 64 64"><circle cx="26" cy="16" r="7" fill="#c9a98a"/><path d="M26 24c-8 2-12 8-12 18h24c0-10-4-16-12-18z" fill="#5c8a7a" stroke="#3a5c50" stroke-width="1.5"/><line x1="34" y1="24" x2="54" y2="38" stroke="#8a5a34" stroke-width="2.5" stroke-linecap="round"/><circle cx="52" cy="24" r="3" fill="#c9a98a"/><circle cx="46" cy="30" r="1.5" fill="#3a2c22"/><circle cx="50" cy="34" r="1.5" fill="#3a2c22"/></svg>`,
     steadfastdaoist: `<svg viewBox="0 0 64 64"><path d="M32 12a7 7 0 0 1 7 7c0 3-1 5-3 6 7 3 11 10 11 20H17c0-10 4-17 11-20-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><path d="M32 46a10 10 0 0 0 10-10h-20a10 10 0 0 0 10 10z" fill="none" stroke="#e0b93a" stroke-width="1.5" opacity=".8"/></svg>`,
     pineguardian: `<svg viewBox="0 0 64 64"><rect x="29" y="48" width="6" height="10" fill="#6b4a2d"/><path d="M32 10l14 18h-8l10 14h-8l10 16H14l10-16h-8l10-14h-8z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/></svg>`,
+    pineforest: `<svg viewBox="0 0 64 64"><rect x="17" y="46" width="5" height="8" fill="#6b4a2d"/><path d="M19 20l9 14h-5l7 12H10l7-12h-5z" fill="#4f8a5b" stroke="#356140" stroke-width="1.2"/><rect x="41" y="44" width="5" height="8" fill="#6b4a2d"/><path d="M43 16l10 16h-6l8 14H33l8-14h-6z" fill="#356140" stroke="#1e3a24" stroke-width="1.2"/><rect x="29" y="48" width="5" height="8" fill="#6b4a2d"/><path d="M31 26l7 11h-4l6 9H22l6-9h-4z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.2"/></svg>`,
     belldaoist: `<svg viewBox="0 0 64 64"><path d="M28 12a7 7 0 0 1 7 7c0 3-1 5-3 6 6 3 10 9 10 18H20c0-9 4-15 10-18-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#a8874f" stroke="#6b5530" stroke-width="1.5"/><path d="M46 20a6 6 0 0 1 6 8l2 4h-16l2-4a6 6 0 0 1 6-8z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1.2"/><circle cx="46" cy="34" r="1.5" fill="#5c4536"/></svg>`,
     calmnun: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#e8d4c0"/><path d="M32 24c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#9aa8c8" stroke="#6570a0" stroke-width="1.5"/><circle cx="32" cy="20" r="9" fill="none" stroke="#e0d4f0" stroke-width="1" opacity=".6"/></svg>`,
     valleybarn: `<svg viewBox="0 0 64 64"><path d="M8 30L32 12l24 18v22H8z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><rect x="26" y="36" width="12" height="16" fill="#5c4536"/><path d="M8 30L32 12l24 18" fill="none" stroke="#356140" stroke-width="2.5"/></svg>`,
@@ -4329,7 +4331,10 @@
       } else if(card.bounceCellAndNeighbor){
         el.hint.textContent = 'Выбери вражескую ячейку — боец в ней и в случайной соседней ячейке вернутся сопернику в руку.';
         highlightEnemyCellsForSpell();
-      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays || card.songToTheMoon){
+      } else if(card.pineForest){
+        el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
+        highlightEmptyOwnCellsForPineForest();
+      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays || card.songToTheMoon || card.pineForest){
         el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : (card.songToTheMoon ? 'Выбери любую ячейку на своей стороне.' : 'Выбери любую ячейку на своей стороне.'))));
         highlightAnyOwnCellForWellspring();
       } else if(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal || card.buffDoubleStrike || card.mountainStrength){
@@ -4373,6 +4378,24 @@
       s.onclick = (ev)=>{
         ev.stopPropagation();
         castWellspringSpell(parseInt(s.dataset.lane,10), parseInt(s.dataset.depth,10));
+      };
+    });
+  }
+
+  // Сосновый лес: unlike every other "any own cell" spell above, this
+  // one specifically needs an EMPTY cell — it's where one of the three
+  // Сосновый отшельник actually lands, so an already-occupied cell
+  // isn't a valid target at all (matching the server's own rejection).
+  function highlightEmptyOwnCellsForPineForest(){
+    const slots = el.battlefield.querySelectorAll('.slot[data-mine="true"]');
+    slots.forEach(s=>{
+      const lane = parseInt(s.dataset.lane,10), depth = parseInt(s.dataset.depth,10);
+      if(state.playerBoard[lane] && state.playerBoard[lane][depth]) return; // occupied, skip
+      s.style.cursor = 'pointer';
+      s.classList.add('spell-target');
+      s.onclick = (ev)=>{
+        ev.stopPropagation();
+        castWellspringSpell(lane, depth);
       };
     });
   }
@@ -4468,7 +4491,7 @@
   // player happens to point.
   function castWellspringSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays || card.songToTheMoon)) return;
+    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.heavenlyRays || card.songToTheMoon || card.pineForest)) return;
     if(card.cost > state.mana) return;
     // No unit-presence check here on purpose — Родник can land on any
     // cell, empty or occupied, since it never actually touches whatever
@@ -6524,6 +6547,7 @@
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' +'+card.drawCard+' карта':''}`;
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
+    if(card.pineForest) return `+2-3 \u0431\u043e\u0439\u0446\u0430`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
     if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike || card.buffTrample || card.buffLegacy || card.buffSpellResist) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.buffTrample?' / 🐾':''}${card.buffLegacy?' / 🌱'+card.buffLegacy:''}${card.buffSpellResist?' / 🔮':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ герою':''}${card.drawIfArmored?' / 🃏 если есть броня':''}`;
     return '';
@@ -6545,6 +6569,7 @@
     if(card.healHero) return `+${card.healHero} HP герою${card.drawCard?' · +'+card.drawCard+' карта в руку':''}`;
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
+    if(card.pineForest) return `призывает Соснового отшельника на выбранную и на случайную клетку, с 60% шансом призвать ещё одного`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
     return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.buffTrample?' / 🐾 Топот':''}${card.buffLegacy?' / 🌱 Наследие '+card.buffLegacy:''}${card.buffSpellResist?' / 🔮 Чаростойкость':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ своему герою':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''} навсегда`;
   }
