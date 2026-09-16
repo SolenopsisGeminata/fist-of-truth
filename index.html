@@ -2661,7 +2661,7 @@
     {id:'c70', name:'Лис с мечом', type:'creature', cost:3, atk:3, hp:2, foxSwordOnPlay:1, rarity:'rare', desc:'При появлении на поле боя наносит 1 урона случайному бойцу соперника.', art:'foxsword', faction:'zen'},
     {id:'c71', name:'Божественная черепаха-монах', type:'creature', cost:3, atk:2, hp:3, armor:1, lifesteal:true, rarity:'common', desc:'Часть стартовой колоды фракции Дзен.', art:'turtlemonk', faction:'zen'},
     {id:'c72', name:'Даос-мечник', type:'creature', cost:3, atk:3, hp:3, daoistSwordsman:true, rarity:'rare', desc:'При попадании обычным ударом по герою соперника увеличивает атаку всех союзных бойцов (включая себя) на 1.', art:'daoistswordsman', faction:'zen'},
-    {id:'c73', name:'Сестра дома вкуса', type:'creature', cost:3, atk:2, hp:2, waitressOnPlay:true, rarity:'rare', desc:'При появлении в первой ячейке любой полосы увеличивает атаку случайного союзника (возможно, свою собственную) на 2. При появлении в последней ячейке увеличивает броню случайного союзника на 3. В средней ячейке появляется как обычный боец.', art:'waitress', faction:'zen'},
+    {id:'c73', name:'Сестра дома Вкуса', type:'creature', cost:3, atk:2, hp:2, waitressOnPlay:true, rarity:'rare', desc:'При появлении в первой ячейке любой полосы увеличивает атаку случайного союзника (возможно, свою собственную) на 2. При появлении в последней ячейке увеличивает броню случайного союзника на 3. В средней ячейке появляется как обычный боец.', art:'waitress', faction:'zen'},
     {id:'c74', name:'Пьяный ученик', type:'creature', cost:3, atk:3, hp:5, drunkenDisciple:true, rarity:'rare', desc:'Перед тем как атакует, наносит 1 урона себе и 1 урона случайному юниту на поле боя (может быть как союзным, так и вражеским).', art:'drunkdisciple', faction:'zen'},
     {id:'c75', name:'Сборщик трав', type:'creature', cost:3, atk:2, hp:3, legacy:1, healOnPlay:2, rarity:'rare', desc:'При появлении на поле боя восстанавливает своему герою 2 здоровья. Несёт эффект Наследие 1.', art:'herbcollector', faction:'zen'},
     {id:'s17', name:'Двойной удар', type:'spell', cost:3, buffAtk:1, buffHp:1, buffDoubleStrike:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 1 и даёт ему эффект Двойной удар — он атакует дважды за раунд.', art:'doublestrike', faction:'zen'},
@@ -2697,6 +2697,7 @@
     {id:'s28', name:'Сосновый лес', type:'spell', cost:6, pineForest:true, rarity:'epic', desc:'Призывает на целевую и на случайную клетку по одному Сосновому отшельнику. С вероятностью 60% призывает ещё одного Соснового отшельника на случайную клетку.', art:'pineforest', faction:'zen'},
     {id:'c99', name:'Свинья Мастер Дзен', type:'creature', cost:6, atk:8, hp:8, lifesteal:true, trample:true, legacy:1, rarity:'legendary', desc:'Несёт эффекты Кража жизни, Топот и Наследие 1.', art:'zenmasterpig', faction:'zen'},
     {id:'c100', name:'Пьяный Даос', type:'creature', cost:6, atk:5, hp:10, doubleStrike:true, drunkenDaoistOnPlay:true, rarity:'epic', desc:'Несёт эффект Двойной удар. При появлении на поле боя получает +1 атаки и +2 здоровья за каждого противника в противоположной полосе.', art:'drunkendaoist2', faction:'zen'},
+    {id:'c101', name:'Шеф дома Вкуса', type:'creature', cost:7, atk:2, hp:10, healOnPlay:6, fixedHeal:6, chefDoubleHero:true, rarity:'epic', desc:'При появлении на поле боя, а также в конце каждого хода восстанавливает своему герою 6 здоровья. Кроме того, в конце первого хода после появления на поле боя удваивает здоровье своего героя (этот эффект срабатывает единожды).', art:'chefhousetaste', faction:'zen'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
     {id:'s23', name:'Персиковый рай', type:'spell', cost:4, healHero:6, drawCard:3, rarity:'epic', desc:'Восстанавливает своему герою 6 здоровья и добавляет в руку игрока 3 карты из своей колоды.', art:'peachparadise', faction:'zen'},
     {id:'s24', name:'Сила гор Тянь-Шань', type:'spell', cost:4, mountainStrength:true, mountainArmor:3, rarity:'epic', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью, и даёт ему 3 брони.', art:'tianshanstrength', faction:'zen'},
@@ -3679,6 +3680,7 @@
     pineforest: `<svg viewBox="0 0 64 64"><rect x="17" y="46" width="5" height="8" fill="#6b4a2d"/><path d="M19 20l9 14h-5l7 12H10l7-12h-5z" fill="#4f8a5b" stroke="#356140" stroke-width="1.2"/><rect x="41" y="44" width="5" height="8" fill="#6b4a2d"/><path d="M43 16l10 16h-6l8 14H33l8-14h-6z" fill="#356140" stroke="#1e3a24" stroke-width="1.2"/><rect x="29" y="48" width="5" height="8" fill="#6b4a2d"/><path d="M31 26l7 11h-4l6 9H22l6-9h-4z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.2"/></svg>`,
     zenmasterpig: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="18" ry="16" fill="#e8a8a0" stroke="#a8605c" stroke-width="1.5"/><ellipse cx="24" cy="22" rx="5" ry="5" fill="#e8a8a0" stroke="#a8605c" stroke-width="1.2"/><ellipse cx="40" cy="22" rx="5" ry="5" fill="#e8a8a0" stroke="#a8605c" stroke-width="1.2"/><ellipse cx="32" cy="38" rx="8" ry="6" fill="#c9827a"/><circle cx="29" cy="38" r="1.3" fill="#5c3530"/><circle cx="35" cy="38" r="1.3" fill="#5c3530"/><rect x="14" y="24" width="36" height="5" fill="#5c4536" opacity=".8"/></svg>`,
     drunkendaoist2: `<svg viewBox="0 0 64 64"><g transform="rotate(6 32 32)"><circle cx="34" cy="18" r="7" fill="#e8b8a8"/><path d="M34 26c-10 3-14 12-14 26h28c0-14-4-23-14-26z" fill="#9a6d8a" stroke="#5c3650" stroke-width="1.5"/></g><path d="M46 42c2-4 6-4 6 0s-3 6-3 10-4 2-3-2 2-4 0-8z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1"/></svg>`,
+    chefhousetaste: `<svg viewBox="0 0 64 64"><path d="M20 24a12 12 0 0 1 24 0c5 1 7 5 7 9 0 3-2 6-6 7v2H19v-2c-4-1-6-4-6-7 0-4 2-8 7-9z" fill="#e9e0cf" stroke="#a89878" stroke-width="1.5"/><rect x="20" y="40" width="24" height="16" rx="2" fill="#3a3a42" stroke="#1a1a1e" stroke-width="1.2"/><circle cx="50" cy="30" r="4" fill="#c9a98a" stroke="#8a6d1a" stroke-width="1"/><path d="M32 12v-4M40 14l2-4M24 14l-2-4" stroke="#a89878" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     belldaoist: `<svg viewBox="0 0 64 64"><path d="M28 12a7 7 0 0 1 7 7c0 3-1 5-3 6 6 3 10 9 10 18H20c0-9 4-15 10-18-2-1-3-3-3-6a7 7 0 0 1 7-7z" fill="#a8874f" stroke="#6b5530" stroke-width="1.5"/><path d="M46 20a6 6 0 0 1 6 8l2 4h-16l2-4a6 6 0 0 1 6-8z" fill="#c9a227" stroke="#8a6d1a" stroke-width="1.2"/><circle cx="46" cy="34" r="1.5" fill="#5c4536"/></svg>`,
     calmnun: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="7" fill="#e8d4c0"/><path d="M32 24c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#9aa8c8" stroke="#6570a0" stroke-width="1.5"/><circle cx="32" cy="20" r="9" fill="none" stroke="#e0d4f0" stroke-width="1" opacity=".6"/></svg>`,
     valleybarn: `<svg viewBox="0 0 64 64"><path d="M8 30L32 12l24 18v22H8z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><rect x="26" y="36" width="12" height="16" fill="#5c4536"/><path d="M8 30L32 12l24 18" fill="none" stroke="#356140" stroke-width="2.5"/></svg>`,
@@ -4854,6 +4856,7 @@
       else if(ev.type==='summon') playSummonEvent(ev, next);
       else if(ev.type==='deathDraw') playDeathDrawEvent(ev, next);
       else if(ev.type==='moneyTreeDraw') playMoneyTreeDrawEvent(ev, next);
+      else if(ev.type==='chefHeroDouble') playChefHeroDoubleEvent(ev, next);
       else if(ev.type==='hermitCopy') playHermitCopyEvent(ev, next);
       else if(ev.type==='discipleTransform') playDiscipleTransformEvent(ev, next);
       else next();
@@ -5097,6 +5100,26 @@
       if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
       setTimeout(()=>{ renderAll(); done(); }, 900);
     });
+  }
+
+  // Шеф дома Вкуса: exactly once, at the end of the first full round
+  // after she entered the battlefield, doubles her owner's hero's
+  // current hp — ev.amount is the exact delta the server already
+  // computed (newHp - oldHp), so the client just applies it directly
+  // rather than recomputing the doubling itself.
+  function playChefHeroDoubleEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const chefName = unit ? unit.name : 'Шеф дома Вкуса';
+    const heroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    log(`«${chefName}» удваивает здоровье ${mine?'твоего':'вражеского'} героя!`);
+    setTimeout(()=>{
+      if(mine) state.playerHp += ev.amount;
+      else state.enemyHp += ev.amount;
+      if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    }, 300);
   }
 
   // A small crossbow-bolt graphic used purely as a flying projectile —
