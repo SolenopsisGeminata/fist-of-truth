@@ -916,6 +916,21 @@
     background:rgba(201,162,39,0.16);
     box-shadow:0 0 0 1px var(--brass) inset;
   }
+  .faction-tab.locked{
+    cursor:not-allowed;
+    opacity:.4;
+    position:relative;
+  }
+  .faction-tab.locked:hover{transform:none; border-color:var(--line);}
+  .faction-tab.locked svg{filter:grayscale(1);}
+  .faction-lock-icon{
+    position:absolute;
+    bottom:-4px;
+    right:-4px;
+    font-size:12px;
+    line-height:1;
+    filter:none;
+  }
   .settings-row{
     display:flex;
     flex-direction:column;
@@ -2714,10 +2729,10 @@
   const FACTIONS = [
     { id:'empire', name:'Империя', icon:`<svg viewBox="0 0 64 64"><path d="M10 44l4-20 10 10 8-16 8 16 10-10 4 20z" fill="none" stroke="#c9a227" stroke-width="4" stroke-linejoin="round"/><rect x="10" y="44" width="44" height="6" rx="1.5" fill="#c9a227"/><circle cx="32" cy="14" r="3.5" fill="#c9a227"/><circle cx="14" cy="22" r="3" fill="#c9a227"/><circle cx="50" cy="22" r="3" fill="#c9a227"/></svg>` },
     { id:'pirates', name:'Пираты', icon:`<svg viewBox="0 0 64 64"><circle cx="32" cy="26" r="14" fill="#e9e0cf"/><circle cx="26" cy="24" r="3.5" fill="#15100d"/><circle cx="38" cy="24" r="3.5" fill="#15100d"/><path d="M26 33c2 3 10 3 12 0" stroke="#15100d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M18 48l28 12M46 48l-28 12" stroke="#a89a84" stroke-width="4.5" stroke-linecap="round"/></svg>` },
-    { id:'savages', name:'Дикари', locked:true, icon:`<svg viewBox="0 0 64 64"><path d="M32 6l7 12-7 4-7-4z" fill="#8a7020"/><path d="M17 20h30l-5 28H22z" fill="#a12c2c"/><circle cx="26" cy="31" r="3.2" fill="#15100d"/><circle cx="38" cy="31" r="3.2" fill="#15100d"/><path d="M23 42h18" stroke="#15100d" stroke-width="3" stroke-linecap="round"/></svg>` },
+    { id:'savages', name:'Дикари', icon:`<svg viewBox="0 0 64 64"><path d="M32 6l7 12-7 4-7-4z" fill="#8a7020"/><path d="M17 20h30l-5 28H22z" fill="#a12c2c"/><circle cx="26" cy="31" r="3.2" fill="#15100d"/><circle cx="38" cy="31" r="3.2" fill="#15100d"/><path d="M23 42h18" stroke="#15100d" stroke-width="3" stroke-linecap="round"/></svg>` },
     { id:'inferno', name:'Инферно', icon:`<svg viewBox="0 0 64 64"><path d="M32 6c-3 9 4 11 0 18-4-2-7 1-7 6 0 7 6 12 7 12s7-5 7-12c0-3-1-5-3-6 4-1 6-7 3-18z" fill="#e04a3f"/></svg>` },
     { id:'frost', name:'Холод', icon:`<svg viewBox="0 0 64 64"><g stroke="#8fd6ff" stroke-width="3.5" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="56"/><line x1="10" y1="32" x2="54" y2="32"/><line x1="16" y1="16" x2="48" y2="48"/><line x1="48" y1="16" x2="16" y2="48"/></g><g stroke="#8fd6ff" stroke-width="2.5" stroke-linecap="round"><path d="M32 8l-6 7M32 8l6 7M32 56l-6-7M32 56l6-7M10 32l7-6M10 32l7 6M54 32l-7-6M54 32l-7 6"/></g></svg>` },
-    { id:'zen', name:'Дзен', locked:true, icon:`<svg viewBox="0 0 64 64"><path d="M47 17A23 23 0 1 1 21 12" fill="none" stroke="#4f8a5b" stroke-width="4.5" stroke-linecap="round"/></svg>` },
+    { id:'zen', name:'Дзен', icon:`<svg viewBox="0 0 64 64"><path d="M47 17A23 23 0 1 1 21 12" fill="none" stroke="#4f8a5b" stroke-width="4.5" stroke-linecap="round"/></svg>` },
     { id:'mystery', name:'Мистерия', icon:`<svg viewBox="0 0 64 64"><path d="M5 32s11-15 27-15 27 15 27 15-11 15-27 15S5 32 5 32z" fill="none" stroke="#5c85a8" stroke-width="3.5"/><circle cx="32" cy="32" r="7.5" fill="#5c85a8"/><circle cx="32" cy="32" r="2.8" fill="#0f0b08"/></svg>` },
   ];
   let selectedFaction = 'empire';
@@ -2730,9 +2745,8 @@
   let libraryPage = 0;
 
   function getLibraryFilteredCards(){
-    const lockedFactionIds = new Set(FACTIONS.filter(f=>f.locked).map(f=>f.id));
     let cards = libraryFaction==='all' ? POOL.slice() : POOL.filter(c=>c.faction===libraryFaction);
-    cards = cards.filter(c=>!lockedFactionIds.has(c.faction));
+    cards = cards.filter(c=>unlockedFactionIds.has(c.faction));
     if(libraryManaFilters.size>0){
       cards = cards.filter(c=>libraryManaFilters.has(c.cost));
       // grouped by mana ascending — "press 2 then 5" shows all 2-cost cards, then all 5-cost cards
@@ -3009,12 +3023,14 @@
 
   function renderLibraryFactionTabs(){
     const tabsEl = document.getElementById('libraryFactionTabs');
-    const all = [ALL_FACTIONS_TAB, ...FACTIONS.filter(f=>!f.locked)];
-    tabsEl.innerHTML = all.map(f=>
-      `<button class="faction-tab${f.id===libraryFaction?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
-    ).join('');
+    const all = [ALL_FACTIONS_TAB, ...FACTIONS];
+    tabsEl.innerHTML = all.map(f=>{
+      const isLocked = f.id!=='all' && !unlockedFactionIds.has(f.id);
+      return `<button class="faction-tab${f.id===libraryFaction?' active':''}${isLocked?' locked':''}" data-faction="${f.id}" data-locked="${isLocked}" title="${isLocked?f.name+' — фракция ещё не открыта':f.name}" aria-label="${f.name}">${f.icon}${isLocked?'<span class="faction-lock-icon">🔒</span>':''}</button>`;
+    }).join('');
     tabsEl.querySelectorAll('.faction-tab').forEach(btn=>{
       btn.addEventListener('click', ()=>{
+        if(btn.dataset.locked==='true') return;
         libraryFaction = btn.dataset.faction;
         libraryPage = 0;
         renderLibraryScreen();
@@ -3130,13 +3146,15 @@
 
   function renderShopFactionTabs(){
     const tabsEl = document.getElementById('shopFactionTabs');
-    const all = [ALL_FACTIONS_TAB, ...FACTIONS.filter(f=>!f.locked)];
+    const all = [ALL_FACTIONS_TAB, ...FACTIONS];
     const current = shopFaction[shopActiveCurrency];
-    tabsEl.innerHTML = all.map(f=>
-      `<button class="faction-tab${f.id===current?' active':''}" data-faction="${f.id}" title="${f.name}" aria-label="${f.name}">${f.icon}</button>`
-    ).join('');
+    tabsEl.innerHTML = all.map(f=>{
+      const isLocked = f.id!=='all' && !unlockedFactionIds.has(f.id);
+      return `<button class="faction-tab${f.id===current?' active':''}${isLocked?' locked':''}" data-faction="${f.id}" data-locked="${isLocked}" title="${isLocked?f.name+' — фракция ещё не открыта':f.name}" aria-label="${f.name}">${f.icon}${isLocked?'<span class="faction-lock-icon">🔒</span>':''}</button>`;
+    }).join('');
     tabsEl.querySelectorAll('.faction-tab').forEach(btn=>{
       btn.addEventListener('click', ()=>{
+        if(btn.dataset.locked==='true') return;
         shopFaction[shopActiveCurrency] = btn.dataset.faction;
         renderShopScreen();
       });
@@ -7046,6 +7064,34 @@
     } catch(e){ /* leave whatever was last shown */ }
   }
 
+  // Which factions THIS account can currently see/use — server-authoritative
+  // (see GET /api/factions), not a static client-side flag. Defaults to
+  // the same 5 always-unlocked factions the server itself defaults new
+  // accounts to, so the UI doesn't briefly flash "everything locked"
+  // before this first resolves. Faction locking lives here now: any
+  // faction tab (in the shop AND the library — every window that shows
+  // one) checks this set to decide whether to render itself locked,
+  // rather than being hidden entirely.
+  let unlockedFactionIds = new Set(['empire','pirates','inferno','frost','mystery']);
+  async function fetchFactionsStatus(token){
+    if(!serverConfigured() || !token) return;
+    try{
+      const res = await fetch(apiUrl('/api/factions'), { headers:{ 'Authorization':'Bearer '+token }, cache:'no-store' });
+      if(res.ok){
+        const data = await res.json();
+        unlockedFactionIds = new Set(data.unlocked || []);
+        // Re-render whichever faction-tab UI (shop/library) happens to
+        // be open right now, so a freshly-unlocked faction's tab
+        // updates immediately rather than waiting for the next manual
+        // screen switch.
+        const libTabs = document.getElementById('libraryFactionTabs');
+        if(libTabs) renderLibraryFactionTabs();
+        const shopTabs = document.getElementById('shopFactionTabs');
+        if(shopTabs) renderShopFactionTabs();
+      }
+    } catch(e){ /* keep the current defaults */ }
+  }
+
   document.getElementById('logoutBtn').addEventListener('click', async ()=>{
     const session = loadSession();
     clearSession();
@@ -7094,6 +7140,7 @@
       currentUser = data.username;
       updateUserBadge();
       fetchResources(data.token);
+      fetchFactionsStatus(data.token);
       fetchMailStatus();
       hint.textContent = '';
       document.getElementById('loginPassword').value = '';
@@ -7162,6 +7209,7 @@
         currentUser = data.username;
         updateUserBadge();
         fetchResources(session.token);
+        fetchFactionsStatus(session.token);
         fetchMailStatus();
         showScreen('menu');
         maybeResumeMatch();
