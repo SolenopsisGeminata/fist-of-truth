@@ -7066,13 +7066,13 @@
 
   // Which factions THIS account can currently see/use — server-authoritative
   // (see GET /api/factions), not a static client-side flag. Defaults to
-  // the same 5 always-unlocked factions the server itself defaults new
-  // accounts to, so the UI doesn't briefly flash "everything locked"
-  // before this first resolves. Faction locking lives here now: any
-  // faction tab (in the shop AND the library — every window that shows
-  // one) checks this set to decide whether to render itself locked,
-  // rather than being hidden entirely.
-  let unlockedFactionIds = new Set(['empire','pirates','inferno','frost','mystery']);
+  // the same single always-unlocked faction (Империя) the server itself
+  // defaults new accounts to, so the UI doesn't briefly flash "nothing
+  // locked" before this first resolves. Faction locking lives here now:
+  // any faction tab (in the shop AND the library — every window that
+  // shows one) checks this set to decide whether to render itself
+  // locked, rather than being hidden entirely.
+  let unlockedFactionIds = new Set(['empire']);
   async function fetchFactionsStatus(token){
     if(!serverConfigured() || !token) return;
     try{
