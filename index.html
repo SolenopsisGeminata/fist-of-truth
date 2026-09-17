@@ -2703,7 +2703,7 @@
     {id:'c92', name:'Мастер сюрикенов', type:'creature', cost:5, atk:5, hp:2, shurikenMaster:true, rarity:'epic', desc:'Перед своей атакой метает сюрикен в противоположную полосу соперника, нанося находящимся там бойцам по 2 урона последовательно, начиная от ближайшего и заканчивая последним.', art:'shurikenmaster', faction:'zen'},
     {id:'c93', name:'Денежное дерево', type:'creature', cost:5, atk:3, hp:9, moneyTree:true, rarity:'epic', desc:'В конце хода, если этот боец получил урон на текущем ходу, добавляет 1 карту в руку игрока из его колоды.', art:'moneytree', faction:'zen'},
     {id:'s26', name:'Духовный щит', type:'spell', cost:5, buffAtk:2, buffHp:2, buffSpellResist:true, rarity:'epic', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 2 и даёт ему эффект Чаростойкость.', art:'spiritshield', faction:'zen'},
-    {id:'c94', name:'Потомок дракона', type:'creature', cost:5, atk:6, hp:6, firstStrike:true, doubleStrike:true, lifesteal:true, rarity:'legendary', desc:'Несёт эффекты Первый удар, Двойной удар и Кража жизни. Не появляется в Магазине — получить его можно только через превращение Странствующего ученика.', art:'dragondescendant', faction:'zen'},
+    {id:'c94', name:'Потомок дракона', type:'creature', cost:5, atk:6, hp:6, firstStrike:true, doubleStrike:true, lifesteal:true, spellResist:true, rarity:'legendary', desc:'Несёт эффекты Первый удар, Двойной удар, Кража жизни и Чаростойкость. Не появляется в Магазине — получить его можно только через превращение Странствующего ученика.', art:'dragondescendant', faction:'zen'},
     {id:'c95', name:'Странствующий ученик', type:'creature', cost:5, atk:3, hp:3, transformOnLegacy:'c94', rarity:'legendary', desc:'При получении эффекта Наследие полностью превращается в «Потомка дракона».', art:'wanderingdisciple', faction:'zen'},
     {id:'s27', name:'Росток Женьшеня', type:'spell', cost:0, healHero:6, rarity:'common', desc:'Восстанавливает своему герою 6 здоровья. Не появляется в Магазине — получить его можно только от «Бессмертного фикуса».', art:'ginsengsprout', faction:'zen'},
     {id:'c96', name:'Бессмертный фикус', type:'creature', cost:5, atk:0, hp:25, peachOrchard:'s27', rarity:'legendary', desc:'В конце хода добавляет карту «Росток Женьшеня» в руку игрока.', art:'immortalficus', faction:'zen'},
@@ -2716,6 +2716,7 @@
     {id:'c102', name:'Нуаль Облачный', type:'creature', cost:7, atk:10, hp:5, nualOnPlay:true, rarity:'legendary', desc:'При появлении в первой ячейке любой полосы наносит 9 урона первому противнику напротив себя. При появлении в последней ячейке любой полосы наносит по 3 урона четырём случайным противникам.', art:'nualcloudy', faction:'zen'},
     {id:'c103', name:'Мудрый олень', type:'creature', cost:4, atk:2, hp:2, wiseDeerOnPlay:true, rarity:'epic', desc:'При появлении в первой ячейке любой полосы уменьшает атаку и здоровье всех вражеских бойцов на 1. При появлении в последней ячейке любой полосы увеличивает атаку и здоровье всех союзных бойцов на 2.', art:'wisedeer', faction:'zen'},
     {id:'c104', name:'Волк прерий', type:'creature', cost:1, atk:2, hp:1, rarity:'common', desc:'Часть стартовой колоды фракции Дикари.', art:'prairiewolf', faction:'savages'},
+    {id:'c105', name:'Стервятник', type:'creature', cost:1, atk:1, hp:2, defender:true, temporaryDefender:true, vultureDraw:true, rarity:'rare', desc:'Несёт эффект Защитник. Начиная со следующего хода после появления на поле боя теряет эффект Защитник. При попадании обычным ударом по герою соперника добавляет 1 карту в руку игрока из его колоды.', art:'vulture', faction:'savages'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
     {id:'s23', name:'Персиковый рай', type:'spell', cost:4, healHero:6, drawCard:3, rarity:'epic', desc:'Восстанавливает своему герою 6 здоровья и добавляет в руку игрока 3 карты из своей колоды.', art:'peachparadise', faction:'zen'},
     {id:'s24', name:'Сила гор Тянь-Шань', type:'spell', cost:4, mountainStrength:true, mountainArmor:3, rarity:'epic', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью, и даёт ему 3 брони.', art:'tianshanstrength', faction:'zen'},
@@ -3676,6 +3677,7 @@
     deerswordsman: `<svg viewBox="0 0 64 64"><path d="M14 20c-4-8-2-14 4-14 0 6 2 8 4 8M32 20c4-8 2-14-4-14 0 6-2 8-4 8" fill="none" stroke="#8a6d1a" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="22" cy="34" rx="11" ry="14" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><circle cx="18" cy="30" r="1.3" fill="#1a2e1e"/><line x1="40" y1="46" x2="54" y2="16" stroke="#8a97a3" stroke-width="3" stroke-linecap="round"/><path d="M52 12l4 2-2 4z" fill="#c9a227"/></svg>`,
     wisedeer: `<svg viewBox="0 0 64 64"><path d="M20 20c-4-8-2-14 4-14 0 6 2 8 4 8M44 20c4-8 2-14-4-14 0 6-2 8-4 8" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="32" cy="34" rx="13" ry="16" fill="#7a8a9a" stroke="#4a5560" stroke-width="1.5"/><circle cx="27" cy="30" r="2" fill="#e0d4a0"/><circle cx="37" cy="30" r="2" fill="#e0d4a0"/></svg>`,
     prairiewolf: `<svg viewBox="0 0 64 64"><path d="M32 14c-8 0-14 6-14 14 0 4 2 8 5 10l-3 8 8-4c2 1 5 2 8 2s5-1 8-2l8 4-3-8c3-2 5-6 5-10 0-8-6-14-14-14z" fill="#8a8a92" stroke="#4a4a52" stroke-width="1.5"/><circle cx="26" cy="26" r="2.2" fill="#e0b93a"/><circle cx="38" cy="26" r="2.2" fill="#e0b93a"/><path d="M28 34l4 4 4-4" fill="none" stroke="#1a1a1e" stroke-width="1.5"/></svg>`,
+    vulture: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="14" ry="16" fill="#5c5248" stroke="#2a251f" stroke-width="1.5"/><path d="M32 34c6 0 10 4 14 4l-6 4-4-2z" fill="#8a7050"/><circle cx="27" cy="26" r="2" fill="#e0524a"/><path d="M20 30c-4 2-6 6-4 10" fill="none" stroke="#3a342c" stroke-width="1.5"/></svg>`,
     herbalist: `<svg viewBox="0 0 64 64"><path d="M20 40a12 8 0 0 0 24 0z" fill="#5c6570" stroke="#3a4048" stroke-width="1.5"/><path d="M22 40c0-14 4-20 10-20s10 6 10 20" fill="none" stroke="#5c6570" stroke-width="1.5"/><path d="M32 8c-6 4-8 10-6 16 4-2 8-6 9-12 3 5 2 11-2 15 6-1 10-6 10-12 0-6-5-9-11-7z" fill="#7a9c4f" stroke="#4f8a5b" stroke-width="1.2"/></svg>`,
     palisade: `<svg viewBox="0 0 64 64"><rect x="10" y="26" width="10" height="30" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M10 26l5-10 5 10z" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><rect x="27" y="20" width="10" height="36" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><path d="M27 20l5-12 5 12z" fill="#8a5a34" stroke="#5c4536" stroke-width="1.5"/><rect x="44" y="26" width="10" height="30" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/><path d="M44 26l5-10 5 10z" fill="#5c4536" stroke="#3a2c22" stroke-width="1.5"/></svg>`,
     bambooguardian: `<svg viewBox="0 0 64 64"><path d="M32 10L14 18v14c0 14 8 22 18 26 10-4 18-12 18-26V18z" fill="#4f8a5b" stroke="#356140" stroke-width="1.5"/><path d="M32 20v28" stroke="#7a9c4f" stroke-width="4" stroke-linecap="round"/><path d="M32 16l-4 8h8z" fill="#5c6570"/></svg>`,
@@ -4879,6 +4881,7 @@
       else if(ev.type==='warlordDoubleStrike') playWarlordDoubleStrikeEvent(ev, next);
       else if(ev.type==='summon') playSummonEvent(ev, next);
       else if(ev.type==='deathDraw') playDeathDrawEvent(ev, next);
+      else if(ev.type==='vultureDraw') playVultureDrawEvent(ev, next);
       else if(ev.type==='moneyTreeDraw') playMoneyTreeDrawEvent(ev, next);
       else if(ev.type==='chefHeroDouble') playChefHeroDoubleEvent(ev, next);
       else if(ev.type==='nualFrontStab') playNualFrontStabEvent(ev, next);
@@ -5976,6 +5979,18 @@
   function playDeathDrawEvent(ev, done){
     const mine = ev.side === state.myUsername;
     log(`${mine?'Твоя':'Соперника'} «Отшельник-Даос» погибает и ${mine?'ты берёшь':'соперник берёт'} карту из колоды.`);
+    setTimeout(()=>{ done(); }, 400);
+  }
+
+  // Стервятник: whenever his own attack lands directly on the enemy
+  // hero, draws 1 card from his owner's own deck — purely a log line,
+  // the hand itself updates via the next snapshot.
+  function playVultureDrawEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const unitName = unit ? unit.name : 'Стервятник';
+    log(`«${unitName}» бьёт по герою ${mine?'соперника':'твоему'} и ${mine?'ты берёшь':'соперник берёт'} карту из колоды.`);
     setTimeout(()=>{ done(); }, 400);
   }
 
