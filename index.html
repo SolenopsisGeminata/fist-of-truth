@@ -2768,6 +2768,7 @@
     {id:'c134', name:'Воин с молотом', type:'creature', cost:4, atk:3, hp:4, healOnPlay:2, rarity:'rare', desc:'При появлении на поле боя ударом молота о землю воодушевляет своего героя, восстанавливая ему 2 очка здоровья.', art:'hammerwarrior', faction:'savages'},
     {id:'c135', name:'Хищное растение', type:'creature', cost:4, atk:2, hp:5, carnivorousPlantBite:true, rarity:'rare', desc:'В конце хода, если этот боец получил урон на текущем ходу, кусает героя соперника, нанося урон, равный своей текущей атаке.', art:'carnivorousplant', faction:'savages'},
     {id:'s34', name:'Дикая сила', type:'spell', cost:4, buffAtk:4, buffHp:4, buffHeroHeal:4, rarity:'rare', desc:'Навсегда увеличивает атаку выбранного союзного бойца на 4 и здоровье на 4, а также восстанавливает своему герою 4 здоровья.', art:'wildforce', faction:'savages'},
+    {id:'s35', name:'Капкан', type:'spell', cost:4, trapKill:true, rarity:'rare', desc:'Уничтожает выбранного бойца соперника, независимо от его здоровья, и восстанавливает своему герою здоровье, равное стоимости уничтоженного бойца в мане. Не действует на бойцов с Чаростойкостью.', art:'trap', faction:'savages'},
     {id:'s29', name:'Ярость кабана', type:'spell', cost:2, buffAtk:2, buffHp:3, buffTrample:true, rarity:'rare', desc:'Навсегда увеличивает атаку выбранного союзного бойца на 2 и здоровье на 3, а также даёт ему эффект Топот.', art:'boarfury', faction:'savages'},
     {id:'s30', name:'Запоздалая поставка', type:'spell', cost:2, buffAtk:2, buffHp:2, drawIfAsleep:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 2. Если у него уже есть эффект Сон, в руку добавляется 1 карта из своей колоды.', art:'latedelivery', faction:'savages'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
@@ -3759,6 +3760,7 @@
     hammerwarrior: `<svg viewBox="0 0 64 64"><circle cx="26" cy="16" r="6" fill="#c9a98a"/><path d="M26 22c-8 2-12 8-12 20h20c0-8-2-14-8-20z" fill="#7a5a34" stroke="#4a3620" stroke-width="1.5"/><line x1="40" y1="44" x2="40" y2="12" stroke="#6b4a2d" stroke-width="2.5" stroke-linecap="round"/><rect x="32" y="6" width="16" height="10" rx="2" fill="#8a97a3" stroke="#4a5560" stroke-width="1.5"/></svg>`,
     carnivorousplant: `<svg viewBox="0 0 64 64"><line x1="32" y1="56" x2="32" y2="36" stroke="#4a7a3a" stroke-width="3" stroke-linecap="round"/><path d="M32 36c-14-8-18-2-14 10 6 6 14 6 14 0z" fill="#5c9c4f" stroke="#356140" stroke-width="1.5"/><path d="M32 36c14-8 18-2 14 10-6 6-14 6-14 0z" fill="#7ab868" stroke="#356140" stroke-width="1.5"/><path d="M18 38l2 4M22 34l2 4M46 38l-2 4M42 34l-2 4" stroke="#2a4a2a" stroke-width="1.2" stroke-linecap="round"/></svg>`,
     wildforce: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="38" rx="14" ry="12" fill="#c9822e" stroke="#8a5418" stroke-width="1.5"/><ellipse cx="18" cy="20" rx="5" ry="7" fill="#c9822e" stroke="#8a5418" stroke-width="1.5" transform="rotate(-20 18 20)"/><ellipse cx="30" cy="14" rx="5" ry="7" fill="#c9822e" stroke="#8a5418" stroke-width="1.5"/><ellipse cx="42" cy="16" rx="5" ry="7" fill="#c9822e" stroke="#8a5418" stroke-width="1.5" transform="rotate(15 42 16)"/><path d="M8 44l-4 4M56 44l4 4M32 54v6" stroke="#e0b93a" stroke-width="2" stroke-linecap="round"/></svg>`,
+    trap: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="46" rx="20" ry="6" fill="#3a3a3e" stroke="#1c1c1f" stroke-width="1.5"/><path d="M14 44c-4-14 4-28 16-30l2 6c-9 2-14 12-11 22z" fill="#7a7268" stroke="#4a453e" stroke-width="1.5"/><path d="M50 44c4-14-4-28-16-30l-2 6c9 2 14 12 11 22z" fill="#8a8276" stroke="#4a453e" stroke-width="1.5"/><path d="M17 42l3 5M22 39l3 6M27 37l2 7M37 37l-2 7M42 39l-3 6M47 42l-3 5" stroke="#c9c2b4" stroke-width="1.4" stroke-linecap="round"/><circle cx="32" cy="46" r="4" fill="#5c5650" stroke="#2a2620" stroke-width="1.2"/></svg>`,
     foolishsavage: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="7" fill="#c9a98a"/><circle cx="28" cy="17" r="1.3" fill="#1a1a1e"/><circle cx="36" cy="17" r="1.3" fill="#1a1a1e"/><path d="M27 22q5 3 10 0" fill="none" stroke="#1a1a1e" stroke-width="1.5"/><path d="M32 25c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#a1682f" stroke="#5c3a20" stroke-width="1.5"/><path d="M44 30l6 10-4 2-6-9z" fill="#c9a98a" stroke="#8a6d1a" stroke-width="1"/></svg>`,
     prairiearcher: `<svg viewBox="0 0 64 64"><circle cx="24" cy="16" r="6" fill="#c9a98a"/><path d="M24 22c-8 2-12 8-12 20h20c0-8-2-14-8-20z" fill="#8a5a34" stroke="#5c3a20" stroke-width="1.5"/><path d="M42 12a16 16 0 0 1 0 32" fill="none" stroke="#6b4a2d" stroke-width="2.5" stroke-linecap="round"/><line x1="42" y1="12" x2="42" y2="44" stroke="#c9ccd1" stroke-width="1"/></svg>`,
     groundsquirrel: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="10" ry="16" fill="#c9a877" stroke="#8a6d4a" stroke-width="1.5"/><circle cx="32" cy="22" r="9" fill="#c9a877" stroke="#8a6d4a" stroke-width="1.5"/><circle cx="28" cy="20" r="1.5" fill="#1a1a1e"/><circle cx="36" cy="20" r="1.5" fill="#1a1a1e"/><ellipse cx="32" cy="25" rx="1.2" ry="1.2" fill="#5c4536"/><path d="M22 44c-4 4-4 10 0 12" fill="none" stroke="#8a6d4a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
@@ -4452,6 +4454,9 @@
       } else if(card.bounceCellAndNeighbor){
         el.hint.textContent = 'Выбери вражескую ячейку — боец в ней и в случайной соседней ячейке вернутся сопернику в руку.';
         highlightEnemyCellsForSpell();
+      } else if(card.trapKill){
+        el.hint.textContent = 'Выбери вражеского бойца — Капкан уничтожит его и восстановит тебе здоровья по его стоимости в мане.';
+        highlightEnemyUnitsForTrapKill();
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
@@ -4538,12 +4543,27 @@
   }
   function castEnemyCellSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !card.bounceCellAndNeighbor) return;
+    if(!card || !(card.bounceCellAndNeighbor || card.trapKill)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
     pvpSendAction({ type:'cast_spell', uid: card.uid, lane: laneIdx, depth: depthIdx });
     renderAll();
+  }
+
+  // Капкан: unlike Небесный вихрь (any enemy cell, empty or occupied),
+  // this one requires an actual enemy unit to be there — so only
+  // currently-occupied enemy slots get a click handler.
+  function highlightEnemyUnitsForTrapKill(){
+    const unitEls = el.battlefield.querySelectorAll('.unit-card.theirs');
+    unitEls.forEach(u=>{
+      u.style.cursor='pointer';
+      u.style.outline = '2px solid var(--brass)';
+      u.onclick = (ev)=>{
+        ev.stopPropagation();
+        castEnemyCellSpell(parseInt(u.dataset.lane,10), parseInt(u.dataset.depth,10));
+      };
+    });
   }
 
   function pvpSendAction(obj){
@@ -5105,6 +5125,30 @@
         }
         setTimeout(()=>{ renderAll(); done(); }, 400);
       }, 350);
+      return;
+    }
+    if(ev.kind==='trapKill'){
+      // Капкан: destroys the specifically targeted enemy unit outright,
+      // regardless of its remaining hp. Чаростойкость/Щит blocks it
+      // outright (struck harmlessly, no redirect), same as every other
+      // targeted spell — the hero heal (if any) plays via its own
+      // separate 'heroHeal' event right after this one.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnLightningStrike(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» захлопывается на пустой ячейке.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          log(`«${label}» уничтожает ${unit.name}.`);
+          if(targetEl) targetEl.classList.add('unit-dying');
+          board[ev.laneIdx][ev.targetDepth] = null;
+        }
+        setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+      }, 300);
       return;
     }
     if(ev.kind==='randomBlind'){
@@ -6904,6 +6948,7 @@
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.pineForest) return `+2-3 \u0431\u043e\u0439\u0446\u0430`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
+    if(card.trapKill) return `Уничтожает бойца · +♥ герою по его стоимости`;
     if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike || card.buffTrample || card.buffLegacy || card.buffSpellResist) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.buffTrample?' / 🐾':''}${card.buffLegacy?' / 🌱'+card.buffLegacy:''}${card.buffSpellResist?' / 🔮':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ герою':''}${card.drawIfArmored?' / 🃏 если есть броня':''}${card.drawIfAsleep?' / 🃏 если есть Сон':''}`;
     return '';
   }
@@ -6926,6 +6971,7 @@
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     if(card.pineForest) return `призывает Соснового отшельника на выбранную и на случайную клетку, с 60% шансом призвать ещё одного`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца, +${card.healAmount} HP герою`;
+    if(card.trapKill) return `уничтожает выбранного вражеского бойца и восстанавливает своему герою здоровье, равное его стоимости в мане`;
     return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.buffTrample?' / 🐾 Топот':''}${card.buffLegacy?' / 🌱 Наследие '+card.buffLegacy:''}${card.buffSpellResist?' / 🔮 Чаростойкость':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ своему герою':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''}${card.drawIfAsleep?' / 🃏 карта, если есть эффект Сон':''} навсегда`;
   }
 
