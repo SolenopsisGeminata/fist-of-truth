@@ -2727,6 +2727,7 @@
     {id:'c113', name:'Кактус прерий', type:'creature', cost:2, atk:1, hp:4, defender:true, chanceDrawOnDeath:0.5, rarity:'rare', desc:'Несёт эффект Защитник. При гибели с вероятностью 50% добавляет 1 карту в руку игрока из его колоды.', art:'prairiecactus', faction:'savages'},
     {id:'c114', name:'Горный воин', type:'creature', cost:2, atk:2, hp:6, sleep:true, mountainWarriorBuff:true, rarity:'rare', desc:'Несёт эффект Сон: не может атаковать в раунде своего появления на поле боя, начинает атаковать со следующего раунда. В конце хода, если получил урон в этом раунде, навсегда увеличивает свою атаку на 1 и здоровье на 2.', art:'mountainwarrior', faction:'savages'},
     {id:'c115', name:'Яростный шаман', type:'creature', cost:2, atk:4, hp:1, manaAura:1, explodeOnDeath:true, rarity:'epic', desc:'Несёт эффект Мана 1 — пока жив и стоит на поле боя, увеличивает запас маны своего героя на 1. При гибели (от чего угодно) наносит 3 урона своему же герою.', art:'furiousshaman', faction:'savages'},
+    {id:'c116', name:'Ящер-воин', type:'creature', cost:2, atk:3, hp:2, lizardWarriorShot:true, rarity:'epic', desc:'При восстановлении здоровья своего героя стреляет копьём в случайного вражеского бойца, нанося ему урон, равный своей текущей атаке.', art:'lizardwarrior', faction:'savages'},
     {id:'s29', name:'Ярость кабана', type:'spell', cost:2, buffAtk:2, buffHp:3, buffTrample:true, rarity:'rare', desc:'Навсегда увеличивает атаку выбранного союзного бойца на 2 и здоровье на 3, а также даёт ему эффект Топот.', art:'boarfury', faction:'savages'},
     {id:'s30', name:'Запоздалая поставка', type:'spell', cost:2, buffAtk:2, buffHp:2, drawIfAsleep:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 2. Если у него уже есть эффект Сон, в руку добавляется 1 карта из своей колоды.', art:'latedelivery', faction:'savages'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
@@ -3694,6 +3695,7 @@
     spearman: `<svg viewBox="0 0 64 64"><circle cx="26" cy="16" r="6" fill="#c9a98a"/><path d="M26 22c-8 2-12 8-12 20h20c0-8-2-14-8-20z" fill="#8a5a34" stroke="#5c3a20" stroke-width="1.5"/><line x1="42" y1="10" x2="30" y2="48" stroke="#6b4a2d" stroke-width="2.5" stroke-linecap="round"/><path d="M42 10l6-4 2 6-6 4z" fill="#c9ccd1" stroke="#8a97a3" stroke-width="1"/></svg>`,
     prairieshaman: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="6" fill="#c9a98a"/><path d="M20 12l4 8M44 12l-4 8M32 8l0 8" stroke="#8a6d1a" stroke-width="2" stroke-linecap="round"/><path d="M32 22c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#5c7a5c" stroke="#3a5c3a" stroke-width="1.5"/><circle cx="32" cy="34" r="4" fill="#c9d4e0" opacity=".8"/></svg>`,
     furiousshaman: `<svg viewBox="0 0 64 64"><circle cx="32" cy="16" r="6" fill="#c9a98a"/><path d="M20 12l4 8M44 12l-4 8M32 8l0 8" stroke="#c23b2e" stroke-width="2" stroke-linecap="round"/><path d="M32 22c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#7a3a2c" stroke="#4a2018" stroke-width="1.5"/><circle cx="32" cy="34" r="4" fill="#e0524a" opacity=".85"/></svg>`,
+    lizardwarrior: `<svg viewBox="0 0 64 64"><ellipse cx="26" cy="36" rx="14" ry="8" fill="#6a8a4a" stroke="#3a5c2a" stroke-width="1.5"/><circle cx="40" cy="30" r="6" fill="#6a8a4a" stroke="#3a5c2a" stroke-width="1.5"/><circle cx="42" cy="28" r="1.3" fill="#1a1a1e"/><path d="M14 40l-6 4M14 44l-6 2" stroke="#3a5c2a" stroke-width="1.5" stroke-linecap="round"/><line x1="20" y1="48" x2="46" y2="14" stroke="#6b4a2d" stroke-width="2.5" stroke-linecap="round"/><path d="M46 14l6-4 2 6-6 4z" fill="#c9ccd1" stroke="#8a97a3" stroke-width="1"/></svg>`,
     foolishsavage: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="7" fill="#c9a98a"/><circle cx="28" cy="17" r="1.3" fill="#1a1a1e"/><circle cx="36" cy="17" r="1.3" fill="#1a1a1e"/><path d="M27 22q5 3 10 0" fill="none" stroke="#1a1a1e" stroke-width="1.5"/><path d="M32 25c-9 2-14 9-14 22h28c0-13-5-20-14-22z" fill="#a1682f" stroke="#5c3a20" stroke-width="1.5"/><path d="M44 30l6 10-4 2-6-9z" fill="#c9a98a" stroke="#8a6d1a" stroke-width="1"/></svg>`,
     prairiearcher: `<svg viewBox="0 0 64 64"><circle cx="24" cy="16" r="6" fill="#c9a98a"/><path d="M24 22c-8 2-12 8-12 20h20c0-8-2-14-8-20z" fill="#8a5a34" stroke="#5c3a20" stroke-width="1.5"/><path d="M42 12a16 16 0 0 1 0 32" fill="none" stroke="#6b4a2d" stroke-width="2.5" stroke-linecap="round"/><line x1="42" y1="12" x2="42" y2="44" stroke="#c9ccd1" stroke-width="1"/></svg>`,
     groundsquirrel: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="10" ry="16" fill="#c9a877" stroke="#8a6d4a" stroke-width="1.5"/><circle cx="32" cy="22" r="9" fill="#c9a877" stroke="#8a6d4a" stroke-width="1.5"/><circle cx="28" cy="20" r="1.5" fill="#1a1a1e"/><circle cx="36" cy="20" r="1.5" fill="#1a1a1e"/><ellipse cx="32" cy="25" rx="1.2" ry="1.2" fill="#5c4536"/><path d="M22 44c-4 4-4 10 0 12" fill="none" stroke="#8a6d4a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
@@ -5278,6 +5280,13 @@
     <path d="M3 3l6 3-6 3z" fill="#5c4536"/>
   </svg>`;
 
+  // Ящер-воин's thrown spear — same brown-shaft/grey-head weapon style
+  // already used for Воин с копьем's own held spear.
+  const LIZARD_SPEAR_SVG = `<svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg">
+    <line x1="3" y1="6" x2="30" y2="6" stroke="#6b4a2d" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M30 1l9 5-9 5z" fill="#c9ccd1" stroke="#8a97a3" stroke-width="1"/>
+  </svg>`;
+
   // Имперская пушка's cannonball — round, so flight-angle rotation
   // (which flyProjectileToHero always applies) never looks wrong on it.
   const CANNONBALL_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -5487,16 +5496,27 @@
 
   // Осадная башня: the exact same crossbow-bolt visual and timing as
   // Арбалетчик's heroShot above, but the bolt flies at a random enemy
-  // UNIT's cell instead of the hero.
+  // UNIT's cell instead of the hero. Now also shared with Ящер-воин's
+  // own on-heal trigger — the shooter is still alive on the board at
+  // this point (unlike a death-triggered event), so its name comes
+  // straight from board state rather than being hardcoded, phrased
+  // gender-neutrally ("боец «X»") since the two don't share a gender.
   function playUnitShotEvent(ev, done){
     const shooterMine = ev.side === state.myUsername;
     const targetMine = ev.targetSide === state.myUsername;
+    const shooterBoard = shooterMine ? state.playerBoard : state.enemyBoard;
+    const shooterUnit = shooterBoard[ev.laneIdx] && shooterBoard[ev.laneIdx][ev.depthIdx];
+    const shooterName = shooterUnit ? shooterUnit.name : 'Осадная башня';
     const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
     const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
     const targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
     const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
-    log(`${shooterMine?'Твоя':'Осадная башня соперника'} Осадная башня стреляет по ${targetUnit?targetUnit.name:'вражескому бойцу'}, нанося ${ev.amount}.`);
-    flyProjectileToHero(sourceEl, targetEl, CROSSBOW_BOLT_SVG, 'crossbow-bolt', 500, ()=>{
+    log(`${shooterMine?'Твой':'Соперника'} боец «${shooterName}» стреляет по ${targetUnit?targetUnit.name:'вражескому бойцу'}, нанося ${ev.amount}.`);
+    // .crossbow-bolt is purely generic flying-projectile sizing/layout
+    // CSS (no crossbow-specific look baked in), so the spear reuses it
+    // as-is — only the SVG content itself differs.
+    const projectileSvg = (shooterUnit && shooterUnit.lizardWarriorShot) ? LIZARD_SPEAR_SVG : CROSSBOW_BOLT_SVG;
+    flyProjectileToHero(sourceEl, targetEl, projectileSvg, 'crossbow-bolt', 500, ()=>{
       if(targetUnit){
         targetUnit.hp -= ev.amount;
         if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
