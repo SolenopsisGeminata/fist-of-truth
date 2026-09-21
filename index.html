@@ -1645,6 +1645,23 @@
     85%{transform:translateY(0) scale(1.1);}
     100%{opacity:1; transform:translateY(0) scale(1);}
   }
+  .firewave-strike{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    z-index:12;
+    animation: firewave-pass .4s ease-out;
+  }
+  .firewave-strike svg{width:70%; height:70%;}
+  @keyframes firewave-pass{
+    0%{opacity:0; transform:scaleX(.3) translateX(-25%);}
+    30%{opacity:1; transform:scaleX(1) translateX(0);}
+    75%{opacity:1;}
+    100%{opacity:0;}
+  }
   .reina-flare{
     position:absolute;
     inset:0;
@@ -2787,6 +2804,7 @@
     {id:'c150', name:'Циклоп', type:'creature', cost:7, atk:7, hp:15, sleep:true, cyclopsThrow:true, rarity:'epic', desc:'Несёт эффект Сон: не может атаковать в раунде своего появления на поле боя, начинает атаковать со следующего раунда. Перед своей атакой бросает большой булыжник в случайную ячейку противоположного горизонтального ряда соперника, нанося фиксированный урон 7. Если там есть боец — урон получает только он; если ячейка пуста — урон достаётся герою соперника. Не действует на бойцов с Чаростойкостью.', art:'cyclops', faction:'savages'},
     {id:'c151', name:'Рума, Шаман Пустоши', type:'creature', cost:7, atk:3, hp:10, rumaBuff:true, rarity:'legendary', desc:'При появлении на поле боя, а также в конце каждого хода увеличивает атаку и здоровье случайного другого союзника на 5 и даёт ему эффект Топот.', art:'ruma', faction:'savages'},
     {id:'c152', name:'Дракон прерий', type:'creature', cost:8, atk:7, hp:21, prairieDragonSpit:true, rarity:'epic', desc:'При появлении на поле боя, а также при восстановлении здоровья своего героя выплёвывает 4 огненных шара на случайные ячейки вражеского поля боя, каждый из которых наносит 2 урона. Если в ячейке есть боец — урон получает он, если ячейка пуста — урон достаётся герою соперника. Не действует на бойцов с Чаростойкостью.', art:'prairiedragon', faction:'savages'},
+    {id:'c153', name:'Солнечный дракон', type:'creature', cost:9, atk:20, hp:20, solarDragonWave:true, rarity:'legendary', desc:'Перед своей атакой обдаёт волной огня всех вражеских бойцов в противоположном горизонтальном ряду, нанося каждому 5 урона — волна пролетает над каждым бойцом в ряду и исчезает у дальнего края вражеского поля боя. Не действует на бойцов с Чаростойкостью.', art:'sundragon', faction:'savages'},
     {id:'s29', name:'Ярость кабана', type:'spell', cost:2, buffAtk:2, buffHp:3, buffTrample:true, rarity:'rare', desc:'Навсегда увеличивает атаку выбранного союзного бойца на 2 и здоровье на 3, а также даёт ему эффект Топот.', art:'boarfury', faction:'savages'},
     {id:'s30', name:'Запоздалая поставка', type:'spell', cost:2, buffAtk:2, buffHp:2, drawIfAsleep:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 2. Если у него уже есть эффект Сон, в руку добавляется 1 карта из своей колоды.', art:'latedelivery', faction:'savages'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
@@ -3794,6 +3812,7 @@
     cyclops: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="18" rx="9" ry="8" fill="#8a8478" stroke="#4a4640" stroke-width="1.5"/><circle cx="32" cy="18" r="4.5" fill="#e8e0d0" stroke="#2a2620" stroke-width="1.2"/><circle cx="32" cy="18" r="2" fill="#1a1a1e"/><path d="M24 26c-10 3-16 12-16 30h48c0-18-6-27-16-30-5 4-11 4-16 0z" fill="#6b6558" stroke="#3a3630" stroke-width="1.5"/><path d="M22 40l4 6M46 40l-4 6" stroke="#4a453c" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     ruma: `<svg viewBox="0 0 64 64"><circle cx="30" cy="16" r="6" fill="#c9a98a"/><path d="M24 12q-3-6 2-8M36 12q3-6-2-8" fill="none" stroke="#3a251f" stroke-width="1.5" stroke-linecap="round"/><path d="M30 22c-9 2-13 9-13 21h26c0-12-4-19-13-21z" fill="#b89060" stroke="#6b4a2d" stroke-width="1.5"/><line x1="44" y1="18" x2="48" y2="50" stroke="#8a6238" stroke-width="2.5" stroke-linecap="round"/><circle cx="45" cy="15" r="4" fill="#e8e0d0" stroke="#8a8478" stroke-width="1.2"/><circle cx="43.5" cy="14" r=".8" fill="#1a1a1e"/><circle cx="46.5" cy="14" r=".8" fill="#1a1a1e"/></svg>`,
     prairiedragon: `<svg viewBox="0 0 64 64"><path d="M8 34c2-10 10-18 22-18 8 0 14 4 18 10l8-2-2 8 6 2-6 6 2 6-8-2c-3 6-10 10-18 10-12 0-20-8-22-20z" fill="#7a5c34" stroke="#4a3620" stroke-width="1.5"/><circle cx="20" cy="28" r="2" fill="#1a1a1e"/><path d="M14 16l3-6M22 12l2-7M30 12l1-7" stroke="#4a3620" stroke-width="2" stroke-linecap="round"/><path d="M52 40c3 2 4 6 2 9" fill="none" stroke="#e0622e" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    sundragon: `<svg viewBox="0 0 64 64"><path d="M32 2l3 8-3 4-3-4z" fill="#e0b93a"/><path d="M12 8l5 7-5 3-4-8zM52 8l-5 7 5 3 4-8z" fill="#e0b93a"/><path d="M8 34c2-10 10-18 22-18 8 0 14 4 18 10l8-2-2 8 6 2-6 6 2 6-8-2c-3 6-10 10-18 10-12 0-20-8-22-20z" fill="#c9822e" stroke="#8a5418" stroke-width="1.5"/><circle cx="20" cy="28" r="2" fill="#4a1610"/><path d="M52 40c3 2 4 6 2 9" fill="none" stroke="#f5b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     trap: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="46" rx="20" ry="6" fill="#3a3a3e" stroke="#1c1c1f" stroke-width="1.5"/><path d="M14 44c-4-14 4-28 16-30l2 6c-9 2-14 12-11 22z" fill="#7a7268" stroke="#4a453e" stroke-width="1.5"/><path d="M50 44c4-14-4-28-16-30l-2 6c9 2 14 12 11 22z" fill="#8a8276" stroke="#4a453e" stroke-width="1.5"/><path d="M17 42l3 5M22 39l3 6M27 37l2 7M37 37l-2 7M42 39l-3 6M47 42l-3 5" stroke="#c9c2b4" stroke-width="1.4" stroke-linecap="round"/><circle cx="32" cy="46" r="4" fill="#5c5650" stroke="#2a2620" stroke-width="1.2"/></svg>`,
     mammoth: `<svg viewBox="0 0 64 64"><ellipse cx="34" cy="34" rx="20" ry="14" fill="#7a6a52" stroke="#4a3d2c" stroke-width="1.5"/><ellipse cx="16" cy="26" rx="7" ry="9" fill="#6b5c46" stroke="#4a3d2c" stroke-width="1.5"/><circle cx="15" cy="24" r="1.6" fill="#1a1a1e"/><path d="M13 32q-8 6-6 18" fill="none" stroke="#7a6a52" stroke-width="6" stroke-linecap="round"/><path d="M10 40q-9 3-7 13" fill="none" stroke="#eee6d6" stroke-width="3" stroke-linecap="round"/><path d="M12 44q6 6 1 14" fill="none" stroke="#eee6d6" stroke-width="3" stroke-linecap="round"/><path d="M22 48v9M32 50v9M44 48v9M50 44v9" stroke="#4a3d2c" stroke-width="4" stroke-linecap="round"/></svg>`,
     tuskgirl: `<svg viewBox="0 0 64 64"><circle cx="30" cy="16" r="6" fill="#c9a98a"/><path d="M30 22c-8 2-12 8-12 20h24c0-12-4-18-12-20z" fill="#9c5a3a" stroke="#5c3620" stroke-width="1.5"/><path d="M38 18q14-6 16 8-10 4-16-2z" fill="#eee6d6" stroke="#a89878" stroke-width="1.5"/></svg>`,
@@ -4749,6 +4768,22 @@
     setTimeout(()=>{ wrap.remove(); }, 450);
   }
 
+  // Солнечный дракон: a horizontal burst of flame sweeping across the
+  // cell — one of these plays per depth position in his mirrored lane,
+  // in order, so in sequence they read as one wave passing through.
+  const FIRE_WAVE_SVG = `<svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 38c10-20 20-30 30-20s10 20 20 10 20-25 30-15" fill="none" stroke="#e0622e" stroke-width="9" stroke-linecap="round" opacity=".9"/>
+    <path d="M10 42c8-15 16-22 24-14s10 16 18 8 16-18 24-10" fill="none" stroke="#f5b93a" stroke-width="4.5" stroke-linecap="round"/>
+  </svg>`;
+  function spawnFireWave(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'firewave-strike';
+    wrap.innerHTML = FIRE_WAVE_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 400);
+  }
+
   // Рейна Ослепительная: a small light sphere with bright rays appears
   // right where she's placed, holds a moment, then fades away — the
   // one-shot visual for her enemies-can't-attack-this-round battlecry.
@@ -5006,6 +5041,7 @@
       else if(ev.type==='axeThrow') playAxeThrowEvent(ev, next);
       else if(ev.type==='boulderThrow') playBoulderThrowEvent(ev, next);
       else if(ev.type==='dragonFireball') playDragonFireballEvent(ev, next);
+      else if(ev.type==='dragonWave') playDragonWaveEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
       else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
@@ -5960,6 +5996,41 @@
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 900 : 500);
     });
+  }
+
+  // Солнечный дракон: fires right before his own attack — one event per
+  // depth position in his mirrored enemy lane, played in sequence so
+  // together they read as one wave of flame sweeping across the row and
+  // vanishing at the far edge. Same "unit hit / empty cell struck
+  // harmlessly / Чаростойкость blocks outright, never the hero" shape as
+  // Гнев небес's own wrath spell, just via his own 'dragonWave' event
+  // (fire-wave visual) and fired as a creature's pre-attack ability
+  // instead of a cast spell. No projectile flight — like the wrath
+  // spell's lightning/rockfall, the wave just strikes the target cell
+  // directly.
+  function playDragonWaveEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = mine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard.flat ? sourceBoard.flat().find(u=>u&&u.uid===ev.sourceUid) : null;
+    const label = sourceUnit ? sourceUnit.name : 'Солнечный дракон';
+    const board = targetMine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+    const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+    spawnFireWave(targetEl);
+    setTimeout(()=>{
+      if(ev.empty){
+        log(`«${label}» обдаёт волной огня пустую ячейку.`);
+      } else if(ev.resisted){
+        log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+      } else if(unit){
+        unit.hp -= ev.amount;
+        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+        log(`«${label}» обдаёт волной огня ${unit.name}, нанося ${ev.amount}.`);
+        if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 400);
+    }, 250);
   }
 
   // Мушкетер: fires right before his own attack in a wave, whenever his
