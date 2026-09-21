@@ -2818,6 +2818,7 @@
     {id:'c157', name:'Чертенок', type:'creature', cost:2, atk:1, hp:1, impAtkGrowOnHeroHit:1, rarity:'common', desc:'При попадании его атакой по герою соперника навсегда увеличивает свою атаку на 1.', art:'littleimp', faction:'inferno'},
     {id:'c158', name:'Скелет-воин инферно', type:'creature', cost:2, atk:2, hp:2, skeletonWeaponThrowOnDeath:true, rarity:'common', desc:'При смерти метает своё оружие (короткий меч) в героя соперника, нанося урон, равный своей текущей атаке.', art:'infernoskeleton', faction:'inferno'},
     {id:'c159', name:'Яростный бес', type:'creature', cost:2, atk:3, hp:1, impAtkGrowOnHeroHit:2, rarity:'rare', desc:'При попадании его атакой по герою соперника навсегда увеличивает свою атаку на 2.', art:'furiousimp', faction:'inferno'},
+    {id:'c160', name:'Горящий бес', type:'creature', cost:2, atk:3, hp:2, trample:true, trampleDiscountOnPlay:true, rarity:'rare', desc:'Несёт эффект Топот. При появлении на поле боя уменьшает стоимость случайной карты с эффектом Топот в руке игрока на 1, если такая карта там есть.', art:'stompingimp', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3904,7 +3905,8 @@
     burningimp: `<svg viewBox="0 0 64 64"><path d="M22 14l6 10-10-2zM42 14l-6 10 10-2z" fill="#7a1815"/><circle cx="32" cy="28" r="14" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="26" r="2.5" fill="#241a16"/><circle cx="37" cy="26" r="2.5" fill="#241a16"/><path d="M27 34c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M20 40c-4 6-4 14 2 18 2-4 4-6 6-6-1 4 1 8 4 10 3-2 5-6 4-10 2 0 4 2 6 6 6-4 6-12 2-18-4 4-8 6-12 6s-8-2-12-6z" fill="#e0622e" stroke="#7a1815" stroke-width="1.2"/></svg>`,
     littleimp: `<svg viewBox="0 0 64 64"><path d="M20 20l8 8-12 2zM44 20l-8 8 12 2z" fill="#7a1815"/><circle cx="32" cy="32" r="16" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="26" cy="30" r="2.5" fill="#241a16"/><circle cx="38" cy="30" r="2.5" fill="#241a16"/><path d="M24 38c3 4 13 4 16 0" stroke="#241a16" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M18 46c2 6 8 10 14 10s12-4 14-10" stroke="#7a1815" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
     infernoskeleton: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><circle cx="26" cy="16" r="2" fill="#e04a3f"/><circle cx="34" cy="16" r="2" fill="#e04a3f"/><path d="M25 22h10M28 22v3M32 22v3" stroke="#8a8378" stroke-width="1.2"/><rect x="25" y="28" width="10" height="15" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><path d="M25 32h10M25 38h10" stroke="#8a8378" stroke-width="1"/><path d="M17 50l8-7M43 50l-8-7" stroke="#e9e0cf" stroke-width="4" stroke-linecap="round"/><path d="M40 18l12 10-4 5-10-9z" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/><rect x="49" y="16" width="4" height="8" fill="#7a1815"/></svg>`,
-    furiousimp: `<svg viewBox="0 0 64 64"><path d="M18 18l10 6-14 4zM46 18l-10 6 14 4z" fill="#7a1815"/><circle cx="32" cy="32" r="16" fill="#e04a3f" stroke="#3a0f0c" stroke-width="1.5"/><path d="M23 26l6 4M41 26l-6 4" stroke="#241a16" stroke-width="2" stroke-linecap="round"/><circle cx="26" cy="31" r="2.5" fill="#ffe066"/><circle cx="38" cy="31" r="2.5" fill="#ffe066"/><path d="M23 40c4-3 14-3 18 0" stroke="#241a16" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M16 48c2 6 9 10 16 10s14-4 16-10" stroke="#7a1815" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+    furiousimp: `<svg viewBox="0 0 64 64"><path d="M18 18l10 6-14 4zM46 18l-10 6 14 4z" fill="#7a1815"/><circle cx="32" cy="32" r="16" fill="#e04a3f" stroke="#3a0f0c" stroke-width="1.5"/><path d="M23 26l6 4M41 26l-6 4" stroke="#241a16" stroke-width="2" stroke-linecap="round"/><circle cx="26" cy="31" r="2.5" fill="#ffe066"/><circle cx="38" cy="31" r="2.5" fill="#ffe066"/><path d="M23 40c4-3 14-3 18 0" stroke="#241a16" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M16 48c2 6 9 10 16 10s14-4 16-10" stroke="#7a1815" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+    stompingimp: `<svg viewBox="0 0 64 64"><path d="M24 12l6 8-10 0zM40 12l-6 8 10 0z" fill="#7a1815"/><circle cx="32" cy="26" r="12" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="24" r="2" fill="#241a16"/><circle cx="37" cy="24" r="2" fill="#241a16"/><path d="M27 31c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M22 36h20v10a10 10 0 0 1-20 0z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M18 52l6-6 4 4-8 8zM46 52l-6-6-4 4 8 8z" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/><path d="M18 60l6-4M46 60l-6-4" stroke="#e0b93a" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4140,7 +4142,15 @@
   }
   function hydrateHandCard(c){
     const card = cardDefById(c.id);
-    return card ? { ...card, uid:c.uid } : { id:c.id, uid:c.uid, name:c.id, type:'creature', cost:0, atk:0, hp:1, desc:'' };
+    if(!card) return { id:c.id, uid:c.uid, name:c.id, type:'creature', cost:0, atk:0, hp:1, desc:'' };
+    // Горящий бес: a hand card can carry its own per-instance discount
+    // (server-assigned, never below 0) on top of its static cost —
+    // every place in the client that reads card.cost already reads it
+    // off a hydrated hand card like this one, so applying the discount
+    // right here is the only change needed for affordability checks,
+    // the mana badge, and actually placing it for less.
+    const discount = c.discount || 0;
+    return { ...card, uid:c.uid, cost: Math.max(0, card.cost - discount), baseCost: card.cost, discount };
   }
 
   // Sets up the (now fully network-driven) match shell for either mode —
@@ -4412,7 +4422,7 @@
         ? `<div class="cstats"><span class="stat-atk">⚔ ${card.atk}</span><span class="stat-hp">♥ ${card.hp}</span>${card.armor?`<span class="stat-armor">🛡 ${card.armor}</span>`:''}${card.lifesteal?`<span class="stat-lifesteal" title="Исцеляет героя-хозяина на значение атаки при ударе по герою соперника">🩸</span>`:''}${card.synergy?`<span class="stat-synergy" title="Атака растёт на ${card.synergy} за каждого союзника по соседству (сверху, снизу, слева, справа)">🔗 ${card.synergy}</span>`:''}${card.dawnBuff?`<span class="stat-dawnbuff" title="Перед атакой даёт +1/+1 всем союзникам, включая себя">☀️</span>`:''}${card.firstStrike?`<span class="stat-firststrike" title="Первый удар: атакует раньше всех остальных бойцов на поле боя">⚡</span>`:''}${card.defender?`<span class="stat-defender" title="Защитник: не может атаковать в бою">🛑</span>`:''}${card.spellResist?`<span class="stat-spellresist" title="Чаростойкость: не подвержен вражеским заклинаниям и урону от механик конца хода">🔮</span>`:''}${card.trample?`<span class="stat-trample" title="Топот: избыточный урон переходит следующему бойцу в ряду, а затем герою">🐾</span>`:''}${card.doubleStrike?`<span class="stat-doublestrike" title="Двойной удар: атакует дважды за один обмен ударами">⚔️⚔️</span>`:''}${card.doubleHeal?`<span class="stat-doubleheal" title="Двойное омоложение: пока жива, всё исцеление героя удваивается">💞</span>`:''}${card.healTrigger?`<span class="stat-healtrigger" title="При любом исцелении героя даёт случайному союзнику +1 атаки и +3 здоровья">🕊️</span>`:''}${card.legacyValue?`<span class="stat-legacy" title="Наследие ${card.legacyValue}: при смерти передаёт случайному соседнему союзнику +${card.legacyValue} атаки и здоровья, а также сам эффект Наследие">🌱${card.legacyValue}</span>`:''}${card.counterattack?`<span class="stat-counterattack" title="Контратака: при получении урона наносит атакующему урон, равный своей атаке">⚔️↩️</span>`:''}${card.rockEffect?`<span class="stat-rock" title="Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума">🗿</span>`:''}${card.insightEffect?`<span class="stat-insight" title="Понимание ${card.insightEffect}: при розыгрыше раскрывает столько карт из руки соперника лицевой стороной вверх">👁️${card.insightEffect}</span>`:''}${card.shieldEffect?`<span class="stat-shield" title="Щит: невосприимчив ко всем баффам, дебаффам, заклинаниям и механикам других юнитов, направленным против этого юнита">🛡️✨</span>`:''}${card.manaAura?`<span class="stat-manaaura" title="Мана ${card.manaAura}: пока жив и стоит на поле боя, увеличивает запас маны своего героя на ${card.manaAura}">💠${card.manaAura}</span>`:''}${card.sleep?`<span class="stat-sleep" title="Сон: не может атаковать в раунде своего появления на поле боя, начинает атаковать со следующего раунда">💤</span>`:''}</div>`
         : `<div class="cstats"><span style="color:var(--brass)">${spellStatsText(card)}</span></div>`;
       div.innerHTML = `
-        <div class="cost">${card.cost}</div>
+        <div class="cost" title="${card.discount?`Скидка −${card.discount} от эффекта на поле боя (было ${card.baseCost})`:''}">${card.cost}</div>
         <div class="card-art">${cardArtWithFaction(card)}</div>
         <div>
           <div class="cname">${card.name}</div>
@@ -5062,6 +5072,7 @@
       else if(ev.type==='dragonWave') playDragonWaveEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='fireImpThrow') playFireImpThrowEvent(ev, next);
+      else if(ev.type==='trampleDiscount') playTrampleDiscountEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
       else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
       else if(ev.type==='drunkenSelfHit') playDrunkenSelfHitEvent(ev, next);
@@ -6168,6 +6179,29 @@
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
     });
+  }
+
+  // Горящий бес (the new one): on play, discounts a random Топот card
+  // still in its OWNER's own hand by 1 mana. Deliberately carries no
+  // card identity in the event at all — hand contents are private, so
+  // even the log stays generic ("a card", never naming it), matching
+  // every other hand-privacy-sensitive event in this game. The actual
+  // discount already landed on the hand entry server-side by the time
+  // this fires; hydrateHandCard picks it up automatically on the next
+  // renderAll(), showing up as a lower cost badge on whichever card it
+  // hit (for the owner's own hand only, naturally invisible to the
+  // opponent since only hand COUNTS are ever sent for the other side).
+  function playTrampleDiscountEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'Горящий бес';
+    if(ev.applied){
+      log(`${mine?'Твой':'Соперника'} «${sourceName}» находит в ${mine?'твоей':'его'} руке карту с эффектом Топот и снижает её стоимость на 1.`);
+    } else {
+      log(`${mine?'Твой':'Соперника'} «${sourceName}» ищет в ${mine?'твоей':'его'} руке карту с эффектом Топот, но не находит.`);
+    }
+    setTimeout(()=>{ renderAll(); done(); }, 500);
   }
 
   // Мастер сюрикенов: the shuriken bounces from wherever it last was
