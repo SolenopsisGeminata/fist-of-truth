@@ -2814,7 +2814,8 @@
     {id:'c154', name:'Линь, Священный клинок', type:'creature', cost:3, atk:3, hp:3, spellResist:true, linSwapOnPlay:true, linLegacyDoubleStrike:true, rarity:'legendary', desc:'Несёт эффект Чаростойкость. При появлении на поле боя меняется местами со случайным соседним союзником. При получении эффекта Наследие дополнительно получает эффект Двойной удар — эффекты Двойного удара накапливаются: боец с несколькими такими эффектами бьёт подряд на 1 раз больше, чем у него эффектов.', art:'linsacredblade', faction:'zen'},
     {id:'c155', name:'Страж реки Стикс', type:'creature', cost:1, atk:3, hp:2, styxGuardSelfHit:true, rarity:'rare', desc:'В начале каждого раунда, если в этом раунде игрок пожертвовал карту, наносит 2 урона своему герою.', art:'styxguard', faction:'inferno'},
     {id:'s37', name:'Молния', type:'spell', cost:1, lightningStrike:true, lightningDmg:3, rarity:'rare', desc:'Наносит 3 урона бойцу и герою соперника в выбранной вражеской ячейке одновременно. Если ячейка пуста, урон достаётся только герою. Не действует на бойца с Чаростойкостью — герой при этом всё равно получает урон.', art:'infernobolt', faction:'inferno'},
-    {id:'c156', name:'Горящий бес', type:'creature', cost:2, atk:2, hp:2, fireImpThrowOnPlay:2, rarity:'common', desc:'При появлении на поле боя метает огненный шар в первого стоящего бойца соперника в противоположном горизонтальном ряду, нанося ему 2 урона. Если в противоположном ряду нет бойцов соперника, метание не срабатывает.', art:'burningimp', faction:'inferno'},
+    {id:'c156', name:'Огненный бес', type:'creature', cost:2, atk:2, hp:2, fireImpThrowOnPlay:2, rarity:'common', desc:'При появлении на поле боя метает огненный шар в первого стоящего бойца соперника в противоположном горизонтальном ряду, нанося ему 2 урона. Если в противоположном ряду нет бойцов соперника, метание не срабатывает.', art:'burningimp', faction:'inferno'},
+    {id:'c157', name:'Чертенок', type:'creature', cost:2, atk:1, hp:1, impAtkGrowOnHeroHit:true, rarity:'common', desc:'При попадании его атакой по герою соперника навсегда увеличивает свою атаку на 1.', art:'littleimp', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3898,7 +3899,8 @@
     linsacredblade: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="21" fill="none" stroke="#4f8a5b" stroke-width="2" opacity=".55"/><path d="M32 5l4 33h-8z" fill="#e9e0cf" stroke="#8fa3ad" stroke-width="1.5"/><path d="M32 5l1.5 20h-3z" fill="#ffffff" opacity=".6"/><rect x="29" y="38" width="6" height="4" fill="#e0b93a"/><rect x="21" y="42" width="22" height="5" rx="2" fill="#4f8a5b" stroke="#2f5a38" stroke-width="1.5"/><rect x="30" y="47" width="4" height="12" fill="#5c4536" stroke="#3a2c22" stroke-width="1"/><circle cx="32" cy="59" r="3" fill="#e0b93a"/></svg>`,
     styxguard: `<svg viewBox="0 0 64 64"><path d="M4 46c8 4 14 5 28 5s20-1 28-5" fill="none" stroke="#7a1815" stroke-width="3" stroke-linecap="round" opacity=".7"/><path d="M4 52c8 4 14 5 28 5s20-1 28-5" fill="none" stroke="#7a1815" stroke-width="2.5" stroke-linecap="round" opacity=".4"/><path d="M32 6c-6 0-10 5-10 11 0 4 2 6 2 9-3 1-5 4-5 8 0 7 6 12 13 12s13-5 13-12c0-4-2-7-5-8 0-3 2-5 2-9 0-6-4-11-10-11z" fill="#241a16" stroke="#e04a3f" stroke-width="1.5"/><circle cx="27" cy="20" r="2.5" fill="#e04a3f"/><circle cx="37" cy="20" r="2.5" fill="#e04a3f"/><path d="M27 30c2 2 8 2 10 0" stroke="#e04a3f" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="42" r="4" fill="#e0b93a" stroke="#8a6d1a" stroke-width="1"/></svg>`,
     infernobolt: `<svg viewBox="0 0 64 64"><path d="M36 4L14 34h12l-4 26 26-34H36l6-22z" fill="#e04a3f" stroke="#7a1815" stroke-width="2" stroke-linejoin="round"/><path d="M34 10l-3 12h6z" fill="#ffb199" opacity=".75"/></svg>`,
-    burningimp: `<svg viewBox="0 0 64 64"><path d="M22 14l6 10-10-2zM42 14l-6 10 10-2z" fill="#7a1815"/><circle cx="32" cy="28" r="14" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="26" r="2.5" fill="#241a16"/><circle cx="37" cy="26" r="2.5" fill="#241a16"/><path d="M27 34c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M20 40c-4 6-4 14 2 18 2-4 4-6 6-6-1 4 1 8 4 10 3-2 5-6 4-10 2 0 4 2 6 6 6-4 6-12 2-18-4 4-8 6-12 6s-8-2-12-6z" fill="#e0622e" stroke="#7a1815" stroke-width="1.2"/></svg>`
+    burningimp: `<svg viewBox="0 0 64 64"><path d="M22 14l6 10-10-2zM42 14l-6 10 10-2z" fill="#7a1815"/><circle cx="32" cy="28" r="14" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="26" r="2.5" fill="#241a16"/><circle cx="37" cy="26" r="2.5" fill="#241a16"/><path d="M27 34c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M20 40c-4 6-4 14 2 18 2-4 4-6 6-6-1 4 1 8 4 10 3-2 5-6 4-10 2 0 4 2 6 6 6-4 6-12 2-18-4 4-8 6-12 6s-8-2-12-6z" fill="#e0622e" stroke="#7a1815" stroke-width="1.2"/></svg>`,
+    littleimp: `<svg viewBox="0 0 64 64"><path d="M20 20l8 8-12 2zM44 20l-8 8 12 2z" fill="#7a1815"/><circle cx="32" cy="32" r="16" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="26" cy="30" r="2.5" fill="#241a16"/><circle cx="38" cy="30" r="2.5" fill="#241a16"/><path d="M24 38c3 4 13 4 16 0" stroke="#241a16" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M18 46c2 6 8 10 14 10s12-4 14-10" stroke="#7a1815" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -6109,7 +6111,7 @@
     });
   }
 
-  // Горящий бес: battlecry fireball at the FIRST (front-most) enemy
+  // Огненный бес: battlecry fireball at the FIRST (front-most) enemy
   // unit in the MIRRORED lane only — same "never redirects to the
   // hero" no-op as Лис с мечом above when there's nothing there, this
   // event simply never fires in that case (no event to play at all).
@@ -6119,7 +6121,7 @@
     const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
     const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
     const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
-    const shooterName = sourceUnit ? sourceUnit.name : 'Горящий бес';
+    const shooterName = sourceUnit ? sourceUnit.name : 'Огненный бес';
     const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
     const targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
     const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
