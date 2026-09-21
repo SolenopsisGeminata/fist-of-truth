@@ -2786,6 +2786,7 @@
     {id:'s36', name:'Великая сила', type:'spell', cost:6, buffAtk:6, buffHp:6, rarity:'epic', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 6.', art:'greatstrength', faction:'savages'},
     {id:'c150', name:'Циклоп', type:'creature', cost:7, atk:7, hp:15, sleep:true, cyclopsThrow:true, rarity:'epic', desc:'Несёт эффект Сон: не может атаковать в раунде своего появления на поле боя, начинает атаковать со следующего раунда. Перед своей атакой бросает большой булыжник в случайную ячейку противоположного горизонтального ряда соперника, нанося фиксированный урон 7. Если там есть боец — урон получает только он; если ячейка пуста — урон достаётся герою соперника. Не действует на бойцов с Чаростойкостью.', art:'cyclops', faction:'savages'},
     {id:'c151', name:'Рума, Шаман Пустоши', type:'creature', cost:7, atk:3, hp:10, rumaBuff:true, rarity:'legendary', desc:'При появлении на поле боя, а также в конце каждого хода увеличивает атаку и здоровье случайного другого союзника на 5 и даёт ему эффект Топот.', art:'ruma', faction:'savages'},
+    {id:'c152', name:'Дракон прерий', type:'creature', cost:8, atk:7, hp:21, prairieDragonSpit:true, rarity:'epic', desc:'При появлении на поле боя, а также при восстановлении здоровья своего героя выплёвывает 4 огненных шара на случайные ячейки вражеского поля боя, каждый из которых наносит 2 урона. Если в ячейке есть боец — урон получает он, если ячейка пуста — урон достаётся герою соперника. Не действует на бойцов с Чаростойкостью.', art:'prairiedragon', faction:'savages'},
     {id:'s29', name:'Ярость кабана', type:'spell', cost:2, buffAtk:2, buffHp:3, buffTrample:true, rarity:'rare', desc:'Навсегда увеличивает атаку выбранного союзного бойца на 2 и здоровье на 3, а также даёт ему эффект Топот.', art:'boarfury', faction:'savages'},
     {id:'s30', name:'Запоздалая поставка', type:'spell', cost:2, buffAtk:2, buffHp:2, drawIfAsleep:true, rarity:'rare', desc:'Навсегда увеличивает атаку и здоровье выбранного союзного бойца на 2. Если у него уже есть эффект Сон, в руку добавляется 1 карта из своей колоды.', art:'latedelivery', faction:'savages'},
     {id:'s22', name:'Бамбуковая защита', type:'spell', cost:4, instantSummon:true, summonCardId:'c64', summonCount:3, rarity:'epic', desc:'В начале хода призывает группу из 3 Бамбуковых стражей на 3 случайные свободные клетки. Срабатывает в фазе Мгновенный призыв.', art:'bambooshield', faction:'zen'},
@@ -3792,6 +3793,7 @@
     greatstrength: `<svg viewBox="0 0 64 64"><path d="M22 26v-6a4 4 0 0 1 8 0v4M30 24v-8a4 4 0 0 1 8 0v6M38 22v-6a4 4 0 0 1 8 0v10" fill="none" stroke="#c9822e" stroke-width="3" stroke-linecap="round"/><rect x="18" y="26" width="28" height="20" rx="8" fill="#c9822e" stroke="#8a5418" stroke-width="1.5"/><path d="M10 20l-6-6M54 20l6-6M10 44l-6 6M54 44l6 6M32 10v-8" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     cyclops: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="18" rx="9" ry="8" fill="#8a8478" stroke="#4a4640" stroke-width="1.5"/><circle cx="32" cy="18" r="4.5" fill="#e8e0d0" stroke="#2a2620" stroke-width="1.2"/><circle cx="32" cy="18" r="2" fill="#1a1a1e"/><path d="M24 26c-10 3-16 12-16 30h48c0-18-6-27-16-30-5 4-11 4-16 0z" fill="#6b6558" stroke="#3a3630" stroke-width="1.5"/><path d="M22 40l4 6M46 40l-4 6" stroke="#4a453c" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     ruma: `<svg viewBox="0 0 64 64"><circle cx="30" cy="16" r="6" fill="#c9a98a"/><path d="M24 12q-3-6 2-8M36 12q3-6-2-8" fill="none" stroke="#3a251f" stroke-width="1.5" stroke-linecap="round"/><path d="M30 22c-9 2-13 9-13 21h26c0-12-4-19-13-21z" fill="#b89060" stroke="#6b4a2d" stroke-width="1.5"/><line x1="44" y1="18" x2="48" y2="50" stroke="#8a6238" stroke-width="2.5" stroke-linecap="round"/><circle cx="45" cy="15" r="4" fill="#e8e0d0" stroke="#8a8478" stroke-width="1.2"/><circle cx="43.5" cy="14" r=".8" fill="#1a1a1e"/><circle cx="46.5" cy="14" r=".8" fill="#1a1a1e"/></svg>`,
+    prairiedragon: `<svg viewBox="0 0 64 64"><path d="M8 34c2-10 10-18 22-18 8 0 14 4 18 10l8-2-2 8 6 2-6 6 2 6-8-2c-3 6-10 10-18 10-12 0-20-8-22-20z" fill="#7a5c34" stroke="#4a3620" stroke-width="1.5"/><circle cx="20" cy="28" r="2" fill="#1a1a1e"/><path d="M14 16l3-6M22 12l2-7M30 12l1-7" stroke="#4a3620" stroke-width="2" stroke-linecap="round"/><path d="M52 40c3 2 4 6 2 9" fill="none" stroke="#e0622e" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     trap: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="46" rx="20" ry="6" fill="#3a3a3e" stroke="#1c1c1f" stroke-width="1.5"/><path d="M14 44c-4-14 4-28 16-30l2 6c-9 2-14 12-11 22z" fill="#7a7268" stroke="#4a453e" stroke-width="1.5"/><path d="M50 44c4-14-4-28-16-30l-2 6c9 2 14 12 11 22z" fill="#8a8276" stroke="#4a453e" stroke-width="1.5"/><path d="M17 42l3 5M22 39l3 6M27 37l2 7M37 37l-2 7M42 39l-3 6M47 42l-3 5" stroke="#c9c2b4" stroke-width="1.4" stroke-linecap="round"/><circle cx="32" cy="46" r="4" fill="#5c5650" stroke="#2a2620" stroke-width="1.2"/></svg>`,
     mammoth: `<svg viewBox="0 0 64 64"><ellipse cx="34" cy="34" rx="20" ry="14" fill="#7a6a52" stroke="#4a3d2c" stroke-width="1.5"/><ellipse cx="16" cy="26" rx="7" ry="9" fill="#6b5c46" stroke="#4a3d2c" stroke-width="1.5"/><circle cx="15" cy="24" r="1.6" fill="#1a1a1e"/><path d="M13 32q-8 6-6 18" fill="none" stroke="#7a6a52" stroke-width="6" stroke-linecap="round"/><path d="M10 40q-9 3-7 13" fill="none" stroke="#eee6d6" stroke-width="3" stroke-linecap="round"/><path d="M12 44q6 6 1 14" fill="none" stroke="#eee6d6" stroke-width="3" stroke-linecap="round"/><path d="M22 48v9M32 50v9M44 48v9M50 44v9" stroke="#4a3d2c" stroke-width="4" stroke-linecap="round"/></svg>`,
     tuskgirl: `<svg viewBox="0 0 64 64"><circle cx="30" cy="16" r="6" fill="#c9a98a"/><path d="M30 22c-8 2-12 8-12 20h24c0-12-4-18-12-20z" fill="#9c5a3a" stroke="#5c3620" stroke-width="1.5"/><path d="M38 18q14-6 16 8-10 4-16-2z" fill="#eee6d6" stroke="#a89878" stroke-width="1.5"/></svg>`,
@@ -5003,6 +5005,7 @@
       else if(ev.type==='weaponThrow') playWeaponThrowEvent(ev, next);
       else if(ev.type==='axeThrow') playAxeThrowEvent(ev, next);
       else if(ev.type==='boulderThrow') playBoulderThrowEvent(ev, next);
+      else if(ev.type==='dragonFireball') playDragonFireballEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
       else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
@@ -5493,6 +5496,14 @@
     <path d="M9 6l3 3-2 4M15 7l1 4-3 2" fill="none" stroke="#5c574c" stroke-width="1"/>
   </svg>`;
 
+  // Дракон прерий: a small fireball, thrown the same way as every
+  // other projectile mechanic — lands on a fully random enemy cell
+  // (any lane), four times per spit.
+  const FIREBALL_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="13" r="7" fill="#e0622e" stroke="#8a2a10" stroke-width="1"/>
+    <path d="M12 4c2 3-1 4 0 6s3 1 2 3" fill="none" stroke="#f5b93a" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`;
+
   // Мастер сюрикенов: a four-pointed throwing star, bounces between
   // every enemy in the opposing lane in sequence, disappearing after
   // the last one — no burst on landing, just moves straight on.
@@ -5905,6 +5916,49 @@
         }
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
+    });
+  }
+
+  // Дракон прерий: one of his 4 fireballs — same "unit-or-hero
+  // fallback, Чаростойкость blocks outright" resolution as Циклоп's
+  // boulder above, but the target cell is fully random anywhere on the
+  // enemy board (not restricted to a mirrored lane), and he's the
+  // source of 4 of these events in a row (battlecry or on-heal), each
+  // played as its own sequential animation.
+  function playDragonFireballEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const shooterName = sourceUnit ? sourceUnit.name : 'Дракон прерий';
+    const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    let targetEl, targetUnit = null, targetBoard = null;
+    if(ev.targetHero){
+      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    } else {
+      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    }
+    const targetName = ev.targetHero ? (targetMine?'твоему кулаку':'кулаку соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
+    if(ev.resisted){
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) выплёвывает огненный шар в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) выплёвывает огненный шар в ${targetName}, нанося ${ev.amount}.`);
+    }
+    flyProjectileToHero(sourceEl, targetEl, FIREBALL_SVG, 'cannonball', 450, ()=>{
+      spawnSpellBurst(targetEl, 'dmg');
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 900 : 500);
     });
   }
 
