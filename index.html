@@ -2811,6 +2811,7 @@
     {id:'s23', name:'Персиковый рай', type:'spell', cost:4, healHero:6, drawCard:3, rarity:'epic', desc:'Восстанавливает своему герою 6 здоровья и добавляет в руку игрока 3 карты из своей колоды.', art:'peachparadise', faction:'zen'},
     {id:'s24', name:'Сила гор Тянь-Шань', type:'spell', cost:4, mountainStrength:true, mountainArmor:3, rarity:'epic', desc:'Увеличивает атаку выбранного союзного бойца на величину, равную его текущему здоровью, и даёт ему 3 брони.', art:'tianshanstrength', faction:'zen'},
     {id:'s25', name:'Посох дикого вепря', type:'spell', cost:4, buffAtk:2, buffHp:2, buffLifesteal:true, buffTrample:true, buffLegacy:2, rarity:'legendary', desc:'Навсегда даёт выбранному союзному бойцу эффекты Кража жизни и Топот, передаёт ему эффект Наследие 2, а также увеличивает его атаку и здоровье на 2.', art:'boarstaff', faction:'zen'},
+    {id:'c154', name:'Линь, Священный клинок', type:'creature', cost:3, atk:3, hp:3, spellResist:true, linSwapOnPlay:true, linLegacyDoubleStrike:true, rarity:'legendary', desc:'Несёт эффект Чаростойкость. При появлении на поле боя меняется местами со случайным соседним союзником. При получении эффекта Наследие дополнительно получает эффект Двойной удар — эффекты Двойного удара накапливаются: боец с несколькими такими эффектами бьёт подряд на 1 раз больше, чем у него эффектов.', art:'linsacredblade', faction:'zen'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3890,7 +3891,8 @@
     punisherangel: `<svg viewBox="0 0 64 64"><path d="M32 22c-16-10-26-2-28 8 10-4 20-2 24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><path d="M32 22c16-10 26-2 28 8-10-4-20-2-24 6" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.2"/><circle cx="32" cy="16" r="7" fill="none" stroke="#e0b93a" stroke-width="2"/><circle cx="32" cy="20" r="6" fill="#f4d9a0"/><path d="M32 26c-7 2-11 6-11 12v20h22V38c0-6-4-10-11-12z" fill="#e9e0cf" stroke="#a89a84" stroke-width="1.5"/><path d="M32 30l-4 14h5l-3 14 10-18h-6z" fill="#8fd6ff" stroke="#5c85a8" stroke-width="1"/></svg>`,
     imperialpatriarch: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#e0b93a" stroke-width="1.5" opacity=".5"/><path d="M32 6l-8 14h16z" fill="#7a3d9c" stroke="#5c2d78" stroke-width="1.2"/><circle cx="32" cy="6" r="2" fill="#e0b93a"/><circle cx="32" cy="24" r="6" fill="#f4d9a0"/><path d="M26 28c-2 6-2 12 0 16h12c2-4 2-10 0-16z" fill="#e9e0cf" stroke="#a89a84" stroke-width="1"/><path d="M32 30c-9 2-15 8-15 16v10h30V46c0-8-6-14-15-16z" fill="#7a3d9c" stroke="#5c2d78" stroke-width="1.5"/><path d="M32 40v10M28 44h8" stroke="#e0b93a" stroke-width="2" stroke-linecap="round"/></svg>`,
     knight: `<svg viewBox="0 0 64 64"><path d="M20 30c0-11 5-20 12-20s12 9 12 20v18a4 4 0 0 1-4 4H24a4 4 0 0 1-4-4z" fill="#8a97a3" stroke="#5c6570" stroke-width="2"/><rect x="27" y="26" width="10" height="4" fill="#15100d"/><rect x="30" y="20" width="4" height="16" fill="#15100d"/><path d="M18 28h4M42 28h4" stroke="#5c6570" stroke-width="3" stroke-linecap="round"/><path d="M24 10l8 6 8-6" fill="none" stroke="#c9a227" stroke-width="2"/></svg>`,
-    baron: `<svg viewBox="0 0 64 64"><path d="M16 26c0-8 7-14 16-14s16 6 16 14v6H16z" fill="#7a3d9c" stroke="#5c2d78" stroke-width="1.5"/><circle cx="16" cy="24" r="3" fill="#e0b93a"/><circle cx="32" cy="18" r="3" fill="#e0b93a"/><circle cx="48" cy="24" r="3" fill="#e0b93a"/><path d="M14 32h36v6a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z" fill="#8a6d1a" stroke="#5c4536" stroke-width="1"/><path d="M18 42c0 10 6 16 14 20 8-4 14-10 14-20z" fill="#5c2d78" stroke="#3a1c50" stroke-width="1.5"/></svg>`
+    baron: `<svg viewBox="0 0 64 64"><path d="M16 26c0-8 7-14 16-14s16 6 16 14v6H16z" fill="#7a3d9c" stroke="#5c2d78" stroke-width="1.5"/><circle cx="16" cy="24" r="3" fill="#e0b93a"/><circle cx="32" cy="18" r="3" fill="#e0b93a"/><circle cx="48" cy="24" r="3" fill="#e0b93a"/><path d="M14 32h36v6a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z" fill="#8a6d1a" stroke="#5c4536" stroke-width="1"/><path d="M18 42c0 10 6 16 14 20 8-4 14-10 14-20z" fill="#5c2d78" stroke="#3a1c50" stroke-width="1.5"/></svg>`,
+    linsacredblade: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="21" fill="none" stroke="#4f8a5b" stroke-width="2" opacity=".55"/><path d="M32 5l4 33h-8z" fill="#e9e0cf" stroke="#8fa3ad" stroke-width="1.5"/><path d="M32 5l1.5 20h-3z" fill="#ffffff" opacity=".6"/><rect x="29" y="38" width="6" height="4" fill="#e0b93a"/><rect x="21" y="42" width="22" height="5" rx="2" fill="#4f8a5b" stroke="#2f5a38" stroke-width="1.5"/><rect x="30" y="47" width="4" height="12" fill="#5c4536" stroke="#3a2c22" stroke-width="1"/><circle cx="32" cy="59" r="3" fill="#e0b93a"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4117,7 +4119,7 @@
       dawnBuff:!!u.dawnBuff, cookHeal:!!u.cookHeal, cowHeal:!!u.cowHeal, shootHero:!!u.shootHero,
       wallGrow:!!u.wallGrow, firstStrike:!!u.firstStrike, bishopBuff:!!u.bishopBuff, summonOnHeroHit:u.summonOnHeroHit||null,
       priestHeal:!!u.priestHeal, siegeShot:!!u.siegeShot, endOfRoundSummon:u.endOfRoundSummon||null,
-      defender:!!u.defender, sleep:!!u.sleep, cannonShot:!!u.cannonShot, spellResist:!!u.spellResist, trample:!!u.trample, punisherKill:!!u.punisherKill, doubleHeal:!!u.doubleHeal, doubleStrike:!!u.doubleStrike, healTrigger:!!u.healTrigger, legacyValue:u.legacyValue||0,
+      defender:!!u.defender, sleep:!!u.sleep, cannonShot:!!u.cannonShot, spellResist:!!u.spellResist, trample:!!u.trample, punisherKill:!!u.punisherKill, doubleHeal:!!u.doubleHeal, doubleStrike:u.doubleStrike||0, healTrigger:!!u.healTrigger, legacyValue:u.legacyValue||0,
       placedThisRound:!!u.placedThisRound,
     };
   }
@@ -5075,6 +5077,7 @@
       else if(ev.type==='wiseDeerDebuff') playWiseDeerDebuffEvent(ev, next);
       else if(ev.type==='hermitCopy') playHermitCopyEvent(ev, next);
       else if(ev.type==='discipleTransform') playDiscipleTransformEvent(ev, next);
+      else if(ev.type==='linSwap') playLinSwapEvent(ev, next);
       else next();
     }
     setTimeout(next, 1050);
@@ -5277,7 +5280,7 @@
           if(ev.buffHp){ unit.hp += ev.buffHp; unit.maxHp += ev.buffHp; }
           if(ev.buffArmor) unit.armor = (unit.armor||0) + ev.buffArmor;
           if(ev.buffLifesteal) unit.lifesteal = true;
-          if(ev.buffDoubleStrike) unit.doubleStrike = true;
+          if(ev.buffDoubleStrike) unit.doubleStrike = (unit.doubleStrike||0) + 1;
           if(ev.buffTrample) unit.trample = true;
           if(ev.buffLegacy) unit.legacyValue = (unit.legacyValue||0) + ev.buffLegacy;
           if(ev.buffSpellResist) unit.spellResist = true;
@@ -5682,7 +5685,7 @@
       punisherKill: card?card.punisherKill:false,
       healTrigger: card?card.healTrigger:false,
       legacyValue: card?(card.legacy||0):0,
-      doubleStrike: card?card.doubleStrike:false,
+      doubleStrike: card && card.doubleStrike ? 1 : 0,
       doubleHeal: card?card.doubleHeal:false,
       placedThisRound: false,
     });
@@ -6469,7 +6472,7 @@
         atk: ev.atk, hp: ev.hp, maxHp: ev.maxHp, armor: ev.armor,
         lifesteal: cardDef?cardDef.lifesteal:false, synergy: cardDef?cardDef.synergy:0,
         firstStrike: cardDef?cardDef.firstStrike:false, spellResist: cardDef?cardDef.spellResist:false,
-        trample: cardDef?cardDef.trample:false, doubleStrike: cardDef?cardDef.doubleStrike:false,
+        trample: cardDef?cardDef.trample:false, doubleStrike: cardDef && cardDef.doubleStrike ? 1 : 0,
         drawOnDeath: cardDef?cardDef.drawOnDeath:false, copyOnLegacy: cardDef?cardDef.copyOnLegacy:false,
         legacyValue: 0,
         placedThisRound: true,
@@ -6495,11 +6498,32 @@
         atk: ev.atk, hp: ev.hp, maxHp: ev.maxHp, armor: ev.armor,
         lifesteal: newCardDef?newCardDef.lifesteal:false, synergy: newCardDef?newCardDef.synergy:0,
         firstStrike: newCardDef?newCardDef.firstStrike:false, spellResist: newCardDef?newCardDef.spellResist:false,
-        trample: newCardDef?newCardDef.trample:false, doubleStrike: newCardDef?newCardDef.doubleStrike:false,
+        trample: newCardDef?newCardDef.trample:false, doubleStrike: newCardDef && newCardDef.doubleStrike ? 1 : 0,
         legacyValue: 0,
         placedThisRound: false,
       });
       setTimeout(()=>{ renderAll(); done(); }, 900);
+    }, 400);
+  }
+
+  // Линь, Священный клинок: on play, swaps places with a random adjacent
+  // ally — a genuine board-position swap (no prior mechanic did this),
+  // so it exchanges the two board array entries directly rather than
+  // just mutating either unit's own stats.
+  function playLinSwapEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const linUnit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const otherUnit = board[ev.targetLaneIdx] ? board[ev.targetLaneIdx][ev.targetDepthIdx] : null;
+    const linEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
+    const otherEl = findUnitEl(ev.targetLaneIdx, mine, ev.targetDepthIdx);
+    log(`${mine?'Твоя':'Вражеская'} «${linUnit?linUnit.name:'Линь, Священный клинок'}» меняется местами с ${otherUnit?otherUnit.name:'соседним союзником'}.`);
+    if(linEl) spawnSpellBurst(linEl,'heal');
+    if(otherEl) spawnSpellBurst(otherEl,'heal');
+    setTimeout(()=>{
+      board[ev.laneIdx][ev.depthIdx] = otherUnit;
+      board[ev.targetLaneIdx][ev.targetDepthIdx] = linUnit;
+      setTimeout(()=>{ renderAll(); done(); }, 500);
     }, 400);
   }
 
@@ -6698,6 +6722,7 @@
     if(ev.buffArmor) parts.push(`+${ev.buffArmor} брони`);
     if(ev.buffTrample) parts.push(`эффект Топот`);
     if(ev.buffLifesteal) parts.push(`эффект Кража жизни`);
+    if(ev.buffDoubleStrike) parts.push(`эффект Двойной удар`);
     const phrase = parts.join(', ');
     if(batchSize>1){
       log(`Союзники${mine?' твои':' соперника'} получают подкрепление: ${phrase}.`);
@@ -6712,6 +6737,7 @@
         if(ev.buffArmor) unit.armor = (unit.armor||0) + ev.buffArmor;
         if(ev.buffTrample) unit.trample = true;
         if(ev.buffLifesteal) unit.lifesteal = true;
+        if(ev.buffDoubleStrike) unit.doubleStrike = (unit.doubleStrike||0) + 1;
         if(targetEl){
           const popupParts = [];
           if(ev.buffAtk) popupParts.push(`+${ev.buffAtk}⚔`);
@@ -6719,6 +6745,7 @@
           if(ev.buffArmor) popupParts.push(`+${ev.buffArmor}🛡`);
           if(ev.buffTrample) popupParts.push(`🐾`);
           if(ev.buffLifesteal) popupParts.push(`🩸`);
+          if(ev.buffDoubleStrike) popupParts.push(`⚔️⚔️`);
           spawnSpellBurst(targetEl,'heal');
           spawnDamageNumber(targetEl, popupParts.join(' '), 'heal');
         }
