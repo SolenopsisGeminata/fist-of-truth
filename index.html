@@ -2819,6 +2819,7 @@
     {id:'c158', name:'Скелет-воин инферно', type:'creature', cost:2, atk:2, hp:2, skeletonWeaponThrowOnDeath:true, rarity:'common', desc:'При смерти метает своё оружие (короткий меч) в героя соперника, нанося урон, равный своей текущей атаке.', art:'infernoskeleton', faction:'inferno'},
     {id:'c159', name:'Яростный бес', type:'creature', cost:2, atk:3, hp:1, impAtkGrowOnHeroHit:2, rarity:'rare', desc:'При попадании его атакой по герою соперника навсегда увеличивает свою атаку на 2.', art:'furiousimp', faction:'inferno'},
     {id:'c160', name:'Горящий бес', type:'creature', cost:2, atk:3, hp:2, trample:true, trampleDiscountOnPlay:true, rarity:'rare', desc:'Несёт эффект Топот. При появлении на поле боя уменьшает стоимость случайной карты с эффектом Топот в руке игрока на 1, если такая карта там есть.', art:'stompingimp', faction:'inferno'},
+    {id:'c161', name:'Злой глаз', type:'creature', cost:2, atk:1, hp:1, evilEyeDiscardOnDeath:true, rarity:'rare', desc:'При смерти этого юнита игрок противника теряет случайную карту из своей руки.', art:'evileye', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3906,7 +3907,8 @@
     littleimp: `<svg viewBox="0 0 64 64"><path d="M20 20l8 8-12 2zM44 20l-8 8 12 2z" fill="#7a1815"/><circle cx="32" cy="32" r="16" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="26" cy="30" r="2.5" fill="#241a16"/><circle cx="38" cy="30" r="2.5" fill="#241a16"/><path d="M24 38c3 4 13 4 16 0" stroke="#241a16" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M18 46c2 6 8 10 14 10s12-4 14-10" stroke="#7a1815" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
     infernoskeleton: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><circle cx="26" cy="16" r="2" fill="#e04a3f"/><circle cx="34" cy="16" r="2" fill="#e04a3f"/><path d="M25 22h10M28 22v3M32 22v3" stroke="#8a8378" stroke-width="1.2"/><rect x="25" y="28" width="10" height="15" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><path d="M25 32h10M25 38h10" stroke="#8a8378" stroke-width="1"/><path d="M17 50l8-7M43 50l-8-7" stroke="#e9e0cf" stroke-width="4" stroke-linecap="round"/><path d="M40 18l12 10-4 5-10-9z" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/><rect x="49" y="16" width="4" height="8" fill="#7a1815"/></svg>`,
     furiousimp: `<svg viewBox="0 0 64 64"><path d="M18 18l10 6-14 4zM46 18l-10 6 14 4z" fill="#7a1815"/><circle cx="32" cy="32" r="16" fill="#e04a3f" stroke="#3a0f0c" stroke-width="1.5"/><path d="M23 26l6 4M41 26l-6 4" stroke="#241a16" stroke-width="2" stroke-linecap="round"/><circle cx="26" cy="31" r="2.5" fill="#ffe066"/><circle cx="38" cy="31" r="2.5" fill="#ffe066"/><path d="M23 40c4-3 14-3 18 0" stroke="#241a16" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M16 48c2 6 9 10 16 10s14-4 16-10" stroke="#7a1815" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
-    stompingimp: `<svg viewBox="0 0 64 64"><path d="M24 12l6 8-10 0zM40 12l-6 8 10 0z" fill="#7a1815"/><circle cx="32" cy="26" r="12" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="24" r="2" fill="#241a16"/><circle cx="37" cy="24" r="2" fill="#241a16"/><path d="M27 31c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M22 36h20v10a10 10 0 0 1-20 0z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M18 52l6-6 4 4-8 8zM46 52l-6-6-4 4 8 8z" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/><path d="M18 60l6-4M46 60l-6-4" stroke="#e0b93a" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>`
+    stompingimp: `<svg viewBox="0 0 64 64"><path d="M24 12l6 8-10 0zM40 12l-6 8 10 0z" fill="#7a1815"/><circle cx="32" cy="26" r="12" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="24" r="2" fill="#241a16"/><circle cx="37" cy="24" r="2" fill="#241a16"/><path d="M27 31c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M22 36h20v10a10 10 0 0 1-20 0z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M18 52l6-6 4 4-8 8zM46 52l-6-6-4 4 8 8z" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/><path d="M18 60l6-4M46 60l-6-4" stroke="#e0b93a" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>`,
+    evileye: `<svg viewBox="0 0 64 64"><path d="M4 32s11-15 28-15 28 15 28 15-11 15-28 15S4 32 4 32z" fill="none" stroke="#7a1815" stroke-width="3.5"/><circle cx="32" cy="32" r="12" fill="#e04a3f" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="32" cy="32" r="5" fill="#1a130d"/><circle cx="29" cy="29" r="1.5" fill="#ffe066"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5073,6 +5075,7 @@
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='fireImpThrow') playFireImpThrowEvent(ev, next);
       else if(ev.type==='trampleDiscount') playTrampleDiscountEvent(ev, next);
+      else if(ev.type==='evilEyeDiscard') playEvilEyeDiscardEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
       else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
       else if(ev.type==='drunkenSelfHit') playDrunkenSelfHitEvent(ev, next);
@@ -6202,6 +6205,25 @@
       log(`${mine?'Твой':'Соперника'} «${sourceName}» ищет в ${mine?'твоей':'его'} руке карту с эффектом Топот, но не находит.`);
     }
     setTimeout(()=>{ renderAll(); done(); }, 500);
+  }
+
+  // Злой глаз: on death, the OPPONENT loses a random card from their
+  // own hand — already gone from the board by the time this fires, so
+  // the name comes from ev.cardId (same as deathDraw/weaponThrow), and
+  // purely a log line same as playVultureDrawEvent above: the hand
+  // itself updates via the next snapshot, and no card identity is
+  // ever named, even to the player who lost the card.
+  function playEvilEyeDiscardEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceCard = cardDefById(ev.cardId);
+    const sourceName = sourceCard ? sourceCard.name : 'Злой глаз';
+    if(ev.discarded){
+      log(`${mine?'Твой':'Соперника'} «${sourceName}», погибая, забирает случайную карту из руки ${targetMine?'твоей':'соперника'}.`);
+    } else {
+      log(`${mine?'Твой':'Соперника'} «${sourceName}», погибая, пытается забрать карту из руки ${targetMine?'твоей':'соперника'}, но рука пуста.`);
+    }
+    setTimeout(()=>{ done(); }, 400);
   }
 
   // Мастер сюрикенов: the shuriken bounces from wherever it last was
