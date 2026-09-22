@@ -2823,7 +2823,7 @@
     {id:'c162', name:'Огненная муха', type:'creature', cost:2, atk:2, hp:2, fireFlyGrowOnEnemyHeroDamage:true, rarity:'rare', desc:'Каждый раз, когда герой соперника получает урон (от любого источника), навсегда увеличивает свою атаку на 1.', art:'fireflyimp', faction:'inferno'},
     {id:'c163', name:'Бес-мучитель', type:'creature', cost:2, atk:3, hp:2, tormentorExtraDamage:true, rarity:'rare', desc:'При попадании его атакой по герою соперника наносит дополнительно по 1 единице урона обоим героям.', art:'tormentorimp', faction:'inferno'},
     {id:'c164', name:'Ядовитый жук', type:'creature', cost:2, atk:2, hp:2, armor:1, acidShotOnDeath:true, rarity:'rare', desc:'При смерти стреляет кислотой в случайный квадрат на поле противника, нанося 2 урона. Если кислота попадает в юнита, урон достаётся только ему. Если ячейка пуста, урон достаётся герою соперника.', art:'poisonbeetle', faction:'inferno'},
-    {id:'s38', name:'Безумный огненный шар', type:'spell', cost:2, dmg:4, rarity:'rare', desc:'Посылает большой огненный шар вдоль выбранного вражеского ряда — от первого до последнего квадрата. Наносит 4 урона первому противнику на своём пути. Если врагов в ряду нет, шар долетает до конца и наносит урон герою соперника.', art:'madfireball', faction:'inferno'},
+    {id:'s38', name:'Огненный шар', type:'spell', cost:2, dmg:4, rarity:'rare', desc:'Посылает большой огненный шар вдоль выбранного вражеского ряда — от первого до последнего квадрата. Наносит 4 урона первому противнику на своём пути. Если врагов в ряду нет, шар долетает до конца и наносит урон герою соперника.', art:'madfireball', faction:'inferno'},
     {id:'s39', name:'Прилив тепла', type:'spell', cost:2, heatSurge:true, heatSurgeDmg:4, heatSurgeHeal:4, rarity:'rare', desc:'Сбрасывает лавовый сгусток на выбранную вражескую ячейку, нанося 4 урона находящемуся там юниту. Если юнита там нет, урон достаётся герою соперника. Также исцеляет своего героя на 4 здоровья.', art:'heatsurge', faction:'inferno'},
     {id:'c165', name:'Крушитель черепов', type:'creature', cost:2, atk:4, hp:5, skullCrusherSelfDamage:3, rarity:'epic', desc:'При появлении на поле боя наносит своему герою 3 урона.', art:'skullcrusher', faction:'inferno'},
     {id:'c166', name:'Большерот', type:'creature', cost:2, atk:1, hp:3, trample:true, bigMouthGrowOnEnemyHeroDamage:true, rarity:'epic', desc:'Несёт эффект Топот. Каждый раз, когда герой соперника получает урон (от любого источника), навсегда увеличивает свою атаку и здоровье на 1.', art:'bigmouth', faction:'inferno'},
@@ -2839,6 +2839,7 @@
     {id:'c174', name:'Горящее дерево', type:'creature', cost:3, atk:2, hp:5, fireFlyGrowOnEnemyHeroDamage:true, rarity:'rare', desc:'Каждый раз, когда герой соперника получает урон (от любого источника), навсегда увеличивает свою атаку на 1.', art:'blazetree', faction:'inferno'},
     {id:'c175', name:'Дурной глаз', type:'creature', cost:3, atk:5, hp:1, badEyeGrowOnFactionDeath:true, rarity:'rare', desc:'Когда на поле боя (своём или вражеском) погибает юнит фракции Инферно или фракции Холод, навсегда увеличивает свою атаку на 1.', art:'badeye', faction:'inferno'},
     {id:'s42', name:'Бешенство', type:'spell', cost:3, buffAtk:2, buffHp:2, buffRageOnEnemySummon:true, rarity:'rare', desc:'Увеличивает атаку и здоровье выбранного своего бойца на 2. Когда на вражеском поле боя появляется новый юнит, этот боец навсегда получает ещё +1 атаки.', art:'frenzy', faction:'inferno'},
+    {id:'s43', name:'Безумный огненный шар', type:'spell', cost:3, madFireballDmg:10, rarity:'rare', desc:'Наносит 10 урона юниту противника в выбранной ячейке на его поле боя. Если юнита там нет (или он защищён Чаростойкостью/Щитом), заклинание не срабатывает — герой соперника урона не получает.', art:'madfireball2', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3946,7 +3947,8 @@
     bloodpool: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="46" rx="26" ry="12" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><ellipse cx="32" cy="45" rx="20" ry="8" fill="#c9432e" opacity=".85"/><path d="M32 8c4 8-3 11 0 17-4 0-7 3-7 7 0 5 3 8 7 8s7-3 7-8c0-4-3-7-7-7 3-6-4-9 0-17z" fill="#e04a3f" stroke="#3a0f0c" stroke-width="1.3"/><circle cx="18" cy="40" r="2.4" fill="#7a1815" opacity=".7"/><circle cx="46" cy="42" r="2" fill="#7a1815" opacity=".7"/></svg>`,
     blazetree: `<svg viewBox="0 0 64 64"><path d="M32 54V28" stroke="#3a2c22" stroke-width="4" stroke-linecap="round"/><path d="M32 40l-10-6M32 36l11-7M32 46l-9 5M32 42l10 5" stroke="#3a2c22" stroke-width="2.5" stroke-linecap="round"/><path d="M20 26c2-8 8-12 12-18 4 6 10 10 12 18 2 8-4 14-12 14s-14-6-12-14z" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><path d="M27 24c1-4 4-7 5-10 2 3 5 5 6 10 1 4-2 7-6 7s-6-3-5-7z" fill="#f5b93a" opacity=".85"/></svg>`,
     badeye: `<svg viewBox="0 0 64 64"><path d="M32 6l10 20-10 32-10-32z" fill="none" stroke="#7a1815" stroke-width="3"/><circle cx="32" cy="26" r="11" fill="#241a16" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="32" cy="26" r="6" fill="#e04a3f"/><circle cx="30" cy="24" r="1.6" fill="#ffe066"/><path d="M20 14l-6-4M44 14l6-4M18 26h-8M46 26h8" stroke="#7a1815" stroke-width="2" stroke-linecap="round"/></svg>`,
-    frenzy: `<svg viewBox="0 0 64 64"><path d="M32 32c10-14 4-22-2-24 4 6 0 10-4 8-3-1-3-6 1-9-10 2-14 12-8 20-8-2-14 4-13 12 3-6 8-6 10-2 2 3-1 7-6 7 8 4 18-1 22-12z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M14 44l6-6M50 44l-6-6M18 54l5-7M46 54l-5-7" stroke="#7a1815" stroke-width="2.5" stroke-linecap="round"/></svg>`
+    frenzy: `<svg viewBox="0 0 64 64"><path d="M32 32c10-14 4-22-2-24 4 6 0 10-4 8-3-1-3-6 1-9-10 2-14 12-8 20-8-2-14 4-13 12 3-6 8-6 10-2 2 3-1 7-6 7 8 4 18-1 22-12z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M14 44l6-6M50 44l-6-6M18 54l5-7M46 54l-5-7" stroke="#7a1815" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    madfireball2: `<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="20" fill="#7a1815" stroke="#3a0f0c" stroke-width="2"/><circle cx="32" cy="34" r="14" fill="#e0622e"/><circle cx="32" cy="34" r="7" fill="#f5b93a"/><path d="M32 6c-2 7 3 9 1 14M14 16c4 4 8 4 8 9M50 16c-4 4-8 4-8 9" fill="none" stroke="#e04a3f" stroke-width="3" stroke-linecap="round"/><path d="M20 50l4-6M44 50l-4-6M32 56l0-7" stroke="#7a1815" stroke-width="2.5" stroke-linecap="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4588,6 +4590,9 @@
       } else if(card.painHeartCurse){
         el.hint.textContent = 'Выбери любую вражескую ячейку — соперник потеряет случайную карту из руки, а карта вернётся тебе.';
         highlightEnemyCellsForSpell();
+      } else if(card.madFireballDmg){
+        el.hint.textContent = `Выбери вражескую ячейку — если там боец, он получит ${card.madFireballDmg} урона. Если ячейка пуста, заклинание не сработает.`;
+        highlightEnemyCellsForSpell();
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
@@ -4674,7 +4679,7 @@
   }
   function castEnemyCellSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.heatSurge || card.painHeartCurse)) return;
+    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.heatSurge || card.painHeartCurse || card.madFireballDmg)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -5341,6 +5346,33 @@
           log(`«${label}» уничтожает ${unit.name}.`);
           if(targetEl) targetEl.classList.add('unit-dying');
           board[ev.laneIdx][ev.targetDepth] = null;
+        }
+        setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+      }, 300);
+      return;
+    }
+    if(ev.kind==='madFireball'){
+      // Безумный огненный шар (the new one): same specific-cell
+      // targeting/resisted shape as Капкан above, but a fixed damage
+      // number instead of an outright kill — and unlike EVERY other
+      // cross-side damage spell in the game, an empty cell (or a
+      // resisted hit) means the spell does nothing at all, no hero
+      // redirect whatsoever. Reuses the lava-drop visual already built
+      // for Прилив тепла (color-agnostic "impact from above").
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnLavaDrop(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» обрушивается на пустую ячейку и гаснет без следа.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          unit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          log(`«${label}» обрушивается на ${unit.name}, нанося ${ev.amount}.`);
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
         }
         setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
       }, 300);
@@ -7735,6 +7767,7 @@
     if(card.treeWrath) return `−${card.treeWrathAmount} юниту и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} бойцу и герою`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} бойцу/герою, +${card.heatSurgeHeal} своему герою`;
+    if(card.madFireballDmg) return `−${card.madFireballDmg} бойцу в ячейке · герою урона нет`;
     if(card.painHeartCurse) return `−1 карта из руки врага · возвращается, если не призван Часовой боли`;
     if(card.bounceToHand) return 'Вернуть в руку · ряд';
     if(card.bounceCellAndNeighbor) return 'Вернуть в руку · ячейка + сосед';
@@ -7762,6 +7795,7 @@
     if(card.treeWrath) return `−${card.treeWrathAmount} случайному бойцу и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} выбранному бойцу и герою одновременно`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} выбранному бойцу или его герою, +${card.heatSurgeHeal} своему герою`;
+    if(card.madFireballDmg) return `−${card.madFireballDmg} юниту в выбранной ячейке; если ячейка пуста, заклинание не срабатывает и герой урона не получает`;
     if(card.painHeartCurse) return `заставляет соперника сбросить случайную карту из руки; призывает Часового боли при опустевшей руке (карта не возвращается), иначе возвращается в руку игрока`;
     if(card.bounceToHand) return `возвращает ряд в руку`;
     if(card.bounceCellAndNeighbor) return `возвращает ячейку и соседа в руку`;
