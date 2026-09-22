@@ -2833,6 +2833,7 @@
     {id:'s41', name:'Бушующий огонь', type:'spell', cost:3, ragingFire:true, ragingFireDmg:2, ragingFireHeroDmg:2, rarity:'common', desc:'Посылает огненную волну вдоль выбранного вражеского ряда — от первого до последнего квадрата. Волна проходит насквозь и наносит по 2 урона каждому бойцу соперника в ряду, над которым пролетает, а затем наносит 2 урона герою соперника.', art:'ragingfire', faction:'inferno'},
     {id:'c169', name:'Скелет-берсерк Инферно', type:'creature', cost:3, atk:4, hp:2, skeletonWeaponThrowOnDeath:true, rarity:'rare', desc:'При смерти метает свой короткий меч в героя соперника, нанося урон, равный своей текущей атаке.', art:'infernoberserk', faction:'inferno'},
     {id:'c170', name:'Горящий бес', type:'creature', cost:3, atk:3, hp:5, blazeImpEmptyHandGrow:true, rarity:'rare', desc:'Перед своей атакой, если у противника или у игрока нет карт в руке, навсегда увеличивает свою атаку на 1.', art:'blazeimp', faction:'inferno'},
+    {id:'c171', name:'Вороватый бес', type:'creature', cost:3, atk:3, hp:2, thiefImpStealOnHeroHit:true, rarity:'rare', desc:'При попадании атакой по герою соперника заставляет его потерять случайную карту из руки. Если рука соперника уже пуста, вместо этого навсегда увеличивает свою атаку на 1.', art:'thiefimp', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3934,7 +3935,8 @@
     painheart: `<svg viewBox="0 0 64 64"><path d="M32 54C14 42 6 30 6 20 6 11 13 6 21 6c5 0 9 3 11 7 2-4 6-7 11-7 8 0 15 5 15 14 0 10-8 22-26 34z" fill="#7a1815" stroke="#3a0f0c" stroke-width="2"/><path d="M20 24l6 8-5 3 9 12 4-9-5-2 6-9z" fill="#e0b93a"/><circle cx="20" cy="18" r="2" fill="#e04a3f" opacity=".8"/><circle cx="44" cy="18" r="2" fill="#e04a3f" opacity=".8"/></svg>`,
     ragingfire: `<svg viewBox="0 0 64 64"><path d="M8 40c8-16 16-24 24-16s8 16 16 8 8-20 16-12" fill="none" stroke="#e0622e" stroke-width="8" stroke-linecap="round" opacity=".9"/><path d="M12 46c6-12 12-18 18-12s8 12 14 6 10-14 16-8" fill="none" stroke="#f5b93a" stroke-width="4" stroke-linecap="round"/><path d="M46 12c-2 6 2 8 0 12" stroke="#e04a3f" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`,
     infernoberserk: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><circle cx="26" cy="16" r="2.4" fill="#e04a3f"/><circle cx="34" cy="16" r="2.4" fill="#e04a3f"/><path d="M22 12l5 3M38 12l-5 3" stroke="#8a8378" stroke-width="1.5" stroke-linecap="round"/><path d="M25 22h10" stroke="#8a8378" stroke-width="1.5"/><rect x="24" y="28" width="12" height="16" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><path d="M24 33h12M24 39h12" stroke="#8a8378" stroke-width="1"/><path d="M16 52l8-9M44 52l-8-9" stroke="#e9e0cf" stroke-width="4.5" stroke-linecap="round"/><path d="M40 14l14 6-3 6-13-6zM10 20l14 6-3 6-13-6z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1"/></svg>`,
-    blazeimp: `<svg viewBox="0 0 64 64"><path d="M18 14l7 8-11 2zM46 14l-7 8 11 2z" fill="#7a1815"/><circle cx="32" cy="27" r="14" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="26" cy="25" r="2.2" fill="#241a16"/><circle cx="38" cy="25" r="2.2" fill="#241a16"/><path d="M25 33c3 3 11 3 14 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M18 42h28v10a14 14 0 0 1-28 0z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M24 46c2 3 2 6 0 9M32 46c2 3 2 6 0 9M40 46c2 3 2 6 0 9" stroke="#f5b93a" stroke-width="2" stroke-linecap="round" fill="none" opacity=".8"/></svg>`
+    blazeimp: `<svg viewBox="0 0 64 64"><path d="M18 14l7 8-11 2zM46 14l-7 8 11 2z" fill="#7a1815"/><circle cx="32" cy="27" r="14" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="26" cy="25" r="2.2" fill="#241a16"/><circle cx="38" cy="25" r="2.2" fill="#241a16"/><path d="M25 33c3 3 11 3 14 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M18 42h28v10a14 14 0 0 1-28 0z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M24 46c2 3 2 6 0 9M32 46c2 3 2 6 0 9M40 46c2 3 2 6 0 9" stroke="#f5b93a" stroke-width="2" stroke-linecap="round" fill="none" opacity=".8"/></svg>`,
+    thiefimp: `<svg viewBox="0 0 64 64"><path d="M20 16l6 7-9 2zM44 16l-6 7 9 2z" fill="#7a1815"/><circle cx="32" cy="26" r="11" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><path d="M24 24l5 2M40 24l-5 2" stroke="#241a16" stroke-width="1.8" stroke-linecap="round"/><path d="M25 32c3 2 11 2 14 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="22" y="38" width="20" height="16" rx="3" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><g transform="rotate(-18 46 40)"><rect x="40" y="30" width="12" height="16" rx="1.5" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.2"/><circle cx="46" cy="38" r="2" fill="#e04a3f"/></g></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5132,6 +5134,7 @@
       else if(ev.type==='painSentinelPulse') playPainSentinelPulseEvent(ev, next);
       else if(ev.type==='evilEyeDiscard') playEvilEyeDiscardEvent(ev, next);
       else if(ev.type==='tormentorHit') playTormentorHitEvent(ev, next);
+      else if(ev.type==='thiefImpSteal') playThiefImpStealEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
       else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
       else if(ev.type==='drunkenSelfHit') playDrunkenSelfHitEvent(ev, next);
@@ -6429,6 +6432,29 @@
       if(sourceHeroEl){ sourceHeroEl.classList.add('hero-hit'); spawnDamageNumber(sourceHeroEl, '-'+ev.amount, 'dmg'); }
       setTimeout(()=>{ renderAll(); done(); }, 700);
     }, 300);
+  }
+
+  // Вороватый бес: whenever his own attack lands directly on the enemy
+  // hero, steals 1 random card from the opponent's hand — same
+  // privacy-safe pattern as playEvilEyeDiscardEvent above (no card
+  // identity named, only the discarded boolean; the hand count itself
+  // updates via the next snapshot). If the opponent's hand was already
+  // empty, no discard happens and a separate 'rallyBuff' event (already
+  // handled generically) grows his own attack by 1 instead — this
+  // handler only logs which of the two happened, same "still alive on
+  // the board" live-name lookup as Бес-мучитель above.
+  function playThiefImpStealEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'Вороватый бес';
+    if(ev.discarded){
+      log(`${mine?'Твой':'Соперника'} «${sourceName}» бьёт по герою ${targetMine?'твоему':'соперника'} и крадёт случайную карту из руки ${targetMine?'твоей':'соперника'}.`);
+    } else {
+      log(`${mine?'Твой':'Соперника'} «${sourceName}» бьёт по герою ${targetMine?'твоему':'соперника'}, но рука ${targetMine?'твоя':'соперника'} уже пуста — вместо кражи навсегда усиливается сам.`);
+    }
+    setTimeout(()=>{ done(); }, 400);
   }
 
   // Мастер сюрикенов: the shuriken bounces from wherever it last was
