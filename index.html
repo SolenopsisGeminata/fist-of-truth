@@ -2816,7 +2816,7 @@
     {id:'s37', name:'Молния', type:'spell', cost:1, lightningStrike:true, lightningDmg:3, rarity:'rare', desc:'Наносит 3 урона бойцу и герою соперника в выбранной вражеской ячейке одновременно. Если ячейка пуста, урон достаётся только герою. Не действует на бойца с Чаростойкостью — герой при этом всё равно получает урон.', art:'infernobolt', faction:'inferno'},
     {id:'c156', name:'Огненный бес', type:'creature', cost:2, atk:2, hp:2, fireImpThrowOnPlay:2, rarity:'common', desc:'При появлении на поле боя метает огненный шар в первого стоящего бойца соперника в противоположном горизонтальном ряду, нанося ему 2 урона. Если в противоположном ряду нет бойцов соперника, метание не срабатывает.', art:'burningimp', faction:'inferno'},
     {id:'c157', name:'Чертенок', type:'creature', cost:2, atk:1, hp:1, impAtkGrowOnHeroHit:1, rarity:'common', desc:'При попадании его атакой по герою соперника навсегда увеличивает свою атаку на 1.', art:'littleimp', faction:'inferno'},
-    {id:'c158', name:'Скелет-воин инферно', type:'creature', cost:2, atk:2, hp:2, skeletonWeaponThrowOnDeath:true, rarity:'common', desc:'При смерти метает своё оружие (короткий меч) в героя соперника, нанося урон, равный своей текущей атаке.', art:'infernoskeleton', faction:'inferno'},
+    {id:'c158', name:'Скелет-воин Инферно', type:'creature', cost:2, atk:2, hp:2, skeletonWeaponThrowOnDeath:true, rarity:'common', desc:'При смерти метает своё оружие (короткий меч) в героя соперника, нанося урон, равный своей текущей атаке.', art:'infernoskeleton', faction:'inferno'},
     {id:'c159', name:'Яростный бес', type:'creature', cost:2, atk:3, hp:1, impAtkGrowOnHeroHit:2, rarity:'rare', desc:'При попадании его атакой по герою соперника навсегда увеличивает свою атаку на 2.', art:'furiousimp', faction:'inferno'},
     {id:'c160', name:'Горящий черт', type:'creature', cost:2, atk:3, hp:2, trample:true, trampleDiscountOnPlay:true, rarity:'rare', desc:'Несёт эффект Топот. При появлении на поле боя уменьшает стоимость случайной карты с эффектом Топот в руке игрока на 1, если такая карта там есть.', art:'stompingimp', faction:'inferno'},
     {id:'c161', name:'Злой глаз', type:'creature', cost:2, atk:1, hp:1, evilEyeDiscardOnDeath:true, rarity:'rare', desc:'При смерти этого юнита игрок противника теряет случайную карту из своей руки.', art:'evileye', faction:'inferno'},
@@ -2832,6 +2832,7 @@
     {id:'s40', name:'Сердце боли', type:'spell', cost:2, painHeartCurse:true, rarity:'legendary', desc:'В начале хода заставляет соперника потерять случайную карту из руки. Если после этого рука соперника опустела, призывает Часового боли на случайную свободную клетку своего поля боя и не возвращается в руку. Если Часовой боли не призван, возвращается в руку игрока.', art:'painheart', faction:'inferno'},
     {id:'s41', name:'Бушующий огонь', type:'spell', cost:3, ragingFire:true, ragingFireDmg:2, ragingFireHeroDmg:2, rarity:'common', desc:'Посылает огненную волну вдоль выбранного вражеского ряда — от первого до последнего квадрата. Волна проходит насквозь и наносит по 2 урона каждому бойцу соперника в ряду, над которым пролетает, а затем наносит 2 урона герою соперника.', art:'ragingfire', faction:'inferno'},
     {id:'c169', name:'Скелет-берсерк Инферно', type:'creature', cost:3, atk:4, hp:2, skeletonWeaponThrowOnDeath:true, rarity:'rare', desc:'При смерти метает свой короткий меч в героя соперника, нанося урон, равный своей текущей атаке.', art:'infernoberserk', faction:'inferno'},
+    {id:'c170', name:'Горящий бес', type:'creature', cost:3, atk:3, hp:5, blazeImpEmptyHandGrow:true, rarity:'rare', desc:'Перед своей атакой, если у противника или у игрока нет карт в руке, навсегда увеличивает свою атаку на 1.', art:'blazeimp', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3932,7 +3933,8 @@
     tridentimp: `<svg viewBox="0 0 64 64"><path d="M16 22l6 6-8 4zM48 22l-6 6 8 4z" fill="#7a1815"/><circle cx="26" cy="30" r="12" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="21" cy="28" r="2" fill="#241a16"/><circle cx="31" cy="28" r="2" fill="#241a16"/><path d="M21 35c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><line x1="38" y1="52" x2="56" y2="10" stroke="#5c4536" stroke-width="3" stroke-linecap="round"/><path d="M50 20l6-10M56 10l7-4M56 10l-2-8" stroke="#8a97a3" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>`,
     painheart: `<svg viewBox="0 0 64 64"><path d="M32 54C14 42 6 30 6 20 6 11 13 6 21 6c5 0 9 3 11 7 2-4 6-7 11-7 8 0 15 5 15 14 0 10-8 22-26 34z" fill="#7a1815" stroke="#3a0f0c" stroke-width="2"/><path d="M20 24l6 8-5 3 9 12 4-9-5-2 6-9z" fill="#e0b93a"/><circle cx="20" cy="18" r="2" fill="#e04a3f" opacity=".8"/><circle cx="44" cy="18" r="2" fill="#e04a3f" opacity=".8"/></svg>`,
     ragingfire: `<svg viewBox="0 0 64 64"><path d="M8 40c8-16 16-24 24-16s8 16 16 8 8-20 16-12" fill="none" stroke="#e0622e" stroke-width="8" stroke-linecap="round" opacity=".9"/><path d="M12 46c6-12 12-18 18-12s8 12 14 6 10-14 16-8" fill="none" stroke="#f5b93a" stroke-width="4" stroke-linecap="round"/><path d="M46 12c-2 6 2 8 0 12" stroke="#e04a3f" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`,
-    infernoberserk: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><circle cx="26" cy="16" r="2.4" fill="#e04a3f"/><circle cx="34" cy="16" r="2.4" fill="#e04a3f"/><path d="M22 12l5 3M38 12l-5 3" stroke="#8a8378" stroke-width="1.5" stroke-linecap="round"/><path d="M25 22h10" stroke="#8a8378" stroke-width="1.5"/><rect x="24" y="28" width="12" height="16" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><path d="M24 33h12M24 39h12" stroke="#8a8378" stroke-width="1"/><path d="M16 52l8-9M44 52l-8-9" stroke="#e9e0cf" stroke-width="4.5" stroke-linecap="round"/><path d="M40 14l14 6-3 6-13-6zM10 20l14 6-3 6-13-6z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1"/></svg>`
+    infernoberserk: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><circle cx="26" cy="16" r="2.4" fill="#e04a3f"/><circle cx="34" cy="16" r="2.4" fill="#e04a3f"/><path d="M22 12l5 3M38 12l-5 3" stroke="#8a8378" stroke-width="1.5" stroke-linecap="round"/><path d="M25 22h10" stroke="#8a8378" stroke-width="1.5"/><rect x="24" y="28" width="12" height="16" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><path d="M24 33h12M24 39h12" stroke="#8a8378" stroke-width="1"/><path d="M16 52l8-9M44 52l-8-9" stroke="#e9e0cf" stroke-width="4.5" stroke-linecap="round"/><path d="M40 14l14 6-3 6-13-6zM10 20l14 6-3 6-13-6z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1"/></svg>`,
+    blazeimp: `<svg viewBox="0 0 64 64"><path d="M18 14l7 8-11 2zM46 14l-7 8 11 2z" fill="#7a1815"/><circle cx="32" cy="27" r="14" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="26" cy="25" r="2.2" fill="#241a16"/><circle cx="38" cy="25" r="2.2" fill="#241a16"/><path d="M25 33c3 3 11 3 14 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M18 42h28v10a14 14 0 0 1-28 0z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5"/><path d="M24 46c2 3 2 6 0 9M32 46c2 3 2 6 0 9M40 46c2 3 2 6 0 9" stroke="#f5b93a" stroke-width="2" stroke-linecap="round" fill="none" opacity=".8"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5996,7 +5998,7 @@
     });
   }
 
-  // Скелет-воин инферно: on death, throws his short sword straight at
+  // Скелет-воин Инферно: on death, throws his short sword straight at
   // the enemy HERO — unlike Метеоритный страж's weaponThrow above,
   // there's no random cell/unit in between to hit, so this is a much
   // simpler always-hero variant. Already gone from the board by the
@@ -6008,7 +6010,7 @@
     const targetMine = ev.targetSide === state.myUsername;
     const sourceEl = findSlotEl(ev.laneIdx, shooterMine, ev.depthIdx);
     const sourceCard = cardDefById(ev.cardId);
-    const shooterName = sourceCard ? sourceCard.name : 'Скелет-воин инферно';
+    const shooterName = sourceCard ? sourceCard.name : 'Скелет-воин Инферно';
     const heroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
     log(`${shooterMine?'Твой':'Соперника'} «${shooterName}», погибая, бросает свой короткий меч в героя ${targetMine?'твоего':'соперника'}, нанося ${ev.amount}.`);
     flyProjectileToHero(sourceEl, heroEl, SWORD_STRIKE_SVG, 'cannonball', 400, ()=>{
