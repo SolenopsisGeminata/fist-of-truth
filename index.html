@@ -2827,6 +2827,7 @@
     {id:'s39', name:'Прилив тепла', type:'spell', cost:2, heatSurge:true, heatSurgeDmg:4, heatSurgeHeal:4, rarity:'rare', desc:'Сбрасывает лавовый сгусток на выбранную вражескую ячейку, нанося 4 урона находящемуся там юниту. Если юнита там нет, урон достаётся герою соперника. Также исцеляет своего героя на 4 здоровья.', art:'heatsurge', faction:'inferno'},
     {id:'c165', name:'Крушитель черепов', type:'creature', cost:2, atk:4, hp:5, skullCrusherSelfDamage:3, rarity:'epic', desc:'При появлении на поле боя наносит своему герою 3 урона.', art:'skullcrusher', faction:'inferno'},
     {id:'c166', name:'Большерот', type:'creature', cost:2, atk:1, hp:3, trample:true, bigMouthGrowOnEnemyHeroDamage:true, rarity:'epic', desc:'Несёт эффект Топот. Каждый раз, когда герой соперника получает урон (от любого источника), навсегда увеличивает свою атаку и здоровье на 1.', art:'bigmouth', faction:'inferno'},
+    {id:'c167', name:'Часовой боли', type:'creature', cost:2, atk:2, hp:5, painSentinelPulse:true, rarity:'epic', desc:'В конце хода увеличивает свою атаку на 2 и здоровье на 3, затем уменьшает свою атаку и здоровье на 1 за каждую карту в руке соперника.', art:'painsentinel', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3922,7 +3923,8 @@
     madfireball: `<svg viewBox="0 0 64 64"><path d="M32 4c-3 8 3 10 0 16-3-1-6 1-6 5 0 3 2 5 3 7" fill="none" stroke="#e04a3f" stroke-width="3" stroke-linecap="round"/><path d="M20 10c2 5 5 6 4 10M44 10c-2 5-5 6-4 10" fill="none" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="36" r="18" fill="#e0622e" stroke="#7a1815" stroke-width="2"/><circle cx="32" cy="36" r="11" fill="#ffb199" opacity=".8"/></svg>`,
     heatsurge: `<svg viewBox="0 0 64 64"><path d="M32 6c-8 4-14 12-14 20 0 8 6 14 14 14s14-6 14-14c0-8-6-16-14-20z" fill="#e0622e" stroke="#7a1815" stroke-width="2"/><path d="M32 16c-4 3-7 7-7 11 0 4 3 7 7 7s7-3 7-7c0-4-3-8-7-11z" fill="#ffb199" opacity=".8"/><path d="M28 46h8M32 42v8" stroke="#e0b93a" stroke-width="3" stroke-linecap="round"/></svg>`,
     skullcrusher: `<svg viewBox="0 0 64 64"><ellipse cx="30" cy="38" rx="16" ry="15" fill="#e9e0cf" stroke="#8a8378" stroke-width="1.5"/><circle cx="23" cy="36" r="3.5" fill="#1a130d"/><circle cx="36" cy="37" r="3.5" fill="#1a130d"/><path d="M20 48h6v6h-6zM33 48h6v6h-6z" fill="#e9e0cf" stroke="#8a8378" stroke-width="1"/><path d="M27 42l2 5 2-5z" fill="#8a8378"/><path d="M14 28l4-4 24-2 4 5" fill="none" stroke="#c9432e" stroke-width="1.5" opacity=".6"/><rect x="34" y="4" width="16" height="12" rx="2" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5" transform="rotate(35 42 10)"/><circle cx="38" cy="8" r="1.4" fill="#3a0f0c" transform="rotate(35 42 10)"/><circle cx="46" cy="8" r="1.4" fill="#3a0f0c" transform="rotate(35 42 10)"/><rect x="46" y="16" width="4" height="18" fill="#5c4536" stroke="#3a2c22" stroke-width="1" transform="rotate(35 42 10)"/></svg>`,
-    bigmouth: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="30" rx="22" ry="16" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="20" cy="24" r="3" fill="#e04a3f"/><circle cx="44" cy="24" r="3" fill="#e04a3f"/><path d="M12 34c6 10 34 10 40 0-4 8-10 14-20 14s-16-6-20-14z" fill="#241a16"/><path d="M16 34l3 6 3-6M26 36l3 7 3-7M36 36l3 6 3-6M46 34l-3 6-3-6" fill="#e9e0cf"/></svg>`
+    bigmouth: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="30" rx="22" ry="16" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="20" cy="24" r="3" fill="#e04a3f"/><circle cx="44" cy="24" r="3" fill="#e04a3f"/><path d="M12 34c6 10 34 10 40 0-4 8-10 14-20 14s-16-6-20-14z" fill="#241a16"/><path d="M16 34l3 6 3-6M26 36l3 7 3-7M36 36l3 6 3-6M46 34l-3 6-3-6" fill="#e9e0cf"/></svg>`,
+    painsentinel: `<svg viewBox="0 0 64 64"><path d="M32 6a11 11 0 0 1 11 11v6H21v-6a11 11 0 0 1 11-11z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><rect x="27" y="18" width="10" height="5" fill="#3a2c22"/><path d="M32 27c-9 2-15 3-15 3v15c0 10 6 16 15 20 9-4 15-10 15-20V30s-6-1-15-3z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><path d="M24 30l4 6-4 6M40 30l-4 6 4 6" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="32" cy="42" r="3" fill="#e0b93a"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5111,6 +5113,7 @@
       else if(ev.type==='fireImpThrow') playFireImpThrowEvent(ev, next);
       else if(ev.type==='trampleDiscount') playTrampleDiscountEvent(ev, next);
       else if(ev.type==='skullCrusherSelfHit') playSkullCrusherSelfHitEvent(ev, next);
+      else if(ev.type==='painSentinelPulse') playPainSentinelPulseEvent(ev, next);
       else if(ev.type==='evilEyeDiscard') playEvilEyeDiscardEvent(ev, next);
       else if(ev.type==='tormentorHit') playTormentorHitEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
@@ -6309,6 +6312,38 @@
       if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
       setTimeout(()=>{ renderAll(); done(); }, 900);
     }, 300);
+  }
+
+  // Часовой боли: at the end of every round he's alive, grows +2/+3
+  // then shrinks by 1/1 per card in the OPPONENT's hand — a dedicated
+  // event (not the generic rallyBuff) since the net change can be
+  // negative, which rallyBuff's "+N" popup text can't represent.
+  function playPainSentinelPulseEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'Часовой боли';
+    const targetEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
+    const netAtkText = ev.netAtk>=0 ? `+${ev.netAtk}` : `${ev.netAtk}`;
+    const netHpText = ev.netHp>=0 ? `+${ev.netHp}` : `${ev.netHp}`;
+    log(`${mine?'Твой':'Соперника'} «${sourceName}» пульсирует болью: +2⚔/+3♥, затем −1/−1 за каждую карту в руке соперника (${ev.handSize}) — итог ${netAtkText}⚔ ${netHpText}♥.`);
+    setTimeout(()=>{
+      if(unit){
+        unit.atk = Math.max(0, unit.atk + ev.netAtk);
+        unit.hp += ev.netHp;
+        unit.maxHp += ev.netHp;
+      }
+      if(targetEl){
+        const popupParts = [];
+        if(ev.netAtk) popupParts.push(`${netAtkText}⚔`);
+        if(ev.netHp) popupParts.push(`${netHpText}♥`);
+        spawnSpellBurst(targetEl, ev.netHp<0 || ev.netAtk<0 ? 'dmg' : 'heal');
+        if(popupParts.length) spawnDamageNumber(targetEl, popupParts.join(' '), ev.netHp<0 ? 'dmg' : 'heal');
+        if(ev.died) targetEl.classList.add('unit-dying');
+      }
+      if(ev.died) board[ev.laneIdx][ev.depthIdx] = null;
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
+    }, 350);
   }
 
   // Злой глаз: on death, the OPPONENT loses a random card from their
