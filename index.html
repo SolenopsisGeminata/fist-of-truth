@@ -2829,7 +2829,8 @@
     {id:'c166', name:'Большерот', type:'creature', cost:2, atk:1, hp:3, trample:true, bigMouthGrowOnEnemyHeroDamage:true, rarity:'epic', desc:'Несёт эффект Топот. Каждый раз, когда герой соперника получает урон (от любого источника), навсегда увеличивает свою атаку и здоровье на 1.', art:'bigmouth', faction:'inferno'},
     {id:'c167', name:'Часовой боли', type:'creature', cost:2, atk:2, hp:5, painSentinelPulse:true, rarity:'epic', desc:'В конце хода увеличивает свою атаку на 2 и здоровье на 3, затем уменьшает свою атаку и здоровье на 1 за каждую карту в руке соперника.', art:'painsentinel', faction:'inferno'},
     {id:'c168', name:'Бес с трезубцем', type:'creature', cost:3, atk:3, hp:2, impTridentDamage:2, rarity:'common', desc:'При появлении на поле боя наносит 2 урона вражескому герою.', art:'tridentimp', faction:'inferno'},
-    {id:'s40', name:'Сердце боли', type:'spell', cost:2, painHeartCurse:true, rarity:'legendary', desc:'В начале хода заставляет соперника потерять случайную карту из руки. Если после этого рука соперника опустела, призывает Часового боли на случайную свободную клетку своего поля боя. После использования возвращается в руку игрока.', art:'painheart', faction:'inferno'},
+    {id:'s40', name:'Сердце боли', type:'spell', cost:2, painHeartCurse:true, rarity:'legendary', desc:'В начале хода заставляет соперника потерять случайную карту из руки. Если после этого рука соперника опустела, призывает Часового боли на случайную свободную клетку своего поля боя и не возвращается в руку. Если Часовой боли не призван, возвращается в руку игрока.', art:'painheart', faction:'inferno'},
+    {id:'s41', name:'Бушующий огонь', type:'spell', cost:3, ragingFire:true, ragingFireDmg:2, ragingFireHeroDmg:2, rarity:'common', desc:'Посылает огненную волну вдоль выбранного вражеского ряда — от первого до последнего квадрата. Волна проходит насквозь и наносит по 2 урона каждому бойцу соперника в ряду, над которым пролетает, а затем наносит 2 урона герою соперника.', art:'ragingfire', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3928,7 +3929,8 @@
     bigmouth: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="30" rx="22" ry="16" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="20" cy="24" r="3" fill="#e04a3f"/><circle cx="44" cy="24" r="3" fill="#e04a3f"/><path d="M12 34c6 10 34 10 40 0-4 8-10 14-20 14s-16-6-20-14z" fill="#241a16"/><path d="M16 34l3 6 3-6M26 36l3 7 3-7M36 36l3 6 3-6M46 34l-3 6-3-6" fill="#e9e0cf"/></svg>`,
     painsentinel: `<svg viewBox="0 0 64 64"><path d="M32 6a11 11 0 0 1 11 11v6H21v-6a11 11 0 0 1 11-11z" fill="#8a97a3" stroke="#5c6570" stroke-width="1.5"/><rect x="27" y="18" width="10" height="5" fill="#3a2c22"/><path d="M32 27c-9 2-15 3-15 3v15c0 10 6 16 15 20 9-4 15-10 15-20V30s-6-1-15-3z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><path d="M24 30l4 6-4 6M40 30l-4 6 4 6" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="32" cy="42" r="3" fill="#e0b93a"/></svg>`,
     tridentimp: `<svg viewBox="0 0 64 64"><path d="M16 22l6 6-8 4zM48 22l-6 6 8 4z" fill="#7a1815"/><circle cx="26" cy="30" r="12" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="21" cy="28" r="2" fill="#241a16"/><circle cx="31" cy="28" r="2" fill="#241a16"/><path d="M21 35c2 2 8 2 10 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><line x1="38" y1="52" x2="56" y2="10" stroke="#5c4536" stroke-width="3" stroke-linecap="round"/><path d="M50 20l6-10M56 10l7-4M56 10l-2-8" stroke="#8a97a3" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>`,
-    painheart: `<svg viewBox="0 0 64 64"><path d="M32 54C14 42 6 30 6 20 6 11 13 6 21 6c5 0 9 3 11 7 2-4 6-7 11-7 8 0 15 5 15 14 0 10-8 22-26 34z" fill="#7a1815" stroke="#3a0f0c" stroke-width="2"/><path d="M20 24l6 8-5 3 9 12 4-9-5-2 6-9z" fill="#e0b93a"/><circle cx="20" cy="18" r="2" fill="#e04a3f" opacity=".8"/><circle cx="44" cy="18" r="2" fill="#e04a3f" opacity=".8"/></svg>`
+    painheart: `<svg viewBox="0 0 64 64"><path d="M32 54C14 42 6 30 6 20 6 11 13 6 21 6c5 0 9 3 11 7 2-4 6-7 11-7 8 0 15 5 15 14 0 10-8 22-26 34z" fill="#7a1815" stroke="#3a0f0c" stroke-width="2"/><path d="M20 24l6 8-5 3 9 12 4-9-5-2 6-9z" fill="#e0b93a"/><circle cx="20" cy="18" r="2" fill="#e04a3f" opacity=".8"/><circle cx="44" cy="18" r="2" fill="#e04a3f" opacity=".8"/></svg>`,
+    ragingfire: `<svg viewBox="0 0 64 64"><path d="M8 40c8-16 16-24 24-16s8 16 16 8 8-20 16-12" fill="none" stroke="#e0622e" stroke-width="8" stroke-linecap="round" opacity=".9"/><path d="M12 46c6-12 12-18 18-12s8 12 14 6 10-14 16-8" fill="none" stroke="#f5b93a" stroke-width="4" stroke-linecap="round"/><path d="M46 12c-2 6 2 8 0 12" stroke="#e04a3f" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4546,6 +4548,9 @@
       } else if(card.wrathDmg){
         el.hint.textContent = 'Выбери полосу — молнии ударят по всем вражеским бойцам в ней.';
         highlightEnemyLanesForSpell();
+      } else if(card.ragingFire){
+        el.hint.textContent = 'Выбери полосу — огненная волна пройдёт по всем бойцам в ней и ударит по герою соперника.';
+        highlightEnemyLanesForSpell();
       } else if(card.treeWrath){
         el.hint.textContent = 'Выбери полосу — корень ударит по случайной ячейке в ней, задев и героя соперника.';
         highlightEnemyLanesForSpell();
@@ -4700,7 +4705,7 @@
 
   function castDamageSpell(laneIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.dmg || card.wrathDmg || card.bounceToHand || card.treeWrath)) return;
+    if(!card || !(card.dmg || card.wrathDmg || card.bounceToHand || card.treeWrath || card.ragingFire)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -5219,6 +5224,33 @@
           unit.hp -= ev.amount;
           if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
           log(isRockHail ? `«${label}» обрушивает камень на ${unit.name}, нанося ${ev.amount}.` : `«${label}» поражает молнией ${unit.name}, нанося ${ev.amount}.`);
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+        }
+        setTimeout(()=>{ renderAll(); done(); }, 500);
+      }, 300);
+      return;
+    }
+    if(ev.kind==='ragingFire' && !ev.targetHero){
+      // Бушующий огонь: one event per depth position in the chosen
+      // enemy lane, same "unit hit / empty cell struck harmlessly /
+      // Чаростойкость blocks outright" shape as Гнев небес's wrath
+      // above — reuses Солнечный дракон's own fire-wave visual since
+      // it's the same "wave sweeping across a row" flavor. The
+      // guaranteed hero hit arrives as its own separate targetHero:true
+      // event and falls through to the generic hero-hit handler below.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnFireWave(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» проносится над пустой ячейкой.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          unit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          log(`«${label}» проходит сквозь ${unit.name}, нанося ${ev.amount}.`);
           if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
         }
         setTimeout(()=>{ renderAll(); done(); }, 500);
@@ -6638,18 +6670,21 @@
   // instantSummon/guardCall spells — doesn't touch the targeted cell at
   // all (purely a targeting formality), so this is a log-only handler,
   // same privacy-safe pattern as playEvilEyeDiscardEvent above (no card
-  // identity named, only the discarded/emptied booleans). The summon of
-  // Часовой боли (if it fires) arrives as its own separate 'summon'
-  // event and is handled generically elsewhere; the spell card
-  // returning to the caster's hand is likewise picked up automatically
-  // by the next hand snapshot, needing no extra code here.
+  // identity named, only the discarded/emptied/summoned booleans). The
+  // summon of Часовой боли (if it fires) arrives as its own separate
+  // 'summon' event and is handled generically elsewhere; whether the
+  // spell card itself returns to the caster's hand is likewise picked
+  // up automatically by the next hand snapshot (summoned:true means it
+  // was consumed for good, needing no extra code here either way).
   function playPainHeartCurseEvent(ev, done){
     const mine = ev.side === state.myUsername;
     const targetMine = ev.targetSide === state.myUsername;
     if(!ev.discarded){
       log(`«Сердце боли» ${mine?'твоего героя':'соперника'} ищет карту в руке ${targetMine?'твоей':'соперника'}, но рука уже пуста.`);
+    } else if(ev.summoned){
+      log(`«Сердце боли» ${mine?'твоего героя':'соперника'} забирает последнюю карту из руки ${targetMine?'твоей':'соперника'} — рука опустела, призывается Часовой боли, а само заклинание расходуется без остатка!`);
     } else if(ev.emptied){
-      log(`«Сердце боли» ${mine?'твоего героя':'соперника'} забирает последнюю карту из руки ${targetMine?'твоей':'соперника'} — рука опустела, и это призывает Часового боли!`);
+      log(`«Сердце боли» ${mine?'твоего героя':'соперника'} забирает последнюю карту из руки ${targetMine?'твоей':'соперника'} — рука опустела, но поле боя занято, и Часовой боли не призван.`);
     } else {
       log(`«Сердце боли» ${mine?'твоего героя':'соперника'} забирает случайную карту из руки ${targetMine?'твоей':'соперника'}.`);
     }
@@ -7630,10 +7665,11 @@
   function spellStatsText(card){
     if(card.dmg) return '−'+card.dmg+' HP';
     if(card.wrathDmg) return '−'+card.wrathDmg+' HP по ряду';
+    if(card.ragingFire) return `−${card.ragingFireDmg} HP по ряду, −${card.ragingFireHeroDmg} герою`;
     if(card.treeWrath) return `−${card.treeWrathAmount} юниту и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} бойцу и герою`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} бойцу/герою, +${card.heatSurgeHeal} своему герою`;
-    if(card.painHeartCurse) return `−1 карта из руки врага · возвращается в руку`;
+    if(card.painHeartCurse) return `−1 карта из руки врага · возвращается, если не призван Часовой боли`;
     if(card.bounceToHand) return 'Вернуть в руку · ряд';
     if(card.bounceCellAndNeighbor) return 'Вернуть в руку · ячейка + сосед';
     if(card.randomBlind) return 'Ослепить случайного врага';
@@ -7656,10 +7692,11 @@
     if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}${card.lifesteal?' · 🩸 при ударе':''}${card.synergy?' · 🔗 синергия':''}${card.firstStrike?' · ⚡ первый удар':''}${card.defender?' · 🛑 защитник':''}${card.sleep?' · 💤 сон':''}${card.spellResist?' · 🔮 чаростойкость':''}${card.trample?' · 🐾 топот':''}${card.doubleHeal?' · 💞 двойное омоложение':''}${card.doubleStrike?' · ⚔️⚔️ двойной удар':''}${card.healTrigger?' · 🕊️ священный свет':''}${card.coinFlipAttack?' · 🪙 50% атаки':''}`;
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
+    if(card.ragingFire) return `−${card.ragingFireDmg} каждому бойцу в ряду, затем −${card.ragingFireHeroDmg} герою`;
     if(card.treeWrath) return `−${card.treeWrathAmount} случайному бойцу и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} выбранному бойцу и герою одновременно`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} выбранному бойцу или его герою, +${card.heatSurgeHeal} своему герою`;
-    if(card.painHeartCurse) return `заставляет соперника сбросить случайную карту из руки, призывает Часового боли при опустевшей руке, возвращается в руку игрока`;
+    if(card.painHeartCurse) return `заставляет соперника сбросить случайную карту из руки; призывает Часового боли при опустевшей руке (карта не возвращается), иначе возвращается в руку игрока`;
     if(card.bounceToHand) return `возвращает ряд в руку`;
     if(card.bounceCellAndNeighbor) return `возвращает ячейку и соседа в руку`;
     if(card.randomBlind) return `ослепляет случайного врага на ход`;
