@@ -2850,6 +2850,7 @@
     {id:'c182', name:'Подлый вредитель', type:'creature', cost:4, atk:3, hp:4, armor:2, vileVerminSelfAcid:true, rarity:'rare', desc:'Перед своей атакой окружает себя облаком кислоты, которое наносит 1 урона своему герою, затем исчезает.', art:'vilevermin', faction:'inferno'},
     {id:'c183', name:'Адское пугало', type:'creature', cost:4, atk:0, hp:4, hellScarecrowDiscardOnPlay:true, hellScarecrowGrowOnEmptyHand:true, rarity:'rare', desc:'При появлении на поле боя заставляет противника потерять случайную карту из руки. В конце хода, если у противника нет карт в руке, навсегда увеличивает свою атаку на 1.', art:'hellscarecrow', faction:'inferno'},
     {id:'s45', name:'Огненный вихрь', type:'spell', cost:4, ragingFire:true, ragingFireDmg:4, ragingFireHeroDmg:5, rarity:'rare', desc:'Посылает огненный вихрь вдоль выбранного вражеского ряда — от первого до последнего квадрата. Вихрь наносит 4 урона каждому бойцу соперника в ряду, над которым пролетает, а затем наносит 5 урона герою соперника.', art:'firewhirl', faction:'inferno'},
+    {id:'c184', name:'Суккуб', type:'creature', cost:4, atk:3, hp:2, succubusDrainOnRoundEnd:true, rarity:'epic', desc:'В конце хода заставляет противника потерять случайную карту из руки. Если у противника нет карт в руке, наносит 4 урона по его герою.', art:'succubus', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3968,7 +3969,8 @@
     fatdemon: `<svg viewBox="0 0 64 64"><path d="M22 10l6 6-8 2zM42 10l-6 6 8 2z" fill="#7a1815"/><circle cx="32" cy="18" r="9" fill="#e0622e" stroke="#7a1815" stroke-width="1.5"/><circle cx="27" cy="16" r="1.8" fill="#241a16"/><circle cx="37" cy="16" r="1.8" fill="#241a16"/><path d="M26 22c3 2 9 2 12 0" stroke="#241a16" stroke-width="1.3" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="42" rx="19" ry="16" fill="#c9432e" stroke="#7a1815" stroke-width="1.5"/><circle cx="32" cy="44" r="4" fill="#8a2f1a" opacity=".6"/><path d="M12 50l6 6M52 50l-6 6" stroke="#7a1815" stroke-width="3" stroke-linecap="round"/></svg>`,
     vilevermin: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="36" rx="15" ry="17" fill="#3f5c26" stroke="#1f3d13" stroke-width="1.5"/><path d="M32 22v28" stroke="#1f3d13" stroke-width="1.1" opacity=".6"/><path d="M22 28h20M20 36h24M22 44h20" stroke="#1f3d13" stroke-width="1" opacity=".4"/><circle cx="27" cy="22" r="2.5" fill="#7ec850"/><circle cx="37" cy="22" r="2.5" fill="#7ec850"/><path d="M14 32l7 4-7 6M50 32l-7 4 7 6" stroke="#1f3d13" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M18 12c3 4 3 8 0 12M46 12c-3 4-3 8 0 12M12 16c5 2 8 6 8 12M52 16c-5 2-8 6-8 12" fill="none" stroke="#7ec850" stroke-width="2" stroke-linecap="round" opacity=".7"/></svg>`,
     hellscarecrow: `<svg viewBox="0 0 64 64"><line x1="12" y1="30" x2="52" y2="30" stroke="#5c4536" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="6" x2="32" y2="56" stroke="#5c4536" stroke-width="3" stroke-linecap="round"/><ellipse cx="32" cy="22" rx="11" ry="12" fill="#8a6d4a" stroke="#3a2c22" stroke-width="1.5"/><path d="M25 18l5 5M30 18l-5 5M34 18l5 5M39 18l-5 5" stroke="#e04a3f" stroke-width="1.8" stroke-linecap="round"/><path d="M25 28l7 3 7-3" stroke="#3a2c22" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M20 40h24l-3 14a9 9 0 0 1-18 0z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><path d="M16 44l-6-4M48 44l6-4M18 52l-6 2M46 52l6 2" stroke="#e0b93a" stroke-width="1.5" stroke-linecap="round" opacity=".7"/></svg>`,
-    firewhirl: `<svg viewBox="0 0 64 64"><path d="M32 6c10 2 16 8 16 16s-8 12-16 10-10-8-6-12 10-2 10 3-4 6-8 4" fill="none" stroke="#e0622e" stroke-width="4" stroke-linecap="round"/><path d="M32 6c10 2 16 8 16 16s-8 12-16 10-10-8-6-12 10-2 10 3-4 6-8 4" fill="none" stroke="#f5b93a" stroke-width="1.8" stroke-linecap="round" opacity=".8" transform="scale(0.7) translate(14,10)"/><path d="M14 58c6-14 10-28 8-42M50 58c-6-14-10-28-8-42" fill="none" stroke="#7a1815" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>`
+    firewhirl: `<svg viewBox="0 0 64 64"><path d="M32 6c10 2 16 8 16 16s-8 12-16 10-10-8-6-12 10-2 10 3-4 6-8 4" fill="none" stroke="#e0622e" stroke-width="4" stroke-linecap="round"/><path d="M32 6c10 2 16 8 16 16s-8 12-16 10-10-8-6-12 10-2 10 3-4 6-8 4" fill="none" stroke="#f5b93a" stroke-width="1.8" stroke-linecap="round" opacity=".8" transform="scale(0.7) translate(14,10)"/><path d="M14 58c6-14 10-28 8-42M50 58c-6-14-10-28-8-42" fill="none" stroke="#7a1815" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>`,
+    succubus: `<svg viewBox="0 0 64 64"><path d="M10 20c8-8 16-4 18 2 2-6 10-10 18-2-2 8-6 14-18 20-12-6-16-12-18-20z" fill="#241a16" stroke="#7a1815" stroke-width="1.3"/><path d="M22 16l4 4M42 16l-4 4" stroke="#7a1815" stroke-width="2" stroke-linecap="round"/><ellipse cx="32" cy="30" rx="9" ry="10" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.4"/><circle cx="28" cy="28" r="1.8" fill="#e04a3f"/><circle cx="36" cy="28" r="1.8" fill="#e04a3f"/><path d="M27 35c3 2 7 2 10 0" stroke="#241a16" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M24 42c-2 6 0 12 8 14 8-2 10-8 8-14" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5177,6 +5179,7 @@
       else if(ev.type==='tormentorHit') playTormentorHitEvent(ev, next);
       else if(ev.type==='thiefImpSteal') playThiefImpStealEvent(ev, next);
       else if(ev.type==='hellScarecrowDiscard') playHellScarecrowDiscardEvent(ev, next);
+      else if(ev.type==='succubusDrain') playSuccubusDrainEvent(ev, next);
       else if(ev.type==='foxSwordStrike') playFoxSwordStrikeEvent(ev, next);
       else if(ev.type==='shurikenHit') playShurikenHitEvent(ev, next);
       else if(ev.type==='drunkenSelfHit') playDrunkenSelfHitEvent(ev, next);
@@ -6659,6 +6662,34 @@
       log(`${mine?'Твой':'Соперника'} «${sourceName}» появляется на поле боя и пытается забрать карту из руки ${targetMine?'твоей':'соперника'}, но рука уже пуста.`);
     }
     setTimeout(()=>{ done(); }, 400);
+  }
+
+  // Суккуб: at the end of every round she's alive, forces the opponent
+  // to lose a random card from their own hand — same privacy-safe
+  // pattern as playHellScarecrowDiscardEvent above (no card identity
+  // named). If their hand was ALREADY empty, drains 4 health from
+  // their hero instead, same self/opponent hero-hit visual as
+  // playStyxGuardHitEvent.
+  function playSuccubusDrainEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'Суккуб';
+    if(ev.discarded){
+      log(`${mine?'Твоя':'Соперника'} «${sourceName}» забирает случайную карту из руки ${targetMine?'твоей':'соперника'}.`);
+      setTimeout(()=>{ done(); }, 400);
+      return;
+    }
+    const sourceEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
+    const heroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    log(`${mine?'Твоя':'Соперника'} «${sourceName}» не находит карт в руке ${targetMine?'твоей':'соперника'} и вместо этого высасывает ${ev.amount} здоровья из ${targetMine?'твоего':'вражеского'} героя.`);
+    spawnSpellBurst(sourceEl || heroEl, 'dmg');
+    setTimeout(()=>{
+      if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+      if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
+      setTimeout(()=>{ renderAll(); done(); }, 900);
+    }, 300);
   }
 
   // Мастер сюрикенов: the shuriken bounces from wherever it last was
