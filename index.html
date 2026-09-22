@@ -2823,7 +2823,8 @@
     {id:'c162', name:'Огненная муха', type:'creature', cost:2, atk:2, hp:2, fireFlyGrowOnEnemyHeroDamage:true, rarity:'rare', desc:'Каждый раз, когда герой соперника получает урон (от любого источника), навсегда увеличивает свою атаку на 1.', art:'fireflyimp', faction:'inferno'},
     {id:'c163', name:'Бес-мучитель', type:'creature', cost:2, atk:3, hp:2, tormentorExtraDamage:true, rarity:'rare', desc:'При попадании его атакой по герою соперника наносит дополнительно по 1 единице урона обоим героям.', art:'tormentorimp', faction:'inferno'},
     {id:'c164', name:'Ядовитый жук', type:'creature', cost:2, atk:2, hp:2, armor:1, acidShotOnDeath:true, rarity:'rare', desc:'При смерти стреляет кислотой в случайный квадрат на поле противника, нанося 2 урона. Если кислота попадает в юнита, урон достаётся только ему. Если ячейка пуста, урон достаётся герою соперника.', art:'poisonbeetle', faction:'inferno'},
-    {id:'s38', name:'Безумный огненный шар', type:'spell', cost:4, dmg:4, rarity:'rare', desc:'Посылает большой огненный шар вдоль выбранного вражеского ряда — от первого до последнего квадрата. Наносит 4 урона первому противнику на своём пути. Если врагов в ряду нет, шар долетает до конца и наносит урон герою соперника.', art:'madfireball', faction:'inferno'},
+    {id:'s38', name:'Безумный огненный шар', type:'spell', cost:2, dmg:4, rarity:'rare', desc:'Посылает большой огненный шар вдоль выбранного вражеского ряда — от первого до последнего квадрата. Наносит 4 урона первому противнику на своём пути. Если врагов в ряду нет, шар долетает до конца и наносит урон герою соперника.', art:'madfireball', faction:'inferno'},
+    {id:'s39', name:'Прилив тепла', type:'spell', cost:2, heatSurge:true, heatSurgeDmg:4, heatSurgeHeal:4, rarity:'rare', desc:'Сбрасывает лавовый сгусток на выбранную вражескую ячейку, нанося 4 урона находящемуся там юниту. Если юнита там нет, урон достаётся герою соперника. Также исцеляет своего героя на 4 здоровья.', art:'heatsurge', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3916,7 +3917,8 @@
     fireflyimp: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="10" ry="14" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/><circle cx="27" cy="22" r="3" fill="#e04a3f"/><circle cx="37" cy="22" r="3" fill="#e04a3f"/><path d="M20 24c-10-6-16 0-14 8 8-2 12-4 14-8zM44 24c10-6 16 0 14 8-8-2-12-4-14-8z" fill="#e0622e" opacity=".8" stroke="#7a1815" stroke-width="1"/><circle cx="32" cy="46" r="3" fill="#ffe066"/></svg>`,
     tormentorimp: `<svg viewBox="0 0 64 64"><path d="M22 16l6 8-10 2zM42 16l-6 8 10 2z" fill="#7a1815"/><circle cx="32" cy="28" r="12" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><path d="M25 24l5 3M39 24l-5 3" stroke="#241a16" stroke-width="2" stroke-linecap="round"/><circle cx="27" cy="30" r="2" fill="#ffe066"/><circle cx="37" cy="30" r="2" fill="#ffe066"/><path d="M25 36c3 2 11 2 14 0" stroke="#241a16" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 50l12-10 3 3-13 11zM52 50l-12-10-3 3 13 11z" fill="#8a97a3" stroke="#5c6570" stroke-width="1"/></svg>`,
     poisonbeetle: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="36" rx="16" ry="18" fill="#3f7a26" stroke="#1f3d13" stroke-width="1.5"/><path d="M32 20v32" stroke="#1f3d13" stroke-width="1.2" opacity=".6"/><path d="M22 26h20M20 34h24M22 42h20" stroke="#1f3d13" stroke-width="1" opacity=".4"/><circle cx="26" cy="20" r="3" fill="#7ec850"/><circle cx="38" cy="20" r="3" fill="#7ec850"/><path d="M26 20l-8-6M38 20l8-6" stroke="#1f3d13" stroke-width="1.5" stroke-linecap="round"/><path d="M14 30l-8-3M14 38l-8 1M14 46l-8 5M50 30l8-3M50 38l8 1M50 46l8 5" stroke="#1f3d13" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-    madfireball: `<svg viewBox="0 0 64 64"><path d="M32 4c-3 8 3 10 0 16-3-1-6 1-6 5 0 3 2 5 3 7" fill="none" stroke="#e04a3f" stroke-width="3" stroke-linecap="round"/><path d="M20 10c2 5 5 6 4 10M44 10c-2 5-5 6-4 10" fill="none" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="36" r="18" fill="#e0622e" stroke="#7a1815" stroke-width="2"/><circle cx="32" cy="36" r="11" fill="#ffb199" opacity=".8"/></svg>`
+    madfireball: `<svg viewBox="0 0 64 64"><path d="M32 4c-3 8 3 10 0 16-3-1-6 1-6 5 0 3 2 5 3 7" fill="none" stroke="#e04a3f" stroke-width="3" stroke-linecap="round"/><path d="M20 10c2 5 5 6 4 10M44 10c-2 5-5 6-4 10" fill="none" stroke="#e0b93a" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="36" r="18" fill="#e0622e" stroke="#7a1815" stroke-width="2"/><circle cx="32" cy="36" r="11" fill="#ffb199" opacity=".8"/></svg>`,
+    heatsurge: `<svg viewBox="0 0 64 64"><path d="M32 6c-8 4-14 12-14 20 0 8 6 14 14 14s14-6 14-14c0-8-6-16-14-20z" fill="#e0622e" stroke="#7a1815" stroke-width="2"/><path d="M32 16c-4 3-7 7-7 11 0 4 3 7 7 7s7-3 7-7c0-4-3-8-7-11z" fill="#ffb199" opacity=".8"/><path d="M28 46h8M32 42v8" stroke="#e0b93a" stroke-width="3" stroke-linecap="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4549,6 +4551,9 @@
       } else if(card.lightningStrike){
         el.hint.textContent = 'Выбери вражескую ячейку — молния ударит по бойцу в ней и по герою соперника одновременно.';
         highlightEnemyCellsForSpell();
+      } else if(card.heatSurge){
+        el.hint.textContent = 'Выбери вражескую ячейку — лавовый сгусток ударит по бойцу в ней (или по герою, если она пуста) и исцелит твоего героя на 4.';
+        highlightEnemyCellsForSpell();
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
@@ -4635,7 +4640,7 @@
   }
   function castEnemyCellSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike)) return;
+    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.heatSurge)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -4801,6 +4806,23 @@
     const wrap = document.createElement('div');
     wrap.className = 'rockfall-strike';
     wrap.innerHTML = ROCK_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 450);
+  }
+
+  // Прилив тепла: same "drop from above" visual/timing as Каменный
+  // град's own rockfall above, just a molten lava blob instead of a
+  // rock — reuses the exact rockfall-strike CSS animation, which is
+  // color-agnostic.
+  const LAVA_DROP_SVG = `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 4l10 6 4 12-6 10H12l-6-10 4-12z" fill="#e0622e" stroke="#7a1815" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M14 14l6-4 6 4-2 8h-8z" fill="#ffb199" opacity=".7"/>
+  </svg>`;
+  function spawnLavaDrop(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'rockfall-strike';
+    wrap.innerHTML = LAVA_DROP_SVG;
     container.appendChild(wrap);
     setTimeout(()=>{ wrap.remove(); }, 450);
   }
@@ -5096,6 +5118,7 @@
       else if(ev.type==='musicalDaoistHit') playMusicalDaoistHitEvent(ev, next);
       else if(ev.type==='treeWrath') playTreeWrathEvent(ev, next);
       else if(ev.type==='lightningStrike') playLightningStrikeEvent(ev, next);
+      else if(ev.type==='heatSurge') playHeatSurgeEvent(ev, next);
       else if(ev.type==='peachGiven') playPeachGivenEvent(ev, next);
       else if(ev.type==='storkCopy') playStorkCopyEvent(ev, next);
       else if(ev.type==='tigerAwaken') playTigerAwakenEvent(ev, next);
@@ -6505,6 +6528,47 @@
     }, 350);
   }
 
+  // Прилив тепла: specific-cell targeting like Молния above, but
+  // EITHER the unit there takes the hit OR the hero does (never both
+  // — same fallback shape as the plain damage-kind spells), plus an
+  // unconditional self-heal on the caster's own hero regardless of
+  // what the primary hit does.
+  function playHeatSurgeEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = ev.targetHero ? null : (targetBoard[ev.laneIdx] && targetBoard[ev.laneIdx][ev.targetDepthIdx]);
+    const targetEl = ev.targetHero
+      ? (targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy'))
+      : (findUnitEl(ev.laneIdx, targetMine, ev.targetDepthIdx) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepthIdx));
+    const ownHeroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    if(ev.targetHero){
+      log(`«Прилив тепла» обрушивается на пустую ячейку — герой ${targetMine?'твой':'соперника'} получает ${ev.amount}, а ${mine?'твой':'вражеский'} герой исцеляется на ${ev.healed}.`);
+    } else if(ev.resisted){
+      log(`«Прилив тепла» обрушивается на ${targetUnit?targetUnit.name:'бойца'} — Чаростойкость спасает его, но ${mine?'твой':'вражеский'} герой всё равно исцеляется на ${ev.healed}.`);
+    } else {
+      log(`«Прилив тепла» обрушивается на ${targetUnit?targetUnit.name:'бойца'}, нанося ${ev.amount}, а ${mine?'твой':'вражеский'} герой исцеляется на ${ev.healed}.`);
+    }
+    spawnLavaDrop(targetEl);
+    setTimeout(()=>{
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
+      }
+      if(ev.healed){
+        if(mine) state.playerHp += ev.healed; else state.enemyHp += ev.healed;
+        if(ownHeroEl) spawnDamageNumber(ownHeroEl, '+'+ev.healed, 'heal');
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
+    }, 350);
+  }
+
   // Контратака (Частокол): when a unit carrying this trait takes damage
   // in normal combat, it strikes back at the attacker for its own
   // attack value — no projectile, just a melee-range retaliation burst
@@ -7481,6 +7545,7 @@
     if(card.wrathDmg) return '−'+card.wrathDmg+' HP по ряду';
     if(card.treeWrath) return `−${card.treeWrathAmount} юниту и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} бойцу и герою`;
+    if(card.heatSurge) return `−${card.heatSurgeDmg} бойцу/герою, +${card.heatSurgeHeal} своему герою`;
     if(card.bounceToHand) return 'Вернуть в руку · ряд';
     if(card.bounceCellAndNeighbor) return 'Вернуть в руку · ячейка + сосед';
     if(card.randomBlind) return 'Ослепить случайного врага';
@@ -7505,6 +7570,7 @@
     if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
     if(card.treeWrath) return `−${card.treeWrathAmount} случайному бойцу и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} выбранному бойцу и герою одновременно`;
+    if(card.heatSurge) return `−${card.heatSurgeDmg} выбранному бойцу или его герою, +${card.heatSurgeHeal} своему герою`;
     if(card.bounceToHand) return `возвращает ряд в руку`;
     if(card.bounceCellAndNeighbor) return `возвращает ячейку и соседа в руку`;
     if(card.randomBlind) return `ослепляет случайного врага на ход`;
