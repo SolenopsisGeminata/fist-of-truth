@@ -2853,6 +2853,7 @@
     {id:'c184', name:'Суккуб', type:'creature', cost:4, atk:3, hp:2, succubusDrainOnRoundEnd:true, rarity:'epic', desc:'В конце хода заставляет противника потерять случайную карту из руки. Если у противника нет карт в руке, наносит 4 урона по его герою.', art:'succubus', faction:'inferno'},
     {id:'c185', name:'Кровавый потрошитель', type:'creature', cost:4, atk:4, hp:5, trample:true, steadfastDaoist:true, rarity:'epic', desc:'Несёт эффект Топот. При попадании его атакой по герою соперника навсегда увеличивает свою атаку и здоровье на 1.', art:'bloodripper', faction:'inferno'},
     {id:'c186', name:'Воющий демон', type:'creature', cost:4, atk:2, hp:1, howlingDemonDoubleAtkOnPlay:true, rarity:'epic', desc:'При появлении на поле боя удваивает атаку случайного соседнего союзника (не действует на юнитов фракций Империя и Дзен).', art:'howlingdemon', faction:'inferno'},
+    {id:'c187', name:'Лавовый колдун', type:'creature', cost:4, atk:3, hp:4, lavaWarlockFireball:true, rarity:'epic', desc:'В начале раунда метает огненный шар в противоположный ряд противника, нанося 3 урона первому противнику на своём пути. Если шар долетает до конца ряда, не встретив цель, наносит 3 урона по герою противника.', art:'lavawarlock', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3974,7 +3975,8 @@
     firewhirl: `<svg viewBox="0 0 64 64"><path d="M32 6c10 2 16 8 16 16s-8 12-16 10-10-8-6-12 10-2 10 3-4 6-8 4" fill="none" stroke="#e0622e" stroke-width="4" stroke-linecap="round"/><path d="M32 6c10 2 16 8 16 16s-8 12-16 10-10-8-6-12 10-2 10 3-4 6-8 4" fill="none" stroke="#f5b93a" stroke-width="1.8" stroke-linecap="round" opacity=".8" transform="scale(0.7) translate(14,10)"/><path d="M14 58c6-14 10-28 8-42M50 58c-6-14-10-28-8-42" fill="none" stroke="#7a1815" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>`,
     succubus: `<svg viewBox="0 0 64 64"><path d="M10 20c8-8 16-4 18 2 2-6 10-10 18-2-2 8-6 14-18 20-12-6-16-12-18-20z" fill="#241a16" stroke="#7a1815" stroke-width="1.3"/><path d="M22 16l4 4M42 16l-4 4" stroke="#7a1815" stroke-width="2" stroke-linecap="round"/><ellipse cx="32" cy="30" rx="9" ry="10" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.4"/><circle cx="28" cy="28" r="1.8" fill="#e04a3f"/><circle cx="36" cy="28" r="1.8" fill="#e04a3f"/><path d="M27 35c3 2 7 2 10 0" stroke="#241a16" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M24 42c-2 6 0 12 8 14 8-2 10-8 8-14" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.3"/></svg>`,
     bloodripper: `<svg viewBox="0 0 64 64"><path d="M20 12l6 8-9 2zM44 12l-6 8 9 2z" fill="#7a1815"/><circle cx="32" cy="26" r="12" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><path d="M25 23l5 3M39 23l-5 3" stroke="#241a16" stroke-width="2" stroke-linecap="round"/><path d="M25 32c3 3 11 3 14 0" stroke="#241a16" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M10 40l10-8 4 4-11 10zM54 40l-10-8-4 4 11 10z" fill="#c9ccd1" stroke="#8a97a3" stroke-width="1.2"/><path d="M14 46l3 5M50 46l-3 5" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" opacity=".85"/><path d="M22 46h20v6a10 10 0 0 1-20 0z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/></svg>`,
-    howlingdemon: `<svg viewBox="0 0 64 64"><path d="M16 16l7 6-10 3zM48 16l-7 6 10 3z" fill="#7a1815"/><ellipse cx="32" cy="30" rx="12" ry="14" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5" transform="rotate(-8 32 30)"/><circle cx="27" cy="26" r="2" fill="#241a16"/><circle cx="37" cy="24" r="2" fill="#241a16"/><ellipse cx="30" cy="38" rx="6" ry="8" fill="#241a16"/><path d="M42 12c4-2 8-2 11 0M45 18c5-1 9 0 12 2M44 24c5 0 9 2 11 5" stroke="#e0b93a" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".7"/></svg>`
+    howlingdemon: `<svg viewBox="0 0 64 64"><path d="M16 16l7 6-10 3zM48 16l-7 6 10 3z" fill="#7a1815"/><ellipse cx="32" cy="30" rx="12" ry="14" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5" transform="rotate(-8 32 30)"/><circle cx="27" cy="26" r="2" fill="#241a16"/><circle cx="37" cy="24" r="2" fill="#241a16"/><ellipse cx="30" cy="38" rx="6" ry="8" fill="#241a16"/><path d="M42 12c4-2 8-2 11 0M45 18c5-1 9 0 12 2M44 24c5 0 9 2 11 5" stroke="#e0b93a" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".7"/></svg>`,
+    lavawarlock: `<svg viewBox="0 0 64 64"><path d="M22 10l10-6 10 6-4 10h-12z" fill="#3a1a12"/><ellipse cx="32" cy="30" rx="13" ry="15" fill="#8a4a2e" stroke="#241009" stroke-width="1.5"/><circle cx="27" cy="27" r="2.4" fill="#ffce54"/><circle cx="37" cy="27" r="2.4" fill="#ffce54"/><path d="M25 38c2 3 12 3 14 0" stroke="#241009" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="32" cy="52" r="9" fill="#e0521f" stroke="#7a1a0c" stroke-width="1.5"/><path d="M32 46c1.5 2 3 3.4 3 5.5a3 3 0 1 1-6 0c0-1.4.8-2.4 1.6-3.4.5 1 1 1.4 1.4-2.1z" fill="#ffce54"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5170,6 +5172,7 @@
       else if(ev.type==='axeThrow') playAxeThrowEvent(ev, next);
       else if(ev.type==='boulderThrow') playBoulderThrowEvent(ev, next);
       else if(ev.type==='dragonFireball') playDragonFireballEvent(ev, next);
+      else if(ev.type==='lavaWarlockFireball') playLavaWarlockFireballEvent(ev, next);
       else if(ev.type==='dragonWave') playDragonWaveEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='bloodShadowBlade') playBloodShadowBladeEvent(ev, next);
@@ -6250,6 +6253,49 @@
       log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) бросает булыжник в ${targetName}, нанося ${ev.amount}.`);
     }
     flyProjectileToHero(sourceEl, targetEl, BOULDER_SVG, 'cannonball', 500, ()=>{
+      spawnSpellBurst(targetEl, 'dmg');
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
+    });
+  }
+
+  // Лавовый колдун: at the start of every round, a fireball down his own
+  // mirrored lane — hits whatever's frontmost there, or flies straight
+  // through to the hero if the lane's empty. Same unit-or-hero fallback,
+  // Чаростойкость-blocks-outright resolution as Дракон прерий's fireball
+  // right below, just restricted to the mirrored lane instead of a fully
+  // random cell.
+  function playLavaWarlockFireballEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const shooterName = sourceUnit ? sourceUnit.name : 'Лавовый колдун';
+    const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    let targetEl, targetUnit = null, targetBoard = null;
+    if(ev.targetHero){
+      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    } else {
+      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    }
+    const targetName = ev.targetHero ? (targetMine?'твоему кулаку':'кулаку соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
+    if(ev.resisted){
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) мечет огненный шар в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) мечет огненный шар в ${targetName}, нанося ${ev.amount}.`);
+    }
+    flyProjectileToHero(sourceEl, targetEl, FIREBALL_SVG, 'cannonball', 450, ()=>{
       spawnSpellBurst(targetEl, 'dmg');
       if(!ev.resisted){
         if(ev.targetHero){
