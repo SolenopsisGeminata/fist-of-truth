@@ -2855,6 +2855,7 @@
     {id:'c186', name:'Воющий демон', type:'creature', cost:4, atk:2, hp:1, howlingDemonDoubleAtkOnPlay:true, rarity:'epic', desc:'При появлении на поле боя удваивает атаку случайного соседнего союзника (не действует на юнитов фракций Империя и Дзен).', art:'howlingdemon', faction:'inferno'},
     {id:'c187', name:'Лавовый колдун', type:'creature', cost:4, atk:3, hp:4, lavaWarlockFireball:true, rarity:'epic', desc:'В начале раунда метает огненный шар в противоположный ряд противника, нанося 3 урона первому противнику на своём пути. Если шар долетает до конца ряда, не встретив цель, наносит 3 урона по герою противника.', art:'lavawarlock', faction:'inferno'},
     {id:'s46', name:'Высасывание души', type:'spell', cost:4, soulDrainSpell:true, soulDrainDmg:3, rarity:'epic', desc:'При использовании на любой клетке на вражеском поле боя наносит 3 урона по случайному юниту противника и заставляет противника потерять 1 карту.', art:'souldrain', faction:'inferno'},
+    {id:'c188', name:'Безликий мясник', type:'creature', cost:5, atk:2, hp:5, spikeWaveOnPlay:true, rarity:'rare', desc:'При появлении на поле боя метает по земле волну шипов в противоположный ряд противника, которая наносит 2 урона всем противникам на своём пути и исчезает, дойдя до конца ряда. Урон вражескому герою волна шипов не наносит, только юнитам, через которых она проходит.', art:'facelessbutcher', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3978,7 +3979,8 @@
     bloodripper: `<svg viewBox="0 0 64 64"><path d="M20 12l6 8-9 2zM44 12l-6 8 9 2z" fill="#7a1815"/><circle cx="32" cy="26" r="12" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5"/><path d="M25 23l5 3M39 23l-5 3" stroke="#241a16" stroke-width="2" stroke-linecap="round"/><path d="M25 32c3 3 11 3 14 0" stroke="#241a16" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M10 40l10-8 4 4-11 10zM54 40l-10-8-4 4 11 10z" fill="#c9ccd1" stroke="#8a97a3" stroke-width="1.2"/><path d="M14 46l3 5M50 46l-3 5" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" opacity=".85"/><path d="M22 46h20v6a10 10 0 0 1-20 0z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/></svg>`,
     howlingdemon: `<svg viewBox="0 0 64 64"><path d="M16 16l7 6-10 3zM48 16l-7 6 10 3z" fill="#7a1815"/><ellipse cx="32" cy="30" rx="12" ry="14" fill="#c9432e" stroke="#3a0f0c" stroke-width="1.5" transform="rotate(-8 32 30)"/><circle cx="27" cy="26" r="2" fill="#241a16"/><circle cx="37" cy="24" r="2" fill="#241a16"/><ellipse cx="30" cy="38" rx="6" ry="8" fill="#241a16"/><path d="M42 12c4-2 8-2 11 0M45 18c5-1 9 0 12 2M44 24c5 0 9 2 11 5" stroke="#e0b93a" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".7"/></svg>`,
     lavawarlock: `<svg viewBox="0 0 64 64"><path d="M22 10l10-6 10 6-4 10h-12z" fill="#3a1a12"/><ellipse cx="32" cy="30" rx="13" ry="15" fill="#8a4a2e" stroke="#241009" stroke-width="1.5"/><circle cx="27" cy="27" r="2.4" fill="#ffce54"/><circle cx="37" cy="27" r="2.4" fill="#ffce54"/><path d="M25 38c2 3 12 3 14 0" stroke="#241009" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="32" cy="52" r="9" fill="#e0521f" stroke="#7a1a0c" stroke-width="1.5"/><path d="M32 46c1.5 2 3 3.4 3 5.5a3 3 0 1 1-6 0c0-1.4.8-2.4 1.6-3.4.5 1 1 1.4 1.4-2.1z" fill="#ffce54"/></svg>`,
-    souldrain: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="16" fill="#241a16" stroke="#7a1815" stroke-width="1.5"/><path d="M32 18c-5 6-5 10 0 15 5-5 5-9 0-15z" fill="#c9432e" opacity=".9"/><path d="M22 26c3 6 3 10 0 15M42 26c-3 6-3 10 0 15" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" fill="none" opacity=".8"/><circle cx="32" cy="30" r="5" fill="#e0b93a"/><path d="M18 48c4-3 8-4 14-4s10 1 14 4" stroke="#3a0f0c" stroke-width="2" stroke-linecap="round" fill="none" opacity=".7"/></svg>`
+    souldrain: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="16" fill="#241a16" stroke="#7a1815" stroke-width="1.5"/><path d="M32 18c-5 6-5 10 0 15 5-5 5-9 0-15z" fill="#c9432e" opacity=".9"/><path d="M22 26c3 6 3 10 0 15M42 26c-3 6-3 10 0 15" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" fill="none" opacity=".8"/><circle cx="32" cy="30" r="5" fill="#e0b93a"/><path d="M18 48c4-3 8-4 14-4s10 1 14 4" stroke="#3a0f0c" stroke-width="2" stroke-linecap="round" fill="none" opacity=".7"/></svg>`,
+    facelessbutcher: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="26" rx="13" ry="15" fill="#8a2e26" stroke="#241009" stroke-width="1.5"/><path d="M22 24h20M22 30h20" stroke="#241009" stroke-width="2" stroke-linecap="round" opacity=".85"/><path d="M14 46l6-10 4 3-5 9zM50 46l-6-10-4 3 5 9zM22 50l3-11 5 1-2 11zM42 50l-3-11-5 1 2 11z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1"/><path d="M20 44l24 0" stroke="#5a1410" stroke-width="3" stroke-linecap="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5179,6 +5181,7 @@
       else if(ev.type==='dragonFireball') playDragonFireballEvent(ev, next);
       else if(ev.type==='lavaWarlockFireball') playLavaWarlockFireballEvent(ev, next);
       else if(ev.type==='dragonWave') playDragonWaveEvent(ev, next);
+      else if(ev.type==='spikeWave') playButcherSpikeWaveEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='bloodShadowBlade') playBloodShadowBladeEvent(ev, next);
       else if(ev.type==='acidSpit') playAcidSpitEvent(ev, next);
@@ -6418,6 +6421,37 @@
         unit.hp -= ev.amount;
         if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
         log(`«${label}» обдаёт волной огня ${unit.name}, нанося ${ev.amount}.`);
+        if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 400);
+    }, 250);
+  }
+
+  // Безликий мясник: on play, one event per depth position in his own
+  // mirrored enemy lane — same "unit hit / empty cell struck harmlessly
+  // / Чаростойкость blocks outright, never the hero" shape as Солнечный
+  // дракон's dragonWave right above, just fired once as a battlecry
+  // instead of every round, reusing the ground-burst visual already
+  // built for Ярость дерева's root strike.
+  function playButcherSpikeWaveEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = mine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard.flat ? sourceBoard.flat().find(u=>u&&u.uid===ev.sourceUid) : null;
+    const label = sourceUnit ? sourceUnit.name : 'Безликий мясник';
+    const board = targetMine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+    const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+    spawnRootBurst(targetEl);
+    setTimeout(()=>{
+      if(ev.empty){
+        log(`«${label}» пускает волну шипов по пустой ячейке.`);
+      } else if(ev.resisted){
+        log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+      } else if(unit){
+        unit.hp -= ev.amount;
+        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+        log(`«${label}» пронзает шипами ${unit.name}, нанося ${ev.amount}.`);
         if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
       }
       setTimeout(()=>{ renderAll(); done(); }, 400);
