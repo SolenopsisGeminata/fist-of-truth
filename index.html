@@ -2913,6 +2913,7 @@
     {id:'c204', name:'Ледяная стена', type:'creature', cost:2, atk:0, hp:6, defender:true, freezeCellOnDeath:true, iceWallGrowOnFrozenCell:true, rarity:'rare', desc:'Защитник: не может атаковать в бою. При смерти покрывает льдом свою клетку. Если клетка этого юнита заморожена, в конце каждого хода навсегда увеличивает своё здоровье на 2.', art:'icewall', faction:'frost'},
     {id:'c205', name:'Могильное надгробие', type:'creature', cost:2, atk:0, hp:4, defender:true, deathSummonCardId:'c206', rarity:'rare', desc:'Защитник: не может атаковать в бою. При смерти призывает Оживший труп на ту же клетку. Призванный боец не может атаковать в раунде своего появления.', art:'gravestone', faction:'frost'},
     {id:'c206', name:'Оживший труп', type:'creature', cost:2, atk:2, hp:3, deathSummonCardId:'c200', rarity:'rare', desc:'При смерти призывает Скелета на ту же клетку. Призванный боец не может атаковать в раунде своего появления.', art:'risencorpse', faction:'frost'},
+    {id:'c207', name:'Арктическое пугало', type:'creature', cost:2, atk:0, hp:4, legacy:1, arcticScarecrowOnPlay:true, rarity:'rare', desc:'Несёт эффект Наследие 1. При появлении на поле боя замораживает случайную соседнюю клетку, а также уменьшает атаку всех вражеских бойцов в противоположном ряду на 1.', art:'arcticscarecrow', faction:'frost'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4063,7 +4064,8 @@
     bonewall: `<svg viewBox="0 0 64 64"><rect x="9" y="28" width="9" height="27" rx="2" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><ellipse cx="13.5" cy="24" rx="6" ry="5" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><rect x="27.5" y="18" width="9" height="37" rx="2" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><ellipse cx="32" cy="14" rx="6.5" ry="5.5" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><rect x="46" y="28" width="9" height="27" rx="2" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><ellipse cx="50.5" cy="24" rx="6" ry="5" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><path d="M9 40h9M27.5 34h9M46 40h9" stroke="#8fc9d6" stroke-width="1.2" opacity=".7"/></svg>`,
     icewall: `<svg viewBox="0 0 64 64"><path d="M8 24l10-6 10 6v20l-10 6-10-6z" fill="#bfeeff" stroke="#3f6a7a" stroke-width="1.5"/><path d="M26 20l10-6 10 6v24l-10 6-10-6z" fill="#eaf6ff" stroke="#3f6a7a" stroke-width="1.5"/><path d="M46 24l10-6" stroke="#3f6a7a" stroke-width="1.5" fill="none"/><path d="M18 18l10 6 10-6" stroke="#3f6a7a" stroke-width="1.2" fill="none" opacity=".7"/><path d="M18 44v-20M36 50V26" stroke="#8fc9d6" stroke-width="1.2" opacity=".7"/></svg>`,
     gravestone: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="56" rx="18" ry="4" fill="#8fc9d6" opacity=".3"/><path d="M18 56V28c0-9 6-16 14-16s14 7 14 16v28z" fill="#cfd8dc" stroke="#5c6a70" stroke-width="1.6"/><path d="M25 32h14M25 40h14" stroke="#5c6a70" stroke-width="1.4" opacity=".7"/><path d="M12 14l3 3M52 14l-3 3" stroke="#eaf9ff" stroke-width="1.3" stroke-linecap="round" opacity=".8"/></svg>`,
-    risencorpse: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#a8b8a0" stroke="#3f4a3a" stroke-width="1.5"/><circle cx="26" cy="16" r="2" fill="#3aa9d6"/><circle cx="34" cy="16" r="2" fill="#3aa9d6"/><path d="M24 22c3 2 9 2 12 0" stroke="#3f4a3a" stroke-width="1.2" fill="none" stroke-linecap="round"/><rect x="24" y="28" width="12" height="17" rx="2" fill="#a8b8a0" stroke="#3f4a3a" stroke-width="1.5"/><path d="M17 38l7-6M43 38l-7-6" stroke="#a8b8a0" stroke-width="4" stroke-linecap="round"/><path d="M20 45c4 4 4 6 0 8M44 45c-4 4-4 6 0 8" stroke="#3f4a3a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M14 10l4 4M50 10l-4 4" stroke="#8fd0e8" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></svg>`
+    risencorpse: `<svg viewBox="0 0 64 64"><circle cx="30" cy="18" r="10" fill="#a8b8a0" stroke="#3f4a3a" stroke-width="1.5"/><circle cx="26" cy="16" r="2" fill="#3aa9d6"/><circle cx="34" cy="16" r="2" fill="#3aa9d6"/><path d="M24 22c3 2 9 2 12 0" stroke="#3f4a3a" stroke-width="1.2" fill="none" stroke-linecap="round"/><rect x="24" y="28" width="12" height="17" rx="2" fill="#a8b8a0" stroke="#3f4a3a" stroke-width="1.5"/><path d="M17 38l7-6M43 38l-7-6" stroke="#a8b8a0" stroke-width="4" stroke-linecap="round"/><path d="M20 45c4 4 4 6 0 8M44 45c-4 4-4 6 0 8" stroke="#3f4a3a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M14 10l4 4M50 10l-4 4" stroke="#8fd0e8" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></svg>`,
+    arcticscarecrow: `<svg viewBox="0 0 64 64"><path d="M32 14v38M14 26l36 12M14 38l36-12" stroke="#8a6b4a" stroke-width="3" stroke-linecap="round"/><ellipse cx="32" cy="14" rx="9" ry="8" fill="#e8d9b0" stroke="#8a6b4a" stroke-width="1.5"/><path d="M26 12l2 4M32 10l0 5M38 12l-2 4" stroke="#8a6b4a" stroke-width="1.2" stroke-linecap="round"/><circle cx="28" cy="14" r="1.6" fill="#3f4a3a"/><circle cx="36" cy="14" r="1.6" fill="#3f4a3a"/><path d="M10 20l3 3M54 20l-3 3M10 44l3-3M54 44l-3-3" stroke="#8fd0e8" stroke-width="1.4" stroke-linecap="round" opacity=".8"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5382,6 +5384,7 @@
       else if(ev.type==='nualFrontStab') playNualFrontStabEvent(ev, next);
       else if(ev.type==='nualQuadStab') playNualQuadStabEvent(ev, next);
       else if(ev.type==='wiseDeerDebuff') playWiseDeerDebuffEvent(ev, next);
+      else if(ev.type==='arcticScarecrowChill') playArcticScarecrowChillEvent(ev, next);
       else if(ev.type==='hermitCopy') playHermitCopyEvent(ev, next);
       else if(ev.type==='discipleTransform') playDiscipleTransformEvent(ev, next);
       else if(ev.type==='linSwap') playLinSwapEvent(ev, next);
@@ -5913,6 +5916,30 @@
         }
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 700 : 200);
+    }, 150);
+  }
+
+  // Арктическое пугало: battlecry chill — every enemy unit in its own
+  // mirrored lane loses 1 atk (floored at 0, Чаростойкость/Щит
+  // protects individually) — same shape as Мудрый олень's own
+  // wiseDeerDebuff above, but atk-only, so its own dedicated event
+  // (delta is always -1 or 0 here, never hp/death).
+  function playArcticScarecrowChillEvent(ev, done){
+    const targetMine = ev.targetSide === state.myUsername;
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = targetBoard[ev.laneIdx] ? targetBoard[ev.laneIdx][ev.depthIdx] : null;
+    const targetEl = targetUnit ? findUnitEl(ev.laneIdx, targetMine, ev.depthIdx) : null;
+    if(ev.resisted){
+      log(`Арктическое пугало не может ослабить ${targetUnit?targetUnit.name:'бойца'} — эффект не проходит.`);
+    } else {
+      log(`Арктическое пугало леденит ${targetUnit?targetUnit.name:'бойца'}: ${ev.delta}⚔.`);
+    }
+    setTimeout(()=>{
+      if(!ev.resisted && targetUnit){
+        targetUnit.atk = Math.max(0, targetUnit.atk + ev.delta);
+        if(targetEl && ev.delta) spawnDamageNumber(targetEl, `${ev.delta}⚔`, 'dmg');
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 200);
     }, 150);
   }
 
@@ -7147,18 +7174,27 @@
     }, 250);
   }
 
-  // Ледяной зомби: on death, covers its OWN (now-empty) cell with ice —
-  // the unit is already gone from the board by the time this fires (same
-  // as every other on-death event), so the ice-forming burst plays over
-  // the bare slot itself via findSlotEl, and the local frozen-cell grid
-  // is updated right away so renderAll() below picks up the new
-  // .frozen-cell-ice overlay without waiting on the next server snapshot.
+  // Ледяной зомби (cause omitted, default 'death'): on death, covers its
+  // OWN (now-empty) cell with ice — the unit is already gone from the
+  // board by the time this fires (same as every other on-death event),
+  // so the ice-forming burst plays over the bare slot itself via
+  // findSlotEl, and the local frozen-cell grid is updated right away so
+  // renderAll() below picks up the new .frozen-cell-ice overlay without
+  // waiting on the next server snapshot.
+  // Арктическое пугало (cause:'battlecry'): same freeze, but the source
+  // unit is still alive and standing elsewhere on the board (a random
+  // ADJACENT cell, not its own), so the log line reads as a spell effect
+  // rather than a death.
   function playCellFrozenEvent(ev, done){
     const mine = ev.side === state.myUsername;
     const sourceCard = cardDefById(ev.cardId);
-    const sourceName = sourceCard ? sourceCard.name : 'Ледяной зомби';
+    const sourceName = sourceCard ? sourceCard.name : (ev.cause==='battlecry' ? 'Арктическое пугало' : 'Ледяной зомби');
     const cellEl = findSlotEl(ev.laneIdx, mine, ev.depthIdx);
-    log(`${mine?'Твоя':'Соперника'} клетка покрывается льдом — там погиб «${sourceName}».`);
+    if(ev.cause==='battlecry'){
+      log(`${mine?'Твоя':'Соперника'} «${sourceName}» покрывает соседнюю клетку льдом.`);
+    } else {
+      log(`${mine?'Твоя':'Соперника'} клетка покрывается льдом — там погиб «${sourceName}».`);
+    }
     setTimeout(()=>{
       const grid = mine ? state.playerFrozenCells : state.enemyFrozenCells;
       if(grid && grid[ev.laneIdx]) grid[ev.laneIdx][ev.depthIdx] = true;
