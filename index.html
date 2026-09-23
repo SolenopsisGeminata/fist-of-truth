@@ -2861,6 +2861,7 @@
     {id:'c191', name:'Трехголовый цербер', type:'creature', cost:5, atk:2, hp:6, tripleStrike:true, rarity:'epic', desc:'Несёт эффект Тройной удар: во время своей атаки бьёт не 1 раз, а последовательно атакует 3 раза подряд.', art:'threeheadcerberus', faction:'inferno'},
     {id:'c192', name:'Пожиратель', type:'creature', cost:5, atk:6, hp:6, trample:true, devourerGrowOnHeroHit:true, rarity:'epic', desc:'Несёт эффект Топот. При попадании по герою противника атакой заставляет противника потерять 1 карту из его руки и увеличивает свою атаку и здоровье на 2.', art:'devourer', faction:'inferno'},
     {id:'s47', name:'Шторм молний', type:'spell', cost:5, ragingFire:true, ragingFireDmg:5, ragingFireHeroDmg:5, lightningVisual:true, rarity:'epic', desc:'Обрушивает на выбранный вражеский ряд последовательно по 1 красной молнии на каждую клетку, нанося 5 урона находящемуся там юниту. Если клетка пуста, урон герою не наносится. Когда молнии поражают все клетки, в конце наносит 5 урона герою соперника.', art:'lightningstorm', faction:'inferno'},
+    {id:'c193', name:'Пожирающая злоба', type:'creature', cost:5, atk:6, hp:10, impTridentDamage:8, enemyHealOnDeath:8, rarity:'legendary', desc:'При появлении на поле боя поглощает 8 здоровья вражеского героя. При смерти отдаёт столько же здоровья вражескому герою.', art:'devouringmalice', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3990,7 +3991,8 @@
     soulscythe: `<svg viewBox="0 0 64 64"><ellipse cx="26" cy="22" rx="10" ry="12" fill="#241a16" stroke="#7a1815" stroke-width="1.5"/><circle cx="23" cy="21" r="1.8" fill="#e04a3f"/><circle cx="30" cy="20" r="1.8" fill="#e04a3f"/><path d="M40 6c8 2 12 10 8 20-3 7-9 11-16 12l-2-4c6-2 10-6 12-11 3-7 0-13-6-15z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1.3"/><path d="M32 34l4 6-16 20-6-4z" fill="#5a4a3a" stroke="#241a16" stroke-width="1.2"/><path d="M40 10c4 2 6 6 4 12" stroke="#e04a3f" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".7"/></svg>`,
     threeheadcerberus: `<svg viewBox="0 0 64 64"><path d="M4 24l7-7 5 3-5 7zM52 20l7 4-4 8-6-3zM28 6l4-4 4 4-2 6h-4z" fill="#3a0f0c"/><ellipse cx="14" cy="26" rx="8" ry="7" fill="#5c4536" stroke="#241a16" stroke-width="1.2"/><ellipse cx="32" cy="20" rx="9" ry="8" fill="#6b503e" stroke="#241a16" stroke-width="1.3"/><ellipse cx="50" cy="26" rx="8" ry="7" fill="#5c4536" stroke="#241a16" stroke-width="1.2"/><circle cx="11" cy="24" r="1.6" fill="#e04a3f"/><circle cx="17" cy="24" r="1.6" fill="#e04a3f"/><circle cx="28" cy="18" r="1.8" fill="#e04a3f"/><circle cx="36" cy="18" r="1.8" fill="#e04a3f"/><circle cx="47" cy="24" r="1.6" fill="#e04a3f"/><circle cx="53" cy="24" r="1.6" fill="#e04a3f"/><path d="M18 46h28v6a14 14 0 0 1-28 0z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/></svg>`,
     devourer: `<svg viewBox="0 0 64 64"><path d="M18 10l8 8-10 2zM46 10l-8 8 10 2z" fill="#241009"/><ellipse cx="32" cy="26" rx="15" ry="14" fill="#7a1815" stroke="#241009" stroke-width="1.6"/><circle cx="25" cy="23" r="2.2" fill="#e0b93a"/><circle cx="39" cy="23" r="2.2" fill="#e0b93a"/><path d="M20 34l4 6 4-6 4 6 4-6 4 6 4-6" fill="none" stroke="#e9e0cf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 48c6-4 26-4 32 0" stroke="#3a0f0c" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".8"/></svg>`,
-    lightningstorm: `<svg viewBox="0 0 64 64"><path d="M12 4L4 24h6l-4 20 15-26h-6z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/><path d="M32 2L23 24h6l-5 22 16-28h-7z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/><path d="M52 8l-7 18h5l-4 18 13-24h-6z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/></svg>`
+    lightningstorm: `<svg viewBox="0 0 64 64"><path d="M12 4L4 24h6l-4 20 15-26h-6z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/><path d="M32 2L23 24h6l-5 22 16-28h-7z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/><path d="M52 8l-7 18h5l-4 18 13-24h-6z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/></svg>`,
+    devouringmalice: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="20" fill="none" stroke="#e0b93a" stroke-width="1.4" opacity=".7"/><ellipse cx="32" cy="28" rx="15" ry="16" fill="#1a100c" stroke="#7a1815" stroke-width="1.6"/><path d="M22 22c2-3 6-3 8 0M34 22c2-3 6-3 8 0" stroke="#e0b93a" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="25" cy="26" r="2.4" fill="#e04a3f"/><circle cx="39" cy="26" r="2.4" fill="#e04a3f"/><path d="M20 40c4 6 20 6 24 0" stroke="#241009" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M32 8v-4M14 16l-3-3M50 16l3-3" stroke="#e0b93a" stroke-width="1.6" stroke-linecap="round" opacity=".8"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5209,6 +5211,7 @@
       else if(ev.type==='spikeWave') playButcherSpikeWaveEvent(ev, next);
       else if(ev.type==='infernoButcherKill') playInfernoButcherKillEvent(ev, next);
       else if(ev.type==='butcherDeathDraw') playButcherDeathDrawEvent(ev, next);
+      else if(ev.type==='devouringMaliceReturn') playDevouringMaliceReturnEvent(ev, next);
       else if(ev.type==='infernoScytheStrike') playInfernoScytheStrikeEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='bloodShadowBlade') playBloodShadowBladeEvent(ev, next);
@@ -6531,6 +6534,25 @@
     const sourceName = sourceCard ? sourceCard.name : 'Мясник инферно';
     log(`«${sourceName}» погибает, и ${targetMine?'ты берёшь':'соперник берёт'} карту из колоды.`);
     setTimeout(()=>{ done(); }, 400);
+  }
+
+  // Пожирающая злоба: on death (from anything), heals the ENEMY hero
+  // for a fixed amount — giving back the health its own battlecry took
+  // from them (played generically via the shared heroShot handler
+  // above, no dedicated code needed for that half). Same "ev.side is
+  // the dying unit's owner, ev.targetSide is who actually benefits"
+  // shape as playButcherDeathDrawEvent above, just a heal instead of a
+  // draw — reuses the heal-orb visual already built for Родник/
+  // playEndOfRoundEvent.
+  function playDevouringMaliceReturnEvent(ev, done){
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceCard = cardDefById(ev.cardId);
+    const sourceName = sourceCard ? sourceCard.name : 'Пожирающая злоба';
+    const heroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    log(`«${sourceName}» погибает и возвращает ${ev.amount} здоровья ${targetMine?'твоему':'вражескому'} герою.`);
+    if(targetMine) state.playerHp += ev.amount; else state.enemyHp += ev.amount;
+    if(heroEl) spawnDamageNumber(heroEl, '+'+ev.amount, 'heal');
+    setTimeout(()=>{ renderAll(); done(); }, 900);
   }
 
   // Коса душ: on play, deals a fixed amount of damage to a fully random
