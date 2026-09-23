@@ -2857,6 +2857,7 @@
     {id:'s46', name:'Высасывание души', type:'spell', cost:4, soulDrainSpell:true, soulDrainDmg:3, rarity:'epic', desc:'При использовании на любой клетке на вражеском поле боя наносит 3 урона по случайному юниту противника и заставляет противника потерять 1 карту.', art:'souldrain', faction:'inferno'},
     {id:'c188', name:'Безликий мясник', type:'creature', cost:5, atk:2, hp:5, spikeWaveOnPlay:true, rarity:'rare', desc:'При появлении на поле боя метает по земле волну шипов в противоположный ряд противника, которая наносит 2 урона всем противникам на своём пути и исчезает, дойдя до конца ряда. Урон вражескому герою волна шипов не наносит, только юнитам, через которых она проходит.', art:'facelessbutcher', faction:'inferno'},
     {id:'c189', name:'Мясник инферно', type:'creature', cost:5, atk:5, hp:5, butcherKillOnPlay:true, enemyDrawOnDeath:true, rarity:'epic', desc:'При появлении на поле боя уничтожает случайного противника. При смерти этого юнита в руку противника добавляется 1 карта из его колоды.', art:'infernobutcher', faction:'inferno'},
+    {id:'c190', name:'Коса душ', type:'creature', cost:5, atk:5, hp:1, scytheStrikeOnPlay:true, scytheStrikeDmg:6, scytheGrowOnEnemyHeroDamage:true, rarity:'epic', desc:'При появлении на поле боя наносит 6 урона случайному вражескому юниту, при этом в этого юнита сверху обрушивается красная молния. Когда герой противника получает урон, увеличивает свою атаку на 2.', art:'soulscythe', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3982,7 +3983,8 @@
     lavawarlock: `<svg viewBox="0 0 64 64"><path d="M22 10l10-6 10 6-4 10h-12z" fill="#3a1a12"/><ellipse cx="32" cy="30" rx="13" ry="15" fill="#8a4a2e" stroke="#241009" stroke-width="1.5"/><circle cx="27" cy="27" r="2.4" fill="#ffce54"/><circle cx="37" cy="27" r="2.4" fill="#ffce54"/><path d="M25 38c2 3 12 3 14 0" stroke="#241009" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="32" cy="52" r="9" fill="#e0521f" stroke="#7a1a0c" stroke-width="1.5"/><path d="M32 46c1.5 2 3 3.4 3 5.5a3 3 0 1 1-6 0c0-1.4.8-2.4 1.6-3.4.5 1 1 1.4 1.4-2.1z" fill="#ffce54"/></svg>`,
     souldrain: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="16" fill="#241a16" stroke="#7a1815" stroke-width="1.5"/><path d="M32 18c-5 6-5 10 0 15 5-5 5-9 0-15z" fill="#c9432e" opacity=".9"/><path d="M22 26c3 6 3 10 0 15M42 26c-3 6-3 10 0 15" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" fill="none" opacity=".8"/><circle cx="32" cy="30" r="5" fill="#e0b93a"/><path d="M18 48c4-3 8-4 14-4s10 1 14 4" stroke="#3a0f0c" stroke-width="2" stroke-linecap="round" fill="none" opacity=".7"/></svg>`,
     facelessbutcher: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="26" rx="13" ry="15" fill="#8a2e26" stroke="#241009" stroke-width="1.5"/><path d="M22 24h20M22 30h20" stroke="#241009" stroke-width="2" stroke-linecap="round" opacity=".85"/><path d="M14 46l6-10 4 3-5 9zM50 46l-6-10-4 3 5 9zM22 50l3-11 5 1-2 11zM42 50l-3-11-5 1 2 11z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1"/><path d="M20 44l24 0" stroke="#5a1410" stroke-width="3" stroke-linecap="round"/></svg>`,
-    infernobutcher: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="24" rx="14" ry="16" fill="#7a1815" stroke="#241009" stroke-width="1.5"/><path d="M20 20l8 6-9 3zM44 20l-8 6 9 3z" fill="#241009"/><circle cx="26" cy="24" r="2" fill="#e0b93a"/><circle cx="38" cy="24" r="2" fill="#e0b93a"/><path d="M24 32c4 3 12 3 16 0" stroke="#241009" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M12 52l14-18 5 4-15 18zM52 52l-14-18-5 4 15 18z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1.2"/><path d="M14 48l4 6M50 48l-4 6" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" opacity=".85"/></svg>`
+    infernobutcher: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="24" rx="14" ry="16" fill="#7a1815" stroke="#241009" stroke-width="1.5"/><path d="M20 20l8 6-9 3zM44 20l-8 6 9 3z" fill="#241009"/><circle cx="26" cy="24" r="2" fill="#e0b93a"/><circle cx="38" cy="24" r="2" fill="#e0b93a"/><path d="M24 32c4 3 12 3 16 0" stroke="#241009" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M12 52l14-18 5 4-15 18zM52 52l-14-18-5 4 15 18z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1.2"/><path d="M14 48l4 6M50 48l-4 6" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" opacity=".85"/></svg>`,
+    soulscythe: `<svg viewBox="0 0 64 64"><ellipse cx="26" cy="22" rx="10" ry="12" fill="#241a16" stroke="#7a1815" stroke-width="1.5"/><circle cx="23" cy="21" r="1.8" fill="#e04a3f"/><circle cx="30" cy="20" r="1.8" fill="#e04a3f"/><path d="M40 6c8 2 12 10 8 20-3 7-9 11-16 12l-2-4c6-2 10-6 12-11 3-7 0-13-6-15z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1.3"/><path d="M32 34l4 6-16 20-6-4z" fill="#5a4a3a" stroke="#241a16" stroke-width="1.2"/><path d="M40 10c4 2 6 6 4 12" stroke="#e04a3f" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".7"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4872,6 +4874,21 @@
     setTimeout(()=>{ wrap.remove(); }, 450);
   }
 
+  // Коса душ: same jagged-bolt-from-above shape as Гнев небес's own
+  // LIGHTNING_BOLT_SVG above, just recolored red per the card's own
+  // flavor ("красная молния").
+  const RED_LIGHTNING_BOLT_SVG = `<svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 0L3 32h8l-5 28 20-38h-9z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>`;
+  function spawnRedLightningStrike(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'lightning-strike';
+    wrap.innerHTML = RED_LIGHTNING_BOLT_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 450);
+  }
+
   // Каменный град: a medium-sized rock dropping onto a cell — same
   // visual for every cell it strikes in the targeted lane (unit, empty,
   // or Чаростойкость alike), only the aftermath differs, exactly
@@ -5186,6 +5203,7 @@
       else if(ev.type==='spikeWave') playButcherSpikeWaveEvent(ev, next);
       else if(ev.type==='infernoButcherKill') playInfernoButcherKillEvent(ev, next);
       else if(ev.type==='butcherDeathDraw') playButcherDeathDrawEvent(ev, next);
+      else if(ev.type==='infernoScytheStrike') playInfernoScytheStrikeEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
       else if(ev.type==='bloodShadowBlade') playBloodShadowBladeEvent(ev, next);
       else if(ev.type==='acidSpit') playAcidSpitEvent(ev, next);
@@ -6501,6 +6519,37 @@
     const sourceName = sourceCard ? sourceCard.name : 'Мясник инферно';
     log(`«${sourceName}» погибает, и ${targetMine?'ты берёшь':'соперник берёт'} карту из колоды.`);
     setTimeout(()=>{ done(); }, 400);
+  }
+
+  // Коса душ: on play, deals a fixed amount of damage to a fully random
+  // enemy unit — Чаростойкость excludes a unit from the eligible pool
+  // entirely (same shape as Мясник инферно's kill above), but this is
+  // damage rather than an outright kill, so it uses the card's own red
+  // lightning bolt instead of the generic one.
+  function playInfernoScytheStrikeEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = mine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const label = sourceUnit ? sourceUnit.name : 'Коса душ';
+    if(ev.empty){
+      log(`«${label}» не находит подходящей цели среди бойцов соперника.`);
+      setTimeout(()=>{ done(); }, 600);
+      return;
+    }
+    const board = targetMine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.targetLaneIdx] ? board[ev.targetLaneIdx][ev.targetDepthIdx] : null;
+    const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    spawnRedLightningStrike(targetEl);
+    setTimeout(()=>{
+      if(unit){
+        unit.hp -= ev.amount;
+        if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+        log(`«${label}» обрушивает красную молнию на ${unit.name}, нанося ${ev.amount}.`);
+        if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.targetLaneIdx][ev.targetDepthIdx] = null; }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+    }, 300);
   }
 
   // Мушкетер: fires right before his own attack in a wave, whenever his
