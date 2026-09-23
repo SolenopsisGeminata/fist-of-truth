@@ -1452,6 +1452,23 @@
   }
   .slot.spell-target:hover{background:rgba(224,74,63,0.22);}
 
+  /* Заморожена (Frozen cell): a semi-transparent sheet of ice covering
+     the WHOLE cell — sits at z-index:1, below .unit-card's z-index:2, so
+     any unit standing there still reads clearly on top of it, exactly as
+     specced ("иконки юнитов... хорошо просматриваются"). An empty frozen
+     cell just shows the ice over its placeholder text. */
+  .frozen-cell-ice{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    border-radius:6px;
+    background:linear-gradient(135deg, rgba(180,230,255,0.5), rgba(140,200,245,0.28) 55%, rgba(200,240,255,0.42));
+    border:1px solid rgba(210,242,255,0.65);
+    box-shadow:inset 0 0 14px rgba(255,255,255,0.55), inset 0 0 3px rgba(120,190,235,0.6);
+  }
+  .frozen-cell-ice svg{width:100%; height:100%; display:block; opacity:.5;}
+
   .unit-card{
     width:100%;
     height:100%;
@@ -1461,6 +1478,7 @@
     justify-content:space-between;
     padding:7px 8px;
     position:relative;
+    z-index:2;
     border:1px solid;
   }
   @keyframes unit-appear{
@@ -2871,6 +2889,7 @@
     {id:'c196', name:'Инфернальная пасть', type:'creature', cost:8, atk:9, hp:25, infernalMawSpike:true, rarity:'legendary', desc:'В начале хода, перед своей атакой, а также в конце хода метает адский шип, который наносит 3 урона по случайному юниту противника. Если юнитов противника в момент очередного броска нет на поле боя, шип попадает во вражеского героя и наносит ему 3 урона.', art:'infernalmaw', faction:'inferno'},
     {id:'c197', name:'Скелет-воин Инферно', type:'creature', cost:3, atk:3, hp:3, skeletonWeaponThrowOnDeath:true, rarity:'common', desc:'При смерти метает свой короткий меч прямо во вражеского героя. Не появляется в Магазине — призывается только Барраком, Бароном Ада.', art:'infernoskeleton', faction:'inferno'},
     {id:'c198', name:'Баррак, Барон Ада', type:'creature', cost:9, atk:18, hp:18, battlecrySummon:'c197', battlecrySummonCount:2, barrakInfernoBuff:true, rarity:'legendary', desc:'При появлении на поле боя призывает 2 Скелета-воина Инферно (3 атаки, 3 здоровья). Перед своей атакой увеличивает атаку всех союзников фракции Инферно на своём поле боя, кроме себя, на 2.', art:'barrakbaron', faction:'inferno'},
+    {id:'c199', name:'Безногий зомби', type:'creature', cost:1, atk:1, hp:1, sleep:true, thawIfFrozenOnPlay:true, rarity:'rare', desc:'Несёт эффект Сон: не может атаковать в раунде своего появления на поле боя, начинает атаковать со следующего раунда. При появлении на поле боя, если клетка, на которую он попал, заморожена, эффект Сон исчезает.', art:'legzombie', faction:'frost'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4013,7 +4032,8 @@
     ignition: `<svg viewBox="0 0 64 64"><path d="M32 6c8 10 12 16 12 24a12 12 0 1 1-24 0c0-4 2-7 5-10-1 4 0 6 2 7-1-8 1-14 5-21z" fill="#e0521f" stroke="#7a1815" stroke-width="1.4"/><path d="M32 20c4 6 6 10 6 14a6 6 0 1 1-12 0c0-2 1-4 2-5 0 3 1 4 2 4-1-5 0-9 2-13z" fill="#f5b93a"/></svg>`,
     abyssspawn: `<svg viewBox="0 0 64 64"><path d="M10 8l6 10-9 2zM54 8l-6 10 9 2zM24 4l4 8-6 2zM40 4l-4 8 6 2z" fill="#241a16"/><ellipse cx="32" cy="28" rx="17" ry="16" fill="#3a1a12" stroke="#1a0d08" stroke-width="1.6"/><circle cx="25" cy="25" r="2.6" fill="#e04a3f"/><circle cx="39" cy="25" r="2.6" fill="#e04a3f"/><path d="M22 36c4 4 16 4 20 0" stroke="#1a0d08" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M16 46l4-8 3 1-3 8zM48 46l-4-8-3 1 3 8zM24 50l2-8 3 1-2 8zM40 50l-2-8-3 1 2 8z" fill="#6b4a3a" stroke="#1a0d08" stroke-width="1"/></svg>`,
     infernalmaw: `<svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="22" fill="none" stroke="#e0b93a" stroke-width="1.4" opacity=".7"/><ellipse cx="32" cy="30" rx="18" ry="17" fill="#1a100c" stroke="#7a1815" stroke-width="1.8"/><path d="M14 24c4 6 30 6 36 0M14 36c4-6 30-6 36 0" stroke="#e04a3f" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7"/><path d="M18 22l4 8-5 2zM26 18l3 9-5 1zM34 18l-3 9 5 1zM42 18l3 9-5 1zM50 22l-4 8-5 2z" fill="#e9e0cf" stroke="#3a1a12" stroke-width=".8"/><path d="M18 42l4-8-5-2zM26 46l3-9-5-1zM38 46l-3-9 5-1zM46 42l-4-8 5-2z" fill="#e9e0cf" stroke="#3a1a12" stroke-width=".8"/></svg>`,
-    barrakbaron: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="#e0b93a" stroke-width="1.6" opacity=".8"/><path d="M14 14l8 8-11 2zM50 14l-8 8 11 2z" fill="#241009"/><ellipse cx="32" cy="30" rx="16" ry="17" fill="#5c1210" stroke="#241009" stroke-width="1.8"/><path d="M20 20c2-6 6-8 12-8s10 2 12 8" stroke="#e0b93a" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="26" cy="27" r="2.4" fill="#e0b93a"/><circle cx="38" cy="27" r="2.4" fill="#e0b93a"/><path d="M24 38c3 4 13 4 16 0" stroke="#241009" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M18 50h28v4a14 14 0 0 1-28 0z" fill="#241009" stroke="#7a1815" stroke-width="1.3"/></svg>`
+    barrakbaron: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="#e0b93a" stroke-width="1.6" opacity=".8"/><path d="M14 14l8 8-11 2zM50 14l-8 8 11 2z" fill="#241009"/><ellipse cx="32" cy="30" rx="16" ry="17" fill="#5c1210" stroke="#241009" stroke-width="1.8"/><path d="M20 20c2-6 6-8 12-8s10 2 12 8" stroke="#e0b93a" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="26" cy="27" r="2.4" fill="#e0b93a"/><circle cx="38" cy="27" r="2.4" fill="#e0b93a"/><path d="M24 38c3 4 13 4 16 0" stroke="#241009" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M18 50h28v4a14 14 0 0 1-28 0z" fill="#241009" stroke="#7a1815" stroke-width="1.3"/></svg>`,
+    legzombie: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="52" rx="16" ry="6" fill="#8fd0e8" opacity=".35"/><circle cx="30" cy="18" r="10" fill="#7fae7a" stroke="#3f5a3a" stroke-width="1.5"/><circle cx="26" cy="16" r="2" fill="#e04a3f"/><circle cx="34" cy="16" r="2" fill="#e04a3f"/><path d="M24 22c3 2 9 2 12 0" stroke="#3f5a3a" stroke-width="1.2" fill="none" stroke-linecap="round"/><rect x="24" y="28" width="12" height="17" rx="2" fill="#7fae7a" stroke="#3f5a3a" stroke-width="1.5"/><path d="M17 38l7-6M43 38l-7-6" stroke="#7fae7a" stroke-width="4" stroke-linecap="round"/><path d="M22 45c3 5 3 6 0 8M38 45c-3 5-3 6 0 8" stroke="#3f5a3a" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4147,6 +4167,10 @@
     return Array.from({length:LANES}, ()=>Array(DEPTH).fill(null));
   }
 
+  function freshFrozenGrid(){
+    return Array.from({length:LANES}, ()=>Array(DEPTH).fill(false));
+  }
+
   let state = {};
   // Set from the server's 'resolution' message (see the WS handler below)
   // right before the resolution animation plays; showOverlay() reads and
@@ -4274,6 +4298,8 @@
       playerHand: [],
       enemyBoard: freshBoard(),
       playerBoard: freshBoard(),
+      enemyFrozenCells: freshFrozenGrid(),
+      playerFrozenCells: freshFrozenGrid(),
       selectedCardUid: null,
       phase: 'player',
       gameOver:false,
@@ -4309,6 +4335,10 @@
     state.enemyHp = snapshot.opponentHp;
     state.playerBoard = hydrateBoard(snapshot.myBoard);
     state.enemyBoard = hydrateBoard(snapshot.opponentBoard);
+    // Заморожена (Frozen): cell status, not board-placement secrecy — the
+    // server always sends both sides' grids in full.
+    state.playerFrozenCells = snapshot.myFrozenCells || freshFrozenGrid();
+    state.enemyFrozenCells = snapshot.opponentFrozenCells || freshFrozenGrid();
     state.playerHand = (snapshot.myHand||[]).map(hydrateHandCard);
     state.opponentHandCount = snapshot.opponentHandCount || 0;
     state.revealedOpponentCards = (snapshot.revealedOpponentCards||[]).map(hydrateHandCard);
@@ -4449,6 +4479,13 @@
         overlay.innerHTML = cardArt(card.art);
         slot.appendChild(overlay);
       }
+    }
+    const frozenGrid = mine ? state.playerFrozenCells : state.enemyFrozenCells;
+    if(frozenGrid && frozenGrid[laneIdx] && frozenGrid[laneIdx][depthIdx]){
+      const ice = document.createElement('div');
+      ice.className = 'frozen-cell-ice';
+      ice.innerHTML = ICE_OVERLAY_SVG;
+      slot.appendChild(ice);
     }
     return slot;
   }
@@ -4925,6 +4962,13 @@
   // visual for every cell it strikes in the targeted lane (unit, empty,
   // or Чаростойкость alike), only the aftermath differs, exactly
   // mirroring Гнев небес's own lightning-bolt reuse pattern above.
+  // Заморожена: decorative frost-crack pattern for the ice overlay drawn
+  // over a frozen cell in buildSlot — purely cosmetic, stretches to fill
+  // the overlay div via the .frozen-cell-ice svg CSS rule.
+  const ICE_OVERLAY_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 8 L54 34 L74 20 M54 34 L70 46 M54 34 L44 50 M44 50 L20 46 M44 50 L30 70 M44 50 L58 66 M58 66 L52 90 M58 66 L80 78" fill="none" stroke="#eaf9ff" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
+    <path d="M10 20 L26 26 M26 26 L18 40 M90 30 L76 38 M76 38 L86 54 M14 78 L30 72 M86 88 L72 82" fill="none" stroke="#eaf9ff" stroke-width="1.1" stroke-linecap="round" opacity=".55"/>
+  </svg>`;
   const ROCK_SVG = `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
     <path d="M20 4l10 6 4 12-6 10H12l-6-10 4-12z" fill="#7a7268" stroke="#4a453e" stroke-width="1.5" stroke-linejoin="round"/>
     <path d="M14 14l6-4 6 4-2 8h-8z" fill="#948c7e" opacity=".6"/>
@@ -5248,6 +5292,7 @@
       else if(ev.type==='howlingDemonHowl') playHowlingDemonHowlEvent(ev, next);
       else if(ev.type==='skullCrusherSelfHit') playSkullCrusherSelfHitEvent(ev, next);
       else if(ev.type==='painSentinelPulse') playPainSentinelPulseEvent(ev, next);
+      else if(ev.type==='frozenCellPulse') playFrozenCellPulseEvent(ev, next);
       else if(ev.type==='evilEyeDiscard') playEvilEyeDiscardEvent(ev, next);
       else if(ev.type==='tormentorHit') playTormentorHitEvent(ev, next);
       else if(ev.type==='thiefImpSteal') playThiefImpStealEvent(ev, next);
@@ -7030,6 +7075,27 @@
       if(ev.died) board[ev.laneIdx][ev.depthIdx] = null;
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
     }, 350);
+  }
+
+  // Заморожена: end-of-round atk pulse for a unit standing on a frozen
+  // cell — Frost units gain, all other factions lose, server already
+  // clamps the delta at 0 so it's applied here verbatim.
+  function playFrozenCellPulseEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'боец';
+    const targetEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
+    const deltaText = ev.delta>=0 ? `+${ev.delta}` : `${ev.delta}`;
+    log(`${mine?'Твой':'Соперника'} «${sourceName}» на замороженной клетке ${ev.isFrost?'наращивает':'теряет'} атаку: ${deltaText}⚔.`);
+    setTimeout(()=>{
+      if(unit) unit.atk = Math.max(0, unit.atk + ev.delta);
+      if(targetEl && ev.delta){
+        spawnSpellBurst(targetEl, ev.delta<0 ? 'dmg' : 'heal');
+        spawnDamageNumber(targetEl, `${deltaText}⚔`, ev.delta<0 ? 'dmg' : 'heal');
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 500);
+    }, 250);
   }
 
   // Злой глаз: on death, the OPPONENT loses a random card from their
