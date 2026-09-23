@@ -6038,6 +6038,54 @@
     setTimeout(()=>{ el.remove(); onLand(); }, flightMs);
   }
 
+  // Метеоритный страж's weapon (and any future card needing a lobbed,
+  // arcing throw) — unlike flyProjectileToHero above, which only ever
+  // moves in a straight line via a CSS left/top transition, this one is
+  // driven by requestAnimationFrame: x interpolates linearly from source
+  // to target, while y follows that same straight-line interpolation
+  // MINUS a parabolic bump (4*t*(1-t), which peaks at the flight's
+  // midpoint) — so the projectile visibly rises then falls, landing
+  // exactly on the target's center. The rotation angle is recomputed
+  // every frame from the arc's own tangent direction, so the weapon
+  // visibly tips forward along its current curve instead of pointing in
+  // one fixed direction for the whole flight.
+  function flyProjectileArc(sourceEl, targetEl, svgHtml, className, flightMs, onLand, arcHeight){
+    const arenaEl = document.getElementById('arena');
+    if(!(sourceEl && targetEl && arenaEl)){
+      onLand();
+      return;
+    }
+    const arenaRect = arenaEl.getBoundingClientRect();
+    const srcRect = sourceEl.getBoundingClientRect();
+    const dstRect = targetEl.getBoundingClientRect();
+    const startX = srcRect.left + srcRect.width/2 - arenaRect.left;
+    const startY = srcRect.top + srcRect.height/2 - arenaRect.top;
+    const endX = dstRect.left + dstRect.width/2 - arenaRect.left;
+    const endY = dstRect.top + dstRect.height/2 - arenaRect.top;
+    const height = arcHeight != null ? arcHeight : Math.max(50, Math.abs(endX-startX)*0.5);
+    const el = document.createElement('div');
+    el.className = className;
+    el.innerHTML = svgHtml;
+    el.style.left = startX+'px';
+    el.style.top = startY+'px';
+    arenaEl.appendChild(el);
+    const startTime = performance.now();
+    function frame(now){
+      const t = Math.min(1, (now-startTime)/flightMs);
+      const x = startX + (endX-startX)*t;
+      const y = startY + (endY-startY)*t - height*4*t*(1-t);
+      const dx = endX-startX;
+      const dy = (endY-startY) - height*4*(1-2*t);
+      const angle = Math.atan2(dy, dx) * 180/Math.PI;
+      el.style.left = x+'px';
+      el.style.top = y+'px';
+      el.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+      if(t < 1) requestAnimationFrame(frame);
+      else { el.remove(); onLand(); }
+    }
+    requestAnimationFrame(frame);
+  }
+
   // Храмовый боец (and any future summonOnHeroHit card): a fresh unit
   // just appeared on a random empty cell of its own owner's board.
   // Reuses the existing "pop in on first-ever uid" animation baked into
@@ -6215,38 +6263,41 @@
   // his powder keg (spawnSpellBurst 'dmg') right at his own death cell
   // — the server now fires this the instant he actually dies, wherever
   // that happened, rather than deferring to end of round.
-  // Метеоритный страж: on death, throws his weapon into his own
-  // mirrored lane on the enemy side — the source is his own (now empty)
-  // death cell, since he's already gone from the board by the time this
-  // fires. Otherwise plays exactly like a cannonball/keg throw.
+  // Метеоритный страж: on death, throws his weapon into a random cell of
+  // his own mirrored lane on the enemy side — the source is his own (now
+  // empty) death cell, since he's already gone from the board by the
+  // time this fires. Unlike every other cross-side throw in the game,
+  // this one ALWAYS flies to the target CELL itself (unit or empty,
+  // via targetLaneIdx/targetDepthIdx, always present on this event) —
+  // never straight to the hero icon, even when that empty cell's damage
+  // ends up landing on the hero: the weapon visibly vanishes on contact
+  // with the empty square's own center first, in a parabolic arc
+  // (flyProjectileArc above), and only then does a separate hero-hit
+  // flash/number appear on the hero itself.
   function playWeaponThrowEvent(ev, done){
     const shooterMine = ev.side === state.myUsername;
     const targetMine = ev.targetSide === state.myUsername;
     const sourceEl = findSlotEl(ev.laneIdx, shooterMine, ev.depthIdx);
-    let targetEl, targetUnit = null, targetBoard = null;
-    if(ev.targetHero){
-      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
-    } else {
-      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
-      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
-      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
-    }
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = ev.targetHero ? null : (targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx]);
+    const cellEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx) || findSlotEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    const heroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
     const targetName = ev.targetHero ? (targetMine?'твоему кулаку':'кулаку соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
     if(ev.resisted){
       log(`${shooterMine?'Твой':'Соперника'} Метеоритный страж, погибая, бросает оружие в ${targetName}, но урон не проходит — Чаростойкость.`);
     } else {
       log(`${shooterMine?'Твой':'Соперника'} Метеоритный страж, погибая, бросает своё оружие в ${targetName}, нанося ${ev.amount}.`);
     }
-    flyProjectileToHero(sourceEl, targetEl, METEOR_HAMMER_SVG, 'cannonball', 600, ()=>{
-      spawnSpellBurst(targetEl, 'dmg');
+    flyProjectileArc(sourceEl, cellEl, METEOR_HAMMER_SVG, 'cannonball', 600, ()=>{
+      spawnSpellBurst(cellEl, 'dmg');
       if(!ev.resisted){
         if(ev.targetHero){
           if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
-          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+          if(heroEl){ heroEl.classList.add('hero-hit'); spawnDamageNumber(heroEl, '-'+ev.amount, 'dmg'); }
         } else if(targetUnit){
           targetUnit.hp -= ev.amount;
-          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
-          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+          if(cellEl) spawnDamageNumber(cellEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(cellEl) cellEl.classList.add('unit-dying'); }
         }
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
