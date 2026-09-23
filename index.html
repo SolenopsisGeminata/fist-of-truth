@@ -2860,6 +2860,7 @@
     {id:'c190', name:'Коса душ', type:'creature', cost:5, atk:5, hp:1, scytheStrikeOnPlay:true, scytheStrikeDmg:6, scytheGrowOnEnemyHeroDamage:true, rarity:'epic', desc:'При появлении на поле боя наносит 6 урона случайному вражескому юниту, при этом в этого юнита сверху обрушивается красная молния. Когда герой противника получает урон, увеличивает свою атаку на 2.', art:'soulscythe', faction:'inferno'},
     {id:'c191', name:'Трехголовый цербер', type:'creature', cost:5, atk:2, hp:6, tripleStrike:true, rarity:'epic', desc:'Несёт эффект Тройной удар: во время своей атаки бьёт не 1 раз, а последовательно атакует 3 раза подряд.', art:'threeheadcerberus', faction:'inferno'},
     {id:'c192', name:'Пожиратель', type:'creature', cost:5, atk:6, hp:6, trample:true, devourerGrowOnHeroHit:true, rarity:'epic', desc:'Несёт эффект Топот. При попадании по герою противника атакой заставляет противника потерять 1 карту из его руки и увеличивает свою атаку и здоровье на 2.', art:'devourer', faction:'inferno'},
+    {id:'s47', name:'Шторм молний', type:'spell', cost:5, ragingFire:true, ragingFireDmg:5, ragingFireHeroDmg:5, lightningVisual:true, rarity:'epic', desc:'Обрушивает на выбранный вражеский ряд последовательно по 1 красной молнии на каждую клетку, нанося 5 урона находящемуся там юниту. Если клетка пуста, урон герою не наносится. Когда молнии поражают все клетки, в конце наносит 5 урона герою соперника.', art:'lightningstorm', faction:'inferno'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -3988,7 +3989,8 @@
     infernobutcher: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="24" rx="14" ry="16" fill="#7a1815" stroke="#241009" stroke-width="1.5"/><path d="M20 20l8 6-9 3zM44 20l-8 6 9 3z" fill="#241009"/><circle cx="26" cy="24" r="2" fill="#e0b93a"/><circle cx="38" cy="24" r="2" fill="#e0b93a"/><path d="M24 32c4 3 12 3 16 0" stroke="#241009" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M12 52l14-18 5 4-15 18zM52 52l-14-18-5 4 15 18z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1.2"/><path d="M14 48l4 6M50 48l-4 6" stroke="#e04a3f" stroke-width="2" stroke-linecap="round" opacity=".85"/></svg>`,
     soulscythe: `<svg viewBox="0 0 64 64"><ellipse cx="26" cy="22" rx="10" ry="12" fill="#241a16" stroke="#7a1815" stroke-width="1.5"/><circle cx="23" cy="21" r="1.8" fill="#e04a3f"/><circle cx="30" cy="20" r="1.8" fill="#e04a3f"/><path d="M40 6c8 2 12 10 8 20-3 7-9 11-16 12l-2-4c6-2 10-6 12-11 3-7 0-13-6-15z" fill="#c9ccd1" stroke="#3a1a12" stroke-width="1.3"/><path d="M32 34l4 6-16 20-6-4z" fill="#5a4a3a" stroke="#241a16" stroke-width="1.2"/><path d="M40 10c4 2 6 6 4 12" stroke="#e04a3f" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".7"/></svg>`,
     threeheadcerberus: `<svg viewBox="0 0 64 64"><path d="M4 24l7-7 5 3-5 7zM52 20l7 4-4 8-6-3zM28 6l4-4 4 4-2 6h-4z" fill="#3a0f0c"/><ellipse cx="14" cy="26" rx="8" ry="7" fill="#5c4536" stroke="#241a16" stroke-width="1.2"/><ellipse cx="32" cy="20" rx="9" ry="8" fill="#6b503e" stroke="#241a16" stroke-width="1.3"/><ellipse cx="50" cy="26" rx="8" ry="7" fill="#5c4536" stroke="#241a16" stroke-width="1.2"/><circle cx="11" cy="24" r="1.6" fill="#e04a3f"/><circle cx="17" cy="24" r="1.6" fill="#e04a3f"/><circle cx="28" cy="18" r="1.8" fill="#e04a3f"/><circle cx="36" cy="18" r="1.8" fill="#e04a3f"/><circle cx="47" cy="24" r="1.6" fill="#e04a3f"/><circle cx="53" cy="24" r="1.6" fill="#e04a3f"/><path d="M18 46h28v6a14 14 0 0 1-28 0z" fill="#7a1815" stroke="#3a0f0c" stroke-width="1.5"/></svg>`,
-    devourer: `<svg viewBox="0 0 64 64"><path d="M18 10l8 8-10 2zM46 10l-8 8 10 2z" fill="#241009"/><ellipse cx="32" cy="26" rx="15" ry="14" fill="#7a1815" stroke="#241009" stroke-width="1.6"/><circle cx="25" cy="23" r="2.2" fill="#e0b93a"/><circle cx="39" cy="23" r="2.2" fill="#e0b93a"/><path d="M20 34l4 6 4-6 4 6 4-6 4 6 4-6" fill="none" stroke="#e9e0cf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 48c6-4 26-4 32 0" stroke="#3a0f0c" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".8"/></svg>`
+    devourer: `<svg viewBox="0 0 64 64"><path d="M18 10l8 8-10 2zM46 10l-8 8 10 2z" fill="#241009"/><ellipse cx="32" cy="26" rx="15" ry="14" fill="#7a1815" stroke="#241009" stroke-width="1.6"/><circle cx="25" cy="23" r="2.2" fill="#e0b93a"/><circle cx="39" cy="23" r="2.2" fill="#e0b93a"/><path d="M20 34l4 6 4-6 4 6 4-6 4 6 4-6" fill="none" stroke="#e9e0cf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 48c6-4 26-4 32 0" stroke="#3a0f0c" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".8"/></svg>`,
+    lightningstorm: `<svg viewBox="0 0 64 64"><path d="M12 4L4 24h6l-4 20 15-26h-6z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/><path d="M32 2L23 24h6l-5 22 16-28h-7z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/><path d="M52 8l-7 18h5l-4 18 13-24h-6z" fill="#e04a3f" stroke="#7a1815" stroke-width="1.3" stroke-linejoin="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4607,7 +4609,7 @@
         el.hint.textContent = 'Выбери полосу — молнии ударят по всем вражеским бойцам в ней.';
         highlightEnemyLanesForSpell();
       } else if(card.ragingFire){
-        el.hint.textContent = 'Выбери полосу — огненная волна пройдёт по всем бойцам в ней и ударит по герою соперника.';
+        el.hint.textContent = card.lightningVisual ? 'Выбери полосу — молнии последовательно ударят по каждой клетке в ней, а затем по герою соперника.' : 'Выбери полосу — огненная волна пройдёт по всем бойцам в ней и ударит по герою соперника.';
         highlightEnemyLanesForSpell();
       } else if(card.treeWrath){
         el.hint.textContent = 'Выбери полосу — корень ударит по случайной ячейке в ней, задев и героя соперника.';
@@ -5335,19 +5337,24 @@
       // it's the same "wave sweeping across a row" flavor. The
       // guaranteed hero hit arrives as its own separate targetHero:true
       // event and falls through to the generic hero-hit handler below.
+      // Шторм молний reuses the exact same mechanic/event, just its own
+      // per-cell red lightning bolt instead of the fire wave, chosen via
+      // spellDef.lightningVisual — same presentational-only branch shape
+      // as isRockHail for Гнев небес/Каменный град above.
+      const isLightningStorm = !!(spellDef && spellDef.lightningVisual);
       const board = targetMine ? state.playerBoard : state.enemyBoard;
       const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
       const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
-      spawnFireWave(targetEl);
+      if(isLightningStorm) spawnRedLightningStrike(targetEl); else spawnFireWave(targetEl);
       setTimeout(()=>{
         if(ev.empty){
-          log(`«${label}» проносится над пустой ячейкой.`);
+          log(isLightningStorm ? `«${label}» бьёт молнией по пустой ячейке.` : `«${label}» проносится над пустой ячейкой.`);
         } else if(ev.resisted){
           log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
         } else if(unit){
           unit.hp -= ev.amount;
           if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
-          log(`«${label}» проходит сквозь ${unit.name}, нанося ${ev.amount}.`);
+          log(isLightningStorm ? `«${label}» поражает молнией ${unit.name}, нанося ${ev.amount}.` : `«${label}» проходит сквозь ${unit.name}, нанося ${ev.amount}.`);
           if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
         }
         setTimeout(()=>{ renderAll(); done(); }, 500);
