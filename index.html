@@ -760,6 +760,9 @@
     align-items:center;
     gap:5px;
   }
+  .shop-card-wrap.bought{
+    opacity:0.55;
+  }
   .shop-card-price{
     display:flex;
     align-items:center;
@@ -3255,10 +3258,11 @@
   let shopFaction = { gold:'all', dust:'all', crystals:'all' };
   let shopManaFilters = { gold:new Set(), dust:new Set(), crystals:new Set() };
   // Which SLOT indices (not card ids — the same card can sit in several
-  // slots) have already been bought this viewing of the shop. Purely a
-  // client-side "just bought this" marker: the server only tracks total
-  // owned counts, not which specific slot a purchase came from, so this
-  // naturally resets whenever the list is freshly (re)loaded.
+  // slots) have already been bought from the CURRENT list. Mirrors the
+  // server's own per-tab `purchased` array (see fetchShop/buyShopCard) —
+  // it's server-authoritative and persists across leaving/re-entering the
+  // shop, only clearing when the list itself is regenerated (daily UTC
+  // rollover or a paid manual refresh of that one tab).
   let shopPurchasedSlots = { gold:new Set(), dust:new Set(), crystals:new Set() };
 
   async function fetchShop(){
@@ -3272,7 +3276,13 @@
       SHOP_CURRENCY_TABS.forEach(t=>{
         if(data[t.id] && Array.isArray(data[t.id].cardIds)){
           shopCardIds[t.id] = data[t.id].cardIds;
-          shopPurchasedSlots[t.id] = new Set();
+          // Server-authoritative: which slots are already bought from
+          // THIS list, so it survives leaving and re-entering the shop
+          // (or reloading the page) instead of resetting on every fetch.
+          const purchased = data[t.id].purchased;
+          shopPurchasedSlots[t.id] = new Set(
+            Array.isArray(purchased) ? purchased.reduce((acc,p,i)=>{ if(p) acc.push(i); return acc; }, []) : []
+          );
         }
       });
     } catch(e){ /* keep last known / empty */ }
@@ -3330,7 +3340,7 @@
     const bottomHtml = justBought
       ? `<div class="shop-bought-label">Куплена</div>`
       : `<button class="shop-buy-btn" data-tab="${currency}" data-index="${index}">${CURRENCY_ICONS[currency]}<span>${price!=null?price:'—'}</span></button>`;
-    return `<div class="shop-card-wrap">
+    return `<div class="shop-card-wrap${justBought?' bought':''}">
       ${libraryCardHtml(card)}
       ${bottomHtml}
     </div>`;
