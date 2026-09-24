@@ -6429,7 +6429,10 @@
         } else if(targetUnit){
           targetUnit.hp -= ev.amount;
           if(cellEl) spawnDamageNumber(cellEl, '-'+ev.amount, 'dmg');
-          if(ev.died){ if(cellEl) cellEl.classList.add('unit-dying'); }
+          if(ev.died){
+            if(cellEl) cellEl.classList.add('unit-dying');
+            targetBoard[ev.targetLaneIdx][ev.targetDepthIdx] = null;
+          }
         }
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 900);
