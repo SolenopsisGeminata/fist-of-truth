@@ -9389,9 +9389,29 @@
     document.body.appendChild(overlay);
     const session = loadSession();
     if(session && session.token) fetchResources(session.token);
-    document.getElementById('oppLeftExitBtn').addEventListener('click', ()=>{
+    // Same mode-aware routing as showOverlay's own exitBtn — this overlay
+    // can fire for a tournament or treasure-race match too (both are
+    // still state.mode==='pvp', disambiguated by these two flags), not
+    // just a plain PVP one, so it needs the exact same priority order.
+    document.getElementById('oppLeftExitBtn').addEventListener('click', async ()=>{
       overlay.remove();
-      showScreen('menu');
+      if(state.isTreasureRaceMatch){
+        await openTreasureRaceScreen();
+      } else if(state.isTournamentMatch){
+        await fetchTournamentStatus();
+        renderTournamentScreen();
+        showScreen('tournament');
+      } else if(state.mode==='pve'){
+        await fetchPveStatus();
+        renderPveScreen();
+        showScreen('pve');
+      } else if(state.mode==='pvp'){
+        await fetchPvpStatus();
+        renderPvpScreen();
+        showScreen('pvp');
+      } else {
+        showScreen('menu');
+      }
     });
   }
 
