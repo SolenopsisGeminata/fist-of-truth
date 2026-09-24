@@ -9329,7 +9329,7 @@
         log('Соперник покинул матч.');
         state.phase = 'over';
         clearActiveMatch();
-        showOpponentLeftOverlay();
+        showOpponentLeftOverlay(data.reward || null);
       }
       return;
     }
@@ -9352,18 +9352,43 @@
     }
   }
 
-  function showOpponentLeftOverlay(){
+  function showOpponentLeftOverlay(reward){
+    // Same reward-line shape as showOverlay's own pendingMatchReward
+    // rendering — a forfeit is a real win for the match-reward payout
+    // (see the server's leave_match handler), it just isn't routed
+    // through pendingMatchReward since there's no 'resolution' message
+    // for this path, so the reward comes straight off this event instead.
+    let rewardHtml = '';
+    if(reward){
+      const matchBits = [];
+      if(reward.matchGold) matchBits.push(`+${reward.matchGold} золота`);
+      if(reward.matchDust) matchBits.push(`+${reward.matchDust} пыли`);
+      if(matchBits.length){
+        rewardHtml += `<div class="match-reward-line">Награда за матч: ${matchBits.join(', ')}</div>`;
+      }
+      if(reward.tierCompleted){
+        const tierBits = [];
+        if(reward.tierGold) tierBits.push(`+${reward.tierGold} золота`);
+        if(reward.tierDust) tierBits.push(`+${reward.tierDust} пыли`);
+        if(tierBits.length){
+          rewardHtml += `<div class="match-reward-line tier">Этап полосы прогресса завершён: ${tierBits.join(', ')}</div>`;
+        }
+      }
+    }
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
     overlay.innerHTML = `
       <div class="overlay-box">
         <div class="overlay-title win">ПОБЕДА</div>
         <div style="color:var(--bone-dim); margin-bottom:20px; font-family:'Oswald',sans-serif;">Соперник покинул матч (или сдался) — победа засчитана тебе.</div>
+        ${rewardHtml}
         <div class="overlay-actions">
           <button class="btn ghost" id="oppLeftExitBtn">Выход</button>
         </div>
       </div>`;
     document.body.appendChild(overlay);
+    const session = loadSession();
+    if(session && session.token) fetchResources(session.token);
     document.getElementById('oppLeftExitBtn').addEventListener('click', ()=>{
       overlay.remove();
       showScreen('menu');
