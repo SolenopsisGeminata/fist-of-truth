@@ -6306,7 +6306,9 @@
   // Имперская пушка: fires at a random cell within her OWN lane's mirror
   // on the enemy side, exploding on contact — a unit there takes the
   // hit, or if that cell is empty, the shot instead lands on the enemy
-  // hero (ev.targetHero tells the client which). Reuses the existing
+  // hero (ev.targetHero tells the client which). Flies via
+  // flyProjectileArc (a lobbed, parabolic trajectory), same as
+  // Метеоритный страж's own weapon throw. Reuses the existing
   // damage-burst effect for the explosion itself.
   function playCannonShotEvent(ev, done){
     const shooterMine = ev.side === state.myUsername;
@@ -6329,7 +6331,7 @@
     } else {
       log(`${shooterMine?'Твоя':'Соперника'} «${shooterName}» стреляет по ${targetName}, нанося ${ev.amount}.`);
     }
-    flyProjectileToHero(sourceEl, targetEl, CANNONBALL_SVG, 'cannonball', 600, ()=>{
+    flyProjectileArc(sourceEl, targetEl, CANNONBALL_SVG, 'cannonball', 600, ()=>{
       // Чаростойкость: the cannonball still explodes on contact — it just
       // has nothing to actually apply, to her or (unlike the empty-cell
       // case) to the hero either.
