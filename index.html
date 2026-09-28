@@ -2949,6 +2949,7 @@
     {id:'c233', name:'Профессор медицины', type:'creature', cost:3, atk:1, hp:5, addCardToHandOnPlay:'s56', rarity:'rare', desc:'При появлении на поле боя добавляет в руку игрока карту «Извращенная сила».', art:'medicineprofessor', faction:'mystery'},
     {id:'s56', name:'Извращенная сила', type:'spell', cost:0, corruptedPowerBuff:true, rarity:'common', desc:'Примени на любого бойца — своего или соперника (кроме Щита и Чаростойкости) — увеличивает его атаку на 3 и уменьшает здоровье на 1.', art:'corruptedpower', faction:'mystery'},
     {id:'c234', name:'Исцеляющая призма', type:'creature', cost:3, atk:2, hp:4, healingPrismHealOnMana:true, rarity:'rare', desc:'В конце хода исцеляет своего героя на 1 за каждое оставшееся неиспользованным очко маны героя. Мана при этом не расходуется.', art:'healingprism', faction:'mystery'},
+    {id:'c235', name:'Охранный робот', type:'creature', cost:3, atk:3, hp:3, guardRobotTwinShot:true, rarity:'rare', desc:'Перед атакой стреляет из спаренного бластера двумя плазменными пулями в противоположный ряд соперника. Каждая пуля наносит 2 урона первому бойцу на своём пути (или герою, если ряд пуст).', art:'guardrobot', faction:'mystery'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4135,7 +4136,8 @@
     supplyrobot: `<svg viewBox="0 0 64 64"><rect x="16" y="24" width="32" height="24" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><circle cx="25" cy="34" r="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="25" cy="34" r="1.6" fill="#0f0b08"/><circle cx="39" cy="34" r="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="39" cy="34" r="1.6" fill="#0f0b08"/><rect x="28" y="10" width="8" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><path d="M14 44l-6 4v6l6-4zM50 44l6 4v6l-6-4z" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.2"/><circle cx="32" cy="44" r="6" fill="#e8d9ff" opacity=".9"/><path d="M32 40v8M28 44h8" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/></svg>`,
     medicineprofessor: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="12" ry="11" fill="#e8d9ff" opacity=".9"/><circle cx="28" cy="19" r="1.6" fill="#3a2a52"/><circle cx="36" cy="19" r="1.6" fill="#3a2a52"/><path d="M18 20a14 6 0 0 1 28 0" fill="#3a2a52"/><rect x="20" y="34" width="24" height="20" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><path d="M32 39v10M27 44h10" stroke="#e04a3f" stroke-width="2.6" stroke-linecap="round"/><rect x="42" y="36" width="10" height="14" rx="3" fill="#e8d9ff" opacity=".85" stroke="#8b5cf6" stroke-width="1.3"/></svg>`,
     corruptedpower: `<svg viewBox="0 0 64 64"><path d="M32 6l6 16h16l-13 10 5 16-14-10-14 10 5-16-13-10h16z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6" stroke-linejoin="round"/><circle cx="32" cy="32" r="6" fill="#e04a3f" opacity=".85"/><path d="M22 50c3 3 17 3 20 0" stroke="#e04a3f" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".7"/></svg>`,
-    healingprism: `<svg viewBox="0 0 64 64"><path d="M6 40l20-24 20 24z" fill="none" stroke="#8b5cf6" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 40l18-22 18 22z" fill="#e8d9ff" opacity=".55"/><path d="M26 16l24 8" stroke="#fff6d0" stroke-width="3" stroke-linecap="round"/><path d="M44 40l16-2" stroke="#7fae3a" stroke-width="2.4" stroke-linecap="round"/><path d="M50 34v12M44 40h12" stroke="#7fae3a" stroke-width="2.4" stroke-linecap="round"/></svg>`
+    healingprism: `<svg viewBox="0 0 64 64"><path d="M6 40l20-24 20 24z" fill="none" stroke="#8b5cf6" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 40l18-22 18 22z" fill="#e8d9ff" opacity=".55"/><path d="M26 16l24 8" stroke="#fff6d0" stroke-width="3" stroke-linecap="round"/><path d="M44 40l16-2" stroke="#7fae3a" stroke-width="2.4" stroke-linecap="round"/><path d="M50 34v12M44 40h12" stroke="#7fae3a" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+    guardrobot: `<svg viewBox="0 0 64 64"><rect x="14" y="20" width="36" height="24" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><circle cx="26" cy="32" r="5" fill="#e8d9ff" opacity=".9"/><circle cx="26" cy="32" r="2" fill="#0f0b08"/><rect x="40" y="26" width="18" height="5" rx="2.5" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="40" y="35" width="18" height="5" rx="2.5" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="59" cy="28.5" r="2.4" fill="#8b5cf6"/><circle cx="59" cy="37.5" r="2.4" fill="#8b5cf6"/><rect x="20" y="46" width="24" height="12" rx="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.4"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5469,6 +5471,7 @@
       else if(ev.type==='devouringMaliceReturn') playDevouringMaliceReturnEvent(ev, next);
       else if(ev.type==='infernoScytheStrike') playInfernoScytheStrikeEvent(ev, next);
       else if(ev.type==='musketShot') playMusketShotEvent(ev, next);
+      else if(ev.type==='guardRobotShot') playGuardRobotShotEvent(ev, next);
       else if(ev.type==='bloodShadowBlade') playBloodShadowBladeEvent(ev, next);
       else if(ev.type==='acidSpit') playAcidSpitEvent(ev, next);
       else if(ev.type==='spikeShot') playSpikeShotEvent(ev, next);
@@ -7273,6 +7276,49 @@
         if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
       }
       setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
+    });
+  }
+
+  // Охранный робот: same "mirrored lane, frontmost unit, hero fallback
+  // if that lane's empty" unit-or-hero shape as Лавовый колдун's own
+  // fireball above, just its own flavor text — fires as TWO separate
+  // guardRobotShot events per attack (server-side), so this handler
+  // plays whichever ONE landed and the event queue naturally calls it
+  // again for the second.
+  function playGuardRobotShotEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const shooterName = sourceUnit ? sourceUnit.name : 'Охранный робот';
+    const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    let targetEl, targetUnit = null, targetBoard = null;
+    if(ev.targetHero){
+      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    } else {
+      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    }
+    const targetName = ev.targetHero ? (targetMine?'твоему герою':'герою соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
+    if(ev.resisted){
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) стреляет плазменной пулей в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) стреляет плазменной пулей в ${targetName}, нанося ${ev.amount}.`);
+    }
+    flyProjectileToHero(sourceEl, targetEl, MUSKET_BALL_SVG, 'cannonball', 350, ()=>{
+      spawnSpellBurst(targetEl, 'dmg');
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
     });
   }
 
