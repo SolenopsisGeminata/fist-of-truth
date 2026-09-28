@@ -2942,6 +2942,7 @@
     {id:'s53', name:'Обуза', type:'spell', cost:2, burdenDebuff:true, rarity:'rare', desc:'Уменьшает атаку целевого юнита на 3 (не действует на бойцов с Чаростойкостью или Щитом). Если выбранная ячейка пуста, заклинание не срабатывает.', art:'burden', faction:'mystery'},
     {id:'s54', name:'Озарение', type:'spell', cost:2, buffAtk:1, buffMagicShield:2, buffDrawCard:true, rarity:'rare', desc:'Увеличивает атаку выбранного союзного бойца на 1 и даёт ему эффект Магическая защита 2, а также добавляет в руку карту из своей колоды. Магическая защита снижает урон от заклинаний и способностей других бойцов (но не от обычных атак) на своё значение.', art:'enlightenment', faction:'mystery'},
     {id:'c229', name:'Робот авангарда', type:'creature', cost:2, atk:2, hp:1, firstStrike:true, vanguardRobotGrowOnMana:true, rarity:'epic', desc:'Первый удар. Перед атакой увеличивает свою атаку на 1 за каждое оставшееся неиспользованным очко маны героя. Мана при этом не расходуется.', art:'vanguardrobot', faction:'mystery'},
+    {id:'c230', name:'Профессор искусств', type:'creature', cost:2, atk:1, hp:4, artProfessorGrowOnSpellCast:true, rarity:'epic', desc:'В конце хода, если в этом раунде ты использовал хотя бы одно заклинание, добавляет 1 карту в руку из твоей колоды и увеличивает свою атаку и здоровье на 1 за каждое разыгранное тобой в этом раунде заклинание.', art:'artprofessor', faction:'mystery'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4121,7 +4122,8 @@
     moonbat: `<svg viewBox="0 0 64 64"><circle cx="40" cy="16" r="11" fill="#e8d9ff" opacity=".85"/><circle cx="45" cy="13" r="10" fill="#0f0b1a"/><path d="M32 34c-14-10-24-4-24 6 8-4 14-2 18 2l6-4z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4" stroke-linejoin="round"/><path d="M32 34c14-10 24-4 24 6-8-4-14-2-18 2l-6-4z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4" stroke-linejoin="round"/><ellipse cx="32" cy="38" rx="6" ry="8" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4"/><circle cx="29" cy="35" r="1.4" fill="#e8d9ff"/><circle cx="35" cy="35" r="1.4" fill="#e8d9ff"/></svg>`,
     mooncat: `<svg viewBox="0 0 64 64"><circle cx="42" cy="14" r="9" fill="#e8d9ff" opacity=".85"/><circle cx="46" cy="11" r="8" fill="#0f0b1a"/><path d="M18 22l6 12-6 4zM46 22l-6 12 6 4z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4" stroke-linejoin="round"/><ellipse cx="32" cy="38" rx="16" ry="13" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><path d="M24 37l4 2-4 2zM40 37l-4 2 4 2z" fill="#e8d9ff"/><path d="M28 46c2 2 6 2 8 0" stroke="#8b5cf6" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M10 34l10 4M54 34l-10 4" stroke="#8b5cf6" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></svg>`,
     enlightenment: `<svg viewBox="0 0 64 64"><path d="M32 6l6 14 15 2-11 10 3 15-13-8-13 8 3-15-11-10 15-2z" fill="#e8d9ff" stroke="#8b5cf6" stroke-width="1.6" stroke-linejoin="round"/><circle cx="32" cy="28" r="6" fill="#3a2a52" opacity=".85"/><path d="M16 52c6-6 26-6 32 0" stroke="#8b5cf6" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".7"/><path d="M10 20l4 3M54 20l-4 3M8 34l5 1M56 34l-5 1" stroke="#8b5cf6" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg>`,
-    vanguardrobot: `<svg viewBox="0 0 64 64"><rect x="18" y="16" width="28" height="22" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><path d="M26 24l4 4-4 4z" fill="#e8d9ff"/><path d="M38 24l-4 4 4 4z" fill="#e8d9ff"/><rect x="22" y="42" width="20" height="14" rx="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.6"/><path d="M32 8v8" stroke="#5c85a8" stroke-width="2.4" stroke-linecap="round"/><circle cx="32" cy="6" r="2.4" fill="#8b5cf6"/><path d="M10 22l8-4v10z" fill="#8b5cf6" stroke="#0f0b08" stroke-width="1.2"/><path d="M54 22l-8-4v10z" fill="#8b5cf6" stroke="#0f0b08" stroke-width="1.2"/></svg>`
+    vanguardrobot: `<svg viewBox="0 0 64 64"><rect x="18" y="16" width="28" height="22" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><path d="M26 24l4 4-4 4z" fill="#e8d9ff"/><path d="M38 24l-4 4 4 4z" fill="#e8d9ff"/><rect x="22" y="42" width="20" height="14" rx="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.6"/><path d="M32 8v8" stroke="#5c85a8" stroke-width="2.4" stroke-linecap="round"/><circle cx="32" cy="6" r="2.4" fill="#8b5cf6"/><path d="M10 22l8-4v10z" fill="#8b5cf6" stroke="#0f0b08" stroke-width="1.2"/><path d="M54 22l-8-4v10z" fill="#8b5cf6" stroke="#0f0b08" stroke-width="1.2"/></svg>`,
+    artprofessor: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="12" ry="11" fill="#e8d9ff" opacity=".9"/><circle cx="28" cy="19" r="1.6" fill="#3a2a52"/><circle cx="36" cy="19" r="1.6" fill="#3a2a52"/><path d="M18 20a14 6 0 0 1 28 0" fill="#3a2a52"/><rect x="20" y="34" width="24" height="20" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><rect x="24" y="40" width="16" height="3" rx="1" fill="#8b5cf6" opacity=".7"/><rect x="24" y="46" width="16" height="3" rx="1" fill="#8b5cf6" opacity=".7"/><path d="M42 30l14-6 4 4-14 8z" fill="#e8d9ff" stroke="#8b5cf6" stroke-width="1.3" stroke-linejoin="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -5475,6 +5477,7 @@
       else if(ev.type==='frostWarriorReturn') playFrostWarriorReturnEvent(ev, next);
       else if(ev.type==='vultureDraw') playVultureDrawEvent(ev, next);
       else if(ev.type==='moneyTreeDraw') playMoneyTreeDrawEvent(ev, next);
+      else if(ev.type==='artProfessorDraw') playArtProfessorDrawEvent(ev, next);
       else if(ev.type==='bloodPoolPulse') playBloodPoolPulseEvent(ev, next);
       else if(ev.type==='chefHeroDouble') playChefHeroDoubleEvent(ev, next);
       else if(ev.type==='nualFrontStab') playNualFrontStabEvent(ev, next);
@@ -8318,6 +8321,19 @@
     const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
     const treeName = unit ? unit.name : 'Денежное дерево';
     log(`«${treeName}» получила урон в этом ходу — ${mine?'ты берёшь':'соперник берёт'} карту из колоды.`);
+    setTimeout(()=>{ done(); }, 400);
+  }
+
+  // Профессор искусств: end-of-round draw, same "purely a log line — the
+  // next full state snapshot already carries the real hand" shape as
+  // Денежное дерево's moneyTreeDraw right above. The stat growth itself
+  // arrives as a separate, already-generic rallyBuff event.
+  function playArtProfessorDrawEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const profName = unit ? unit.name : 'Профессор искусств';
+    log(`«${profName}»: в этом раунде разыграно заклинание — ${mine?'ты берёшь':'соперник берёт'} карту из колоды.`);
     setTimeout(()=>{ done(); }, 400);
   }
 
