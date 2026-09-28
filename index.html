@@ -2946,6 +2946,8 @@
     {id:'s55', name:'Клонирование', type:'spell', cost:2, cloneCardToHand:true, rarity:'epic', desc:'Примени на вражеского или союзного юнита (не действует на Щит и Чаростойкость) — его карта добавится в твою руку.', art:'cloning', faction:'mystery'},
     {id:'c231', name:'Ученик алхимика', type:'creature', cost:2, atk:2, hp:1, randomShotOnPlay:1, rarity:'common', desc:'При появлении на поле боя бросает взрывоопасную колбу в случайного бойца соперника, нанося 1 урона.', art:'alchemistapprentice', faction:'mystery'},
     {id:'c232', name:'Робот снабжения', type:'creature', cost:3, atk:2, hp:5, supplyRobotGrowOnMana:true, rarity:'rare', desc:'В конце хода увеличивает свои атаку и здоровье на 1 за каждое оставшееся неиспользованным очко маны героя. Мана при этом не расходуется.', art:'supplyrobot', faction:'mystery'},
+    {id:'c233', name:'Профессор медицины', type:'creature', cost:3, atk:1, hp:5, addCardToHandOnPlay:'s56', rarity:'rare', desc:'При появлении на поле боя добавляет в руку игрока карту «Извращенная сила».', art:'medicineprofessor', faction:'mystery'},
+    {id:'s56', name:'Извращенная сила', type:'spell', cost:0, corruptedPowerBuff:true, rarity:'common', desc:'Примени на любого бойца — своего или соперника (кроме Щита и Чаростойкости) — увеличивает его атаку на 3 и уменьшает здоровье на 1.', art:'corruptedpower', faction:'mystery'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4129,7 +4131,9 @@
     artprofessor: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="12" ry="11" fill="#e8d9ff" opacity=".9"/><circle cx="28" cy="19" r="1.6" fill="#3a2a52"/><circle cx="36" cy="19" r="1.6" fill="#3a2a52"/><path d="M18 20a14 6 0 0 1 28 0" fill="#3a2a52"/><rect x="20" y="34" width="24" height="20" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><rect x="24" y="40" width="16" height="3" rx="1" fill="#8b5cf6" opacity=".7"/><rect x="24" y="46" width="16" height="3" rx="1" fill="#8b5cf6" opacity=".7"/><path d="M42 30l14-6 4 4-14 8z" fill="#e8d9ff" stroke="#8b5cf6" stroke-width="1.3" stroke-linejoin="round"/></svg>`,
     cloning: `<svg viewBox="0 0 64 64"><rect x="10" y="14" width="26" height="34" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.8" opacity=".55"/><rect x="20" y="20" width="34" height="34" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="37" cy="33" r="6" fill="#e8d9ff" opacity=".9"/><circle cx="35" cy="32" r="1.3" fill="#3a2a52"/><circle cx="39" cy="32" r="1.3" fill="#3a2a52"/><path d="M28 46c3-3 15-3 18 0" stroke="#8b5cf6" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/></svg>`,
     alchemistapprentice: `<svg viewBox="0 0 64 64"><circle cx="26" cy="16" r="8" fill="#e8d9ff" opacity=".9"/><circle cx="23" cy="15" r="1.4" fill="#3a2a52"/><circle cx="29" cy="15" r="1.4" fill="#3a2a52"/><path d="M22 34c-4-2-6-6-6-10 0-1 0-2 0-2h20s0 1 0 2c0 4-2 8-6 10z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4"/><path d="M16 34h20v16a10 6 0 0 1 -20 0z" fill="#e8d9ff" opacity=".85" stroke="#8b5cf6" stroke-width="1.6"/><circle cx="22" cy="44" r="2" fill="#7fae3a" opacity=".8"/><circle cx="30" cy="47" r="1.6" fill="#7fae3a" opacity=".8"/><path d="M40 20l6-8 2 2-6 8zM44 14l4 2-2 4z" fill="#7fae3a"/><path d="M40 24l4 4M46 30l4 2" stroke="#7fae3a" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg>`,
-    supplyrobot: `<svg viewBox="0 0 64 64"><rect x="16" y="24" width="32" height="24" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><circle cx="25" cy="34" r="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="25" cy="34" r="1.6" fill="#0f0b08"/><circle cx="39" cy="34" r="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="39" cy="34" r="1.6" fill="#0f0b08"/><rect x="28" y="10" width="8" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><path d="M14 44l-6 4v6l6-4zM50 44l6 4v6l-6-4z" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.2"/><circle cx="32" cy="44" r="6" fill="#e8d9ff" opacity=".9"/><path d="M32 40v8M28 44h8" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/></svg>`
+    supplyrobot: `<svg viewBox="0 0 64 64"><rect x="16" y="24" width="32" height="24" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><circle cx="25" cy="34" r="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="25" cy="34" r="1.6" fill="#0f0b08"/><circle cx="39" cy="34" r="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="39" cy="34" r="1.6" fill="#0f0b08"/><rect x="28" y="10" width="8" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><path d="M14 44l-6 4v6l6-4zM50 44l6 4v6l-6-4z" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.2"/><circle cx="32" cy="44" r="6" fill="#e8d9ff" opacity=".9"/><path d="M32 40v8M28 44h8" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    medicineprofessor: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="12" ry="11" fill="#e8d9ff" opacity=".9"/><circle cx="28" cy="19" r="1.6" fill="#3a2a52"/><circle cx="36" cy="19" r="1.6" fill="#3a2a52"/><path d="M18 20a14 6 0 0 1 28 0" fill="#3a2a52"/><rect x="20" y="34" width="24" height="20" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><path d="M32 39v10M27 44h10" stroke="#e04a3f" stroke-width="2.6" stroke-linecap="round"/><rect x="42" y="36" width="10" height="14" rx="3" fill="#e8d9ff" opacity=".85" stroke="#8b5cf6" stroke-width="1.3"/></svg>`,
+    corruptedpower: `<svg viewBox="0 0 64 64"><path d="M32 6l6 16h16l-13 10 5 16-14-10-14 10 5-16-13-10h16z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6" stroke-linejoin="round"/><circle cx="32" cy="32" r="6" fill="#e04a3f" opacity=".85"/><path d="M22 50c3 3 17 3 20 0" stroke="#e04a3f" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".7"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4820,6 +4824,9 @@
       } else if(card.cloneCardToHand){
         el.hint.textContent = 'Выбери любого бойца — своего или соперника (кроме Щита и Чаростойкости) — его карта попадёт в твою руку.';
         highlightAnyCellForCloneSpell();
+      } else if(card.corruptedPowerBuff){
+        el.hint.textContent = 'Выбери любого бойца — своего или соперника (кроме Щита и Чаростойкости) — его атака увеличится на 3, а здоровье уменьшится на 1.';
+        highlightAnyCellForCloneSpell();
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
@@ -4914,11 +4921,11 @@
     renderAll();
   }
 
-  // Клонирование: the first spell able to target EITHER side's board —
-  // every slot (mine and the opponent's alike) becomes clickable, and the
-  // click itself records which board was actually clicked (targetMine),
-  // since the server can't tell from lane/depth alone (both boards share
-  // the same 3x3 index space).
+  // Клонирование/Извращенная сила: the only spells able to target EITHER
+  // side's board — every slot (mine and the opponent's alike) becomes
+  // clickable, and the click itself records which board was actually
+  // clicked (targetMine), since the server can't tell from lane/depth
+  // alone (both boards share the same 3x3 index space).
   function highlightAnyCellForCloneSpell(){
     const slots = el.battlefield.querySelectorAll('.slot');
     slots.forEach(s=>{
@@ -4933,7 +4940,7 @@
   }
   function castCloneSpell(laneIdx, depthIdx, targetMine){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !card.cloneCardToHand) return;
+    if(!card || !(card.cloneCardToHand || card.corruptedPowerBuff)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -5739,6 +5746,32 @@
           log(`«${label}» копирует карту ${targetMine?'твоего':'вражеского'} бойца «${unit.name}» ${mine?'тебе':'сопернику'} в руку.`);
         }
         setTimeout(()=>{ renderAll(); done(); }, 400);
+      }, 300);
+      return;
+    }
+    if(ev.kind==='corruptedPower'){
+      // Извращенная сила: same specific-cell targeting/resisted shape as
+      // Клонирование above (targetMine says which board), but actually
+      // alters the target instead of just reading it — +3 attack and a
+      // (possibly magically-warded) -ev.hpDelta health, which can kill it
+      // outright if it was already at low health.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnSpellBurst(targetEl, 'dmg');
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» не находит цели в выбранной ячейке и рассеивается без следа.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость или Щит.`);
+        } else if(unit){
+          unit.atk += 3;
+          unit.hp -= ev.hpDelta;
+          if(targetEl){ spawnDamageNumber(targetEl, `+3⚔ -${ev.hpDelta}♥`, 'dmg'); }
+          log(`«${label}» усиливает ${unit.name}: +3⚔ -${ev.hpDelta}♥.`);
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth] = null; }
+        }
+        setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 400);
       }, 300);
       return;
     }
