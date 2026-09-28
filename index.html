@@ -2955,6 +2955,8 @@
     {id:'s59', name:'Разуплотнение', type:'spell', cost:3, decompressionDebuff:true, rarity:'rare', desc:'Уменьшает атаку целевого юнита на 6 (не ниже 0) и даёт ему эффект Невидимость — своего или соперника. Невидимого юнита не может задеть обычная атака других бойцов: она проходит сквозь него и попадает в следующую цель за ним (или в героя, если позади никого нет).', art:'decompression', faction:'mystery'},
     {id:'c236', name:'Импульсный робот', type:'creature', cost:3, atk:2, hp:2, insightEffect:1, observerRobotGrowOnInsight:true, impulseRobotShot:true, rarity:'epic', desc:'Понимание 1. При каждом использовании Понимания увеличивает свою атаку и здоровье на 1. Перед атакой стреляет из импульсной пушки в противоположный ряд соперника, нанося урон, равный своей текущей атаке, первому бойцу на своём пути (или герою, если ряд пуст).', art:'impulserobot', faction:'mystery'},
     {id:'c237', name:'Сумеречный фамилиар', type:'creature', cost:3, atk:2, hp:2, duskFamiliarCostTax:true, rarity:'epic', desc:'При попадании атакой по герою соперника увеличивает стоимость случайной карты в его руке на 1.', art:'duskfamiliar', faction:'mystery'},
+    {id:'c238', name:'Профессор безмолвия', type:'creature', cost:3, atk:4, hp:1, addCardToHandOnPlay:'s60', rarity:'epic', desc:'При появлении на поле боя добавляет в руку игрока карту «Тишина».', art:'silenceprofessor', faction:'mystery'},
+    {id:'s60', name:'Тишина', type:'spell', cost:1, silenceDebuff:true, rarity:'common', desc:'Примени на любого бойца — своего или соперника (кроме Щита и Чаростойкости) — наносит 1 урона и накладывает эффект Немота.', art:'silence', faction:'mystery'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4147,7 +4149,9 @@
     determination: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="none" stroke="#8b5cf6" stroke-width="2"/><circle cx="32" cy="32" r="13" fill="none" stroke="#8b5cf6" stroke-width="2" opacity=".7"/><circle cx="32" cy="32" r="4" fill="#e04a3f"/><path d="M32 4v10M32 50v10M4 32h10M50 32h10" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>`,
     decompression: `<svg viewBox="0 0 64 64"><path d="M20 12c-6 6-8 14-8 20s2 14 8 20M44 12c6 6 8 14 8 20s-2 14-8 20" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" opacity=".55"/><ellipse cx="32" cy="32" rx="13" ry="17" fill="#e8d9ff" opacity=".35" stroke="#8b5cf6" stroke-width="1.4" stroke-dasharray="3 3"/><circle cx="27" cy="28" r="1.6" fill="#3a2a52" opacity=".7"/><circle cx="37" cy="28" r="1.6" fill="#3a2a52" opacity=".7"/><path d="M25 40c3 2 11 2 14 0" stroke="#3a2a52" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".6"/></svg>`,
     impulserobot: `<svg viewBox="0 0 64 64"><rect x="16" y="18" width="32" height="26" rx="6" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><circle cx="32" cy="31" r="8" fill="#e8d9ff" opacity=".9"/><circle cx="32" cy="31" r="3" fill="#8b5cf6"/><rect x="44" y="27" width="16" height="8" rx="3" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><circle cx="60" cy="31" r="2.6" fill="#8b5cf6"/><path d="M44 14l4 6M52 12l2 7" stroke="#8b5cf6" stroke-width="1.6" stroke-linecap="round" opacity=".6"/><rect x="20" y="46" width="24" height="12" rx="4" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.4"/></svg>`,
-    duskfamiliar: `<svg viewBox="0 0 64 64"><path d="M32 8c-10 6-16 16-16 26 0 11 8 18 16 18s16-7 16-18c0-10-6-20-16-26z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><path d="M16 24l-8-6 2 10zM48 24l8-6-2 10z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4"/><circle cx="26" cy="34" r="2.2" fill="#e04a3f"/><circle cx="38" cy="34" r="2.2" fill="#e04a3f"/><path d="M24 44c4 3 12 3 16 0" stroke="#8b5cf6" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7"/></svg>`
+    duskfamiliar: `<svg viewBox="0 0 64 64"><path d="M32 8c-10 6-16 16-16 26 0 11 8 18 16 18s16-7 16-18c0-10-6-20-16-26z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><path d="M16 24l-8-6 2 10zM48 24l8-6-2 10z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.4"/><circle cx="26" cy="34" r="2.2" fill="#e04a3f"/><circle cx="38" cy="34" r="2.2" fill="#e04a3f"/><path d="M24 44c4 3 12 3 16 0" stroke="#8b5cf6" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7"/></svg>`,
+    silenceprofessor: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="12" ry="11" fill="#e8d9ff" opacity=".9"/><circle cx="28" cy="19" r="1.6" fill="#3a2a52"/><circle cx="36" cy="19" r="1.6" fill="#3a2a52"/><path d="M18 20a14 6 0 0 1 28 0" fill="#3a2a52"/><rect x="20" y="34" width="24" height="20" rx="4" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><ellipse cx="32" cy="44" rx="7" ry="5" fill="#e8d9ff" opacity=".85"/><path d="M27 44h10" stroke="#3a2a52" stroke-width="2" stroke-linecap="round"/></svg>`,
+    silence: `<svg viewBox="0 0 64 64"><path d="M34 4L18 34h10l-6 26 26-38h-12z" fill="#e8d9ff" stroke="#8b5cf6" stroke-width="1.8" stroke-linejoin="round"/><ellipse cx="46" cy="48" rx="11" ry="8" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><path d="M39 48h14" stroke="#e8d9ff" stroke-width="2.2" stroke-linecap="round"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
   // Overlays a small faction badge in the top-left corner of a card's own
@@ -4864,6 +4868,9 @@
       } else if(card.decompressionDebuff){
         el.hint.textContent = 'Выбери любого бойца — своего или соперника (кроме Щита и Чаростойкости) — его атака уменьшится на 6, и он получит эффект Невидимость.';
         highlightAnyCellForCloneSpell();
+      } else if(card.silenceDebuff){
+        el.hint.textContent = 'Выбери любого бойца — своего или соперника (кроме Щита и Чаростойкости) — получит 1 урона и эффект Немота.';
+        highlightAnyCellForCloneSpell();
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
@@ -4977,7 +4984,7 @@
   }
   function castCloneSpell(laneIdx, depthIdx, targetMine){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.cloneCardToHand || card.corruptedPowerBuff || card.decompressionDebuff)) return;
+    if(!card || !(card.cloneCardToHand || card.corruptedPowerBuff || card.decompressionDebuff || card.silenceDebuff)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -5931,6 +5938,37 @@
       spawnPurpleLightningStrike(targetEl);
       setTimeout(()=>{
         if(ev.resisted){
+          log(`«${label}» не может подействовать на ${unit?unit.name:'бойца'} — Чаростойкость или Щит.`);
+        } else if(unit){
+          unit.hp -= ev.amount;
+          unit.silenced = true;
+          unit.lifesteal = false;
+          unit.synergy = 0;
+          unit.dawnBuff = false;
+          unit.armor = 0;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          log(`«${label}» бьёт молнией по ${unit.name}, нанося ${ev.amount} и накладывая Немоту.`);
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+        }
+        setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+      }, 300);
+      return;
+    }
+    if(ev.kind==='silence'){
+      // Тишина: same "either side's board, via targetMine" targeting as
+      // Клонирование/Извращенная сила/Разуплотнение above — unlike s52
+      // Немота's own muteStrike (enemy-only, hero fallback on an empty
+      // cell), this never redirects to a hero, an empty cell just
+      // fizzles. Same fixed 1 damage + Немота status-stripping as
+      // muteStrike, reusing its own purple lightning-bolt visual.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      spawnPurpleLightningStrike(targetEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» не находит цели в выбранной ячейке и рассеивается без следа.`);
+        } else if(ev.resisted){
           log(`«${label}» не может подействовать на ${unit?unit.name:'бойца'} — Чаростойкость или Щит.`);
         } else if(unit){
           unit.hp -= ev.amount;
