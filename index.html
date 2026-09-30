@@ -2971,6 +2971,7 @@
     {id:'c250', name:'Кидо-7', type:'creature', cost:4, atk:2, hp:3, kido7DoubleShot:true, kido7SummonBoyOnDeath:true, rarity:'legendary', desc:'Перед своей атакой стреляет двумя плазменными пулями в случайного юнита противника, которые наносят ему суммарно 2 урона. При смерти призывает на ту же клетку Мальчика-северина.', art:'kido7', faction:'mystery'},
     {id:'c251', name:'Мальчик-северин', type:'creature', cost:0, atk:0, hp:2, kidoBoyVanishOnSacrifice:true, rarity:'common', noShop:true, desc:'Если игрок жертвует какую-либо карту, то в начале хода эта карта исчезает с поля боя, а в руку игрока добавляется карта «Кидо-7».', art:'kidoboy', faction:'mystery'},
     {id:'c252', name:'Золотая горгулья', type:'creature', cost:5, atk:3, hp:8, sleep:true, goldenGargoyleSleepArmor:true, manaDrainAura:1, rarity:'rare', desc:'Несёт эффект Сон: не может атаковать в раунде своего появления на поле боя, начинает атаковать со следующего раунда. Пока этот юнит погружен в Сон, получает броню 3. Пока жива и стоит на поле боя, уменьшает запас маны героя соперника на 1.', art:'goldengargoyle', faction:'mystery'},
+    {id:'c253', name:'Боевой робот', type:'creature', cost:5, atk:5, hp:5, battleRobotSacrificeShot:true, rarity:'rare', desc:'Если на текущем ходу игрок пожертвовал карту, в начале хода стреляет в случайного противника пулей, которая наносит 3 урона, затем уменьшает свою атаку и здоровье на 1.', art:'battlerobot', faction:'mystery'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4179,6 +4180,7 @@
     kido7: `<svg viewBox="0 0 64 64"><rect x="16" y="14" width="32" height="28" rx="8" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><ellipse cx="26" cy="28" rx="4.2" ry="5" fill="#e04a3f"/><ellipse cx="26" cy="28" rx="1.8" ry="2.2" fill="#fff6d0"/><ellipse cx="38" cy="28" rx="4.2" ry="5" fill="#e04a3f"/><ellipse cx="38" cy="28" rx="1.8" ry="2.2" fill="#fff6d0"/><rect x="24" y="38" width="16" height="3" rx="1.5" fill="#0f0b08" opacity=".6"/><rect x="10" y="20" width="6" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="48" y="20" width="6" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><path d="M32 8v6" stroke="#0f0b08" stroke-width="2" stroke-linecap="round"/><circle cx="32" cy="6" r="2.4" fill="#e04a3f"/></svg>`,
     kidoboy: `<svg viewBox="0 0 64 64"><circle cx="32" cy="20" r="11" fill="#c9a98a" stroke="#0f0b08" stroke-width="1.3"/><circle cx="28" cy="19" r="1.4" fill="#0f0b08"/><circle cx="36" cy="19" r="1.4" fill="#0f0b08"/><path d="M27 25q5 3 10 0" stroke="#0f0b08" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M20 36c0-7 5-10 12-10s12 3 12 10v18H20z" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.4"/><path d="M32 30v24" stroke="#0f0b08" stroke-width="1" opacity=".4"/></svg>`,
     goldengargoyle: `<svg viewBox="0 0 64 64"><path d="M14 34l-8-10 10 2 4-8 4 10 8-4-2 10z" fill="#d4af37" opacity=".6" stroke="#8a6d1f" stroke-width="1"/><path d="M50 34l8-10-10 2-4-8-4 10-8-4 2 10z" fill="#d4af37" opacity=".6" stroke="#8a6d1f" stroke-width="1"/><ellipse cx="32" cy="36" rx="13" ry="14" fill="#d4af37" stroke="#8a6d1f" stroke-width="1.8"/><path d="M25 33q7 4 14 0" stroke="#8a6d1f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M27 45q5 3 10 0" stroke="#8a6d1f" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M24 24l-3-6M40 24l3-6" stroke="#8a6d1f" stroke-width="2" stroke-linecap="round"/></svg>`,
+    battlerobot: `<svg viewBox="0 0 64 64"><rect x="18" y="16" width="28" height="24" rx="5" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><rect x="24" y="23" width="7" height="7" fill="#e04a3f"/><rect x="33" y="23" width="7" height="7" fill="#e04a3f"/><rect x="26" y="34" width="12" height="3" fill="#0f0b08" opacity=".6"/><rect x="44" y="24" width="14" height="6" rx="1.5" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="8" y="46" width="10" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="46" y="46" width="10" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="24" y="42" width="16" height="14" rx="3" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.6"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -5575,6 +5577,8 @@
       else if(ev.type==='acidSpit') playAcidSpitEvent(ev, next);
       else if(ev.type==='spikeShot') playSpikeShotEvent(ev, next);
       else if(ev.type==='kido7PlasmaShot') playKido7PlasmaShotEvent(ev, next);
+      else if(ev.type==='battleRobotShot') playBattleRobotShotEvent(ev, next);
+      else if(ev.type==='battleRobotSelfHit') playBattleRobotSelfHitEvent(ev, next);
       else if(ev.type==='kidoBoyVanish') playKidoBoyVanishEvent(ev, next);
       else if(ev.type==='skeletonArrowShot') playSkeletonArrowShotEvent(ev, next);
       else if(ev.type==='iceMageFreeze') playIceMageFreezeEvent(ev, next);
@@ -7672,6 +7676,47 @@
     });
   }
 
+  // Боевой робот: same "unit-or-hero" shape as Охранный робот's own
+  // guardRobotShot handler (heroFallback means an empty enemy board
+  // redirects here instead of a silent no-op), just a plain bullet
+  // rather than a plasma bolt.
+  function playBattleRobotShotEvent(ev, done){
+    const shooterMine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = shooterMine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const shooterName = sourceUnit ? sourceUnit.name : 'Боевой робот';
+    const sourceEl = findUnitEl(ev.laneIdx, shooterMine, ev.depthIdx);
+    let targetEl, targetUnit = null, targetBoard = null;
+    if(ev.targetHero){
+      targetEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+    } else {
+      targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+      targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+      targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    }
+    const targetName = ev.targetHero ? (targetMine?'твоему герою':'герою соперника') : (targetUnit?targetUnit.name:'вражескому бойцу');
+    if(ev.resisted){
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) стреляет пулей в ${targetName}, но урон не проходит — Чаростойкость.`);
+    } else {
+      log(`«${shooterName}» (${shooterMine?'твой':'соперника'}) стреляет пулей в ${targetName}, нанося ${ev.amount}.`);
+    }
+    flyProjectileToHero(sourceEl, targetEl, MUSKET_BALL_SVG, 'cannonball', 350, ()=>{
+      spawnSpellBurst(targetEl, 'dmg');
+      if(!ev.resisted){
+        if(ev.targetHero){
+          if(targetMine) state.playerHp -= ev.amount; else state.enemyHp -= ev.amount;
+          if(targetEl){ targetEl.classList.add('hero-hit'); spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg'); }
+        } else if(targetUnit){
+          targetUnit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); }
+        }
+      }
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+    });
+  }
+
   // Мальчик-северин: same "removed directly, no death animation beyond
   // the fade" shape as Призрак's own ghostVanish handler — the server
   // already nulled this exact cell (not via killUnit), so the client
@@ -7967,6 +8012,33 @@
         if(ev.netHp) popupParts.push(`${netHpText}♥`);
         spawnSpellBurst(targetEl, ev.netHp<0 || ev.netAtk<0 ? 'dmg' : 'heal');
         if(popupParts.length) spawnDamageNumber(targetEl, popupParts.join(' '), ev.netHp<0 ? 'dmg' : 'heal');
+        if(ev.died) targetEl.classList.add('unit-dying');
+      }
+      if(ev.died) board[ev.laneIdx][ev.depthIdx] = null;
+      setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1400 : 700);
+    }, 350);
+  }
+
+  // Боевой робот: same "self-inflicted stat loss, dies like any other
+  // source of damage" shape as Часовой боли's own painSentinelPulse
+  // right above — a fixed -1/-1 rather than a variable net, right after
+  // its own battleRobotShot bullet fires.
+  function playBattleRobotSelfHitEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'Боевой робот';
+    const targetEl = findUnitEl(ev.laneIdx, mine, ev.depthIdx);
+    log(`${mine?'Твой':'Соперника'} «${sourceName}» теряет от отдачи выстрела: -1⚔ -1♥.`);
+    setTimeout(()=>{
+      if(unit){
+        unit.atk = Math.max(0, unit.atk - 1);
+        unit.hp -= 1;
+        unit.maxHp -= 1;
+      }
+      if(targetEl){
+        spawnSpellBurst(targetEl, 'dmg');
+        spawnDamageNumber(targetEl, '-1⚔ -1♥', 'dmg');
         if(ev.died) targetEl.classList.add('unit-dying');
       }
       if(ev.died) board[ev.laneIdx][ev.depthIdx] = null;
