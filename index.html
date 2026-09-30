@@ -2974,6 +2974,7 @@
     {id:'c253', name:'Боевой робот', type:'creature', cost:5, atk:5, hp:5, battleRobotSacrificeShot:true, rarity:'rare', desc:'Если на текущем ходу игрок пожертвовал карту, в начале хода стреляет в случайного противника пулей, которая наносит 3 урона, затем уменьшает свою атаку и здоровье на 1.', art:'battlerobot', faction:'mystery'},
     {id:'c254', name:'Робот-жаба', type:'creature', cost:5, atk:3, hp:4, armor:2, manaAura:2, rarity:'rare', desc:'Броня гасит часть входящего урона от каждого удара. Несёт эффект Мана 2 — пока жив и стоит на поле боя, увеличивает запас маны своего героя на 2.', art:'robottoad', faction:'mystery'},
     {id:'c255', name:'Проклятая бабушка', type:'creature', cost:5, atk:2, hp:4, cursedGrandmaDiscardOnPlay:true, rarity:'rare', desc:'При появлении на поле боя заставляет противника потерять случайную карту из руки.', art:'cursedgrandma', faction:'mystery'},
+    {id:'s61', name:'Концентрация', type:'spell', cost:5, concentrationDraw:2, rarity:'rare', desc:'Применяется на любую ячейку поля боя — свободную или занятую кем угодно. Добавляет 2 карты из колоды в руку игрока. Если на текущем ходу игрок жертвовал карту, добавляет ему дополнительно ещё 1 карту из его колоды.', art:'concentration', faction:'mystery'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4185,6 +4186,7 @@
     battlerobot: `<svg viewBox="0 0 64 64"><rect x="18" y="16" width="28" height="24" rx="5" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><rect x="24" y="23" width="7" height="7" fill="#e04a3f"/><rect x="33" y="23" width="7" height="7" fill="#e04a3f"/><rect x="26" y="34" width="12" height="3" fill="#0f0b08" opacity=".6"/><rect x="44" y="24" width="14" height="6" rx="1.5" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="8" y="46" width="10" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="46" y="46" width="10" height="10" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="24" y="42" width="16" height="14" rx="3" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.6"/></svg>`,
     robottoad: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="20" ry="15" fill="#3a5a72" stroke="#0f0b08" stroke-width="1.8"/><circle cx="20" cy="26" r="8" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.5"/><circle cx="44" cy="26" r="8" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.5"/><circle cx="20" cy="26" r="3.4" fill="#8b5cf6"/><circle cx="44" cy="26" r="3.4" fill="#8b5cf6"/><path d="M20 46q12 6 24 0" stroke="#0f0b08" stroke-width="1.6" fill="none" stroke-linecap="round"/><rect x="10" y="48" width="10" height="8" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/><rect x="44" y="48" width="10" height="8" rx="2" fill="#5c85a8" stroke="#0f0b08" stroke-width="1.2"/></svg>`,
     cursedgrandma: `<svg viewBox="0 0 64 64"><path d="M32 8c-14 0-22 10-22 24 0 14 10 24 22 24s22-10 22-24c0-14-8-24-22-24z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><circle cx="32" cy="34" r="13" fill="#c9a98a" opacity=".9"/><circle cx="32" cy="30" r="4" fill="#e04a3f" opacity=".85"/><circle cx="32" cy="30" r="1.6" fill="#0f0b08"/><path d="M25 40q7 4 14 0" stroke="#0f0b08" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M20 20l4 6M44 20l-4 6" stroke="#8b5cf6" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+    concentration: `<svg viewBox="0 0 64 64"><rect x="16" y="14" width="18" height="26" rx="3" fill="#e8d9ff" stroke="#3a2a52" stroke-width="1.6" transform="rotate(-8 25 27)"/><rect x="30" y="14" width="18" height="26" rx="3" fill="#e8d9ff" stroke="#3a2a52" stroke-width="1.6" transform="rotate(8 39 27)"/><circle cx="32" cy="46" r="11" fill="none" stroke="#8b5cf6" stroke-width="2"/><circle cx="32" cy="46" r="4" fill="#8b5cf6"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -4908,7 +4910,7 @@
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
-      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest){
+      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest || card.concentrationDraw){
         el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.houndCall ? 'Выбери ячейку на своей стороне — туда призовётся Костяная гончая, и ещё одна её копия попадёт в руку.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : (card.songToTheMoon ? 'Выбери любую ячейку на своей стороне.' : 'Выбери любую ячейку на своей стороне.')))));
         highlightAnyOwnCellForWellspring();
       } else if(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal || card.buffDoubleStrike || card.mountainStrength){
@@ -5092,7 +5094,7 @@
   // player happens to point.
   function castWellspringSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest)) return;
+    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest || card.concentrationDraw)) return;
     if(card.cost > state.mana) return;
     // No unit-presence check here on purpose — Родник can land on any
     // cell, empty or occupied, since it never actually touches whatever
@@ -5666,7 +5668,7 @@
     // it right now rather than waiting for the whole round's final
     // snapshot, which might not land until well after any combat that
     // follows this same spell in the same round.
-    const spellDepth = ev.kind==='wellspring' ? ev.depthIdx : ev.targetDepth;
+    const spellDepth = (ev.kind==='wellspring' || ev.kind==='concentration') ? ev.depthIdx : ev.targetDepth;
     const spellSide = mine ? 'player' : 'enemy';
     state.pendingSpells = state.pendingSpells.filter(sp=>!(sp.side===spellSide && sp.laneIdx===ev.laneIdx && sp.depthIdx===spellDepth));
     renderAll();
@@ -5684,6 +5686,17 @@
         if(heroEl) spawnDamageNumber(heroEl, '+'+ev.healAmount, 'heal');
         setTimeout(()=>{ renderAll(); done(); }, 900);
       });
+      return;
+    }
+    if(ev.kind==='concentration'){
+      // Концентрация: same "cast on ANY cell, purely a formality" shape
+      // as Родник above, but a pure card draw with no hero target — the
+      // burst plays over the cast cell itself, no projectile needed.
+      const sourceEl = findSlotEl(ev.laneIdx, mine, ev.depthIdx);
+      const bonusText = ev.bonus ? ` (+${ev.bonus} за принесённую в этом ходу жертву)` : '';
+      log(`«${label}» (${mine?'твой':'соперника'}) добавляет в руку ${ev.drewCount} карт${ev.drewCount===1?'у':ev.drewCount<5?'ы':''} из колоды${bonusText}.`);
+      if(sourceEl) spawnSpellBurst(sourceEl, 'heal');
+      setTimeout(()=>{ renderAll(); done(); }, 700);
       return;
     }
     if(ev.kind==='wrath'){
@@ -9764,6 +9777,7 @@
     if(card.heal) return '+'+card.heal+' HP';
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.pineForest) return `+2-3 \u0431\u043e\u0439\u0446\u0430`;
+    if(card.concentrationDraw) return `+${card.concentrationDraw} \u043a\u0430\u0440\u0442\u044b, +1 \u043f\u0440\u0438 \u0436\u0435\u0440\u0442\u0432\u0435`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца${card.healAmount?`, +${card.healAmount} HP герою`:''}`;
     if(card.trapKill) return `Уничтожает бойца · +♥ герою по его стоимости`;
     if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike || card.buffTrample || card.buffLegacy || card.buffSpellResist || card.buffRageOnEnemySummon) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.buffTrample?' / 🐾':''}${card.buffLegacy?' / 🌱'+card.buffLegacy:''}${card.buffSpellResist?' / 🔮':''}${card.buffRageOnEnemySummon?' / 💢':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ герою':''}${card.drawIfArmored?' / 🃏 если есть броня':''}${card.drawIfAsleep?' / 🃏 если есть Сон':''}`;
@@ -9799,6 +9813,7 @@
     if(card.heal) return `+${card.heal} HP`;
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     if(card.pineForest) return `призывает Соснового отшельника на выбранную и на случайную клетку, с 60% шансом призвать ещё одного`;
+    if(card.concentrationDraw) return `добавляет ${card.concentrationDraw} карты из колоды в руку, и ещё 1 дополнительно, если в этом ходу была принесена жертва`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца${card.healAmount?`, +${card.healAmount} HP герою`:''}`;
     if(card.trapKill) return `уничтожает выбранного вражеского бойца и восстанавливает своему герою здоровье, равное его стоимости в мане`;
     return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.buffTrample?' / 🐾 Топот':''}${card.buffLegacy?' / 🌱 Наследие '+card.buffLegacy:''}${card.buffSpellResist?' / 🔮 Чаростойкость':''}${card.buffRageOnEnemySummon?' / 💢 +1⚔ за каждого нового вражеского юнита':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ своему герою':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''}${card.drawIfAsleep?' / 🃏 карта, если есть эффект Сон':''} навсегда`;
