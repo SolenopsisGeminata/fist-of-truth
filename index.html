@@ -2994,6 +2994,7 @@
     {id:'c269', name:'Иноземный путешественник', type:'creature', cost:2, atk:1, hp:5, foreignTravelerDrawOnLegacy:true, rarity:'rare', desc:'При получении эффекта Наследие (от соседнего погибшего союзника) добавляет в руку игрока 1 карту из его колоды.', art:'foreigntraveler', faction:'pirates'},
     {id:'c270', name:'Ночной стрелок', type:'creature', cost:2, atk:2, hp:2, nightMarksmanShotOnHeroHit:2, rarity:'rare', desc:'При попадании своей атакой по герою противника стреляет из арбалета по случайному юниту противника на поле боя, нанося ему 2 урона (не действует на бойцов с Чаростойкостью).', art:'nightmarksman', faction:'pirates'},
     {id:'c271', name:'Грабитель', type:'creature', cost:2, atk:3, hp:2, firstStrike:true, robberBattlecryDrain:3, rarity:'rare', desc:'Несёт эффект Первый удар. При появлении на поле боя наносит вражескому герою 3 урона и восстанавливает своему герою столько же здоровья.', art:'robber', faction:'pirates'},
+    {id:'c272', name:'Сорвиголова', type:'creature', cost:2, atk:4, hp:1, daredevilExtraDamage:true, rarity:'rare', desc:'При попадании своей атакой по герою противника наносит ему дополнительно ещё 1 урона.', art:'daredevil', faction:'pirates'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4225,6 +4226,7 @@
     foreigntraveler: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="18" rx="20" ry="5" fill="#6b4a2f"/><path d="M20 18c0-6 5-10 12-10s12 4 12 10" fill="#8a6a47"/><circle cx="32" cy="30" r="11" fill="#d9a066"/><circle cx="28" cy="29" r="1.8" fill="#1c1026"/><circle cx="36" cy="29" r="1.8" fill="#1c1026"/><path d="M26 36q6 3 12 0" stroke="#2b1a0e" stroke-width="1.4" fill="none" stroke-linecap="round"/><rect x="24" y="44" width="16" height="12" rx="2" fill="#3a5a6b" stroke="#1c1026" stroke-width="1.2"/></svg>`,
     nightmarksman: `<svg viewBox="0 0 64 64"><path d="M20 16c0-8 6-14 12-14s12 6 12 14c0 10-6 16-12 16s-12-6-12-16z" fill="#1a2233"/><circle cx="26" cy="20" r="1.8" fill="#8fd6ff"/><circle cx="38" cy="20" r="1.8" fill="#8fd6ff"/><path d="M16 42l32-6M16 36l32 6" stroke="#5c4a32" stroke-width="2.5" stroke-linecap="round"/><path d="M32 30v20" stroke="#3a2a1a" stroke-width="2" stroke-linecap="round"/></svg>`,
     robber: `<svg viewBox="0 0 64 64"><circle cx="32" cy="28" r="13" fill="#d9a066"/><rect x="18" y="18" width="28" height="8" rx="2" fill="#1c1026"/><circle cx="26" cy="26" r="2" fill="#1c1026"/><circle cx="38" cy="26" r="2" fill="#1c1026"/><path d="M20 34c0-4 24-4 24 0" fill="#1c1026"/><path d="M44 42l12-4" stroke="#8a6c1e" stroke-width="2.5" stroke-linecap="round"/><circle cx="58" cy="37" r="3" fill="#e8c547" stroke="#8a6c1e" stroke-width="1"/></svg>`,
+    daredevil: `<svg viewBox="0 0 64 64"><path d="M18 20c-2-8 4-14 14-14s16 6 14 14l-4 2c1-6-4-10-10-10s-11 4-10 10z" fill="#4a2e1a"/><circle cx="32" cy="28" r="13" fill="#d9a066"/><path d="M22 23l8 4M44 21l-8 6" stroke="#1c1026" stroke-width="1.8" stroke-linecap="round"/><circle cx="27" cy="27" r="2.2" fill="#1c1026"/><circle cx="38" cy="25" r="2.2" fill="#1c1026"/><path d="M24 36q8 5 16-1" stroke="#1c1026" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -5663,6 +5665,7 @@
       else if(ev.type==='cellFrozen') playCellFrozenEvent(ev, next);
       else if(ev.type==='evilEyeDiscard') playEvilEyeDiscardEvent(ev, next);
       else if(ev.type==='tormentorHit') playTormentorHitEvent(ev, next);
+      else if(ev.type==='daredevilExtraHit') playDaredevilExtraHitEvent(ev, next);
       else if(ev.type==='thiefImpSteal') playThiefImpStealEvent(ev, next);
       else if(ev.type==='duskFamiliarTax') playDuskFamiliarTaxEvent(ev, next);
       else if(ev.type==='devourerFeast') playDevourerFeastEvent(ev, next);
@@ -8437,6 +8440,23 @@
       else { state.playerHp -= ev.amount; state.enemyHp -= ev.amount; }
       if(targetHeroEl){ targetHeroEl.classList.add('hero-hit'); spawnDamageNumber(targetHeroEl, '-'+ev.amount, 'dmg'); }
       if(sourceHeroEl){ sourceHeroEl.classList.add('hero-hit'); spawnDamageNumber(sourceHeroEl, '-'+ev.amount, 'dmg'); }
+      setTimeout(()=>{ renderAll(); done(); }, 700);
+    }, 300);
+  }
+
+  // Сорвиголова: same "own attack lands directly on the enemy hero"
+  // trigger family as Бес-мучитель right above, but ONLY the enemy hero
+  // takes the extra hit — no self-damage at all.
+  function playDaredevilExtraHitEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const board = mine ? state.playerBoard : state.enemyBoard;
+    const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null;
+    const sourceName = unit ? unit.name : 'Сорвиголова';
+    const targetHeroEl = mine ? document.querySelector('.hero.enemy') : document.querySelector('.hero.player');
+    log(`${mine?'Твой':'Соперника'} «${sourceName}» наносит герою дополнительно ${ev.amount} урона.`);
+    setTimeout(()=>{
+      if(mine){ state.enemyHp -= ev.amount; } else { state.playerHp -= ev.amount; }
+      if(targetHeroEl){ targetHeroEl.classList.add('hero-hit'); spawnDamageNumber(targetHeroEl, '-'+ev.amount, 'dmg'); }
       setTimeout(()=>{ renderAll(); done(); }, 700);
     }, 300);
   }
