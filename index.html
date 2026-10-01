@@ -2985,6 +2985,7 @@
     {id:'c263', name:'Редкий зверь', type:'creature', cost:1, atk:4, hp:5, conditionalDefender:true, rarity:'rare', desc:'Перед своей атакой проверяет всё поле боя соперника: если там есть хотя бы один вражеский юнит, не атакует в этом раунде и ведёт себя как Защитник. Если поле боя соперника пусто, атакует как обычно.', art:'rarebeast', faction:'pirates'},
     {id:'c264', name:'Маленькая ведьма', type:'creature', cost:1, atk:1, hp:1, littleWitchSpellPower:true, rarity:'rare', desc:'Перед своей атакой увеличивает свою атаку на 1 за каждое применённое игроком в этом раунде заклинание и уменьшает атаку случайного вражеского юнита на 1 за каждое применённое соперником в этом раунде заклинание (Чаростойкость и Щит защищают от этого эффекта).', art:'littlewitch', faction:'pirates'},
     {id:'s62', name:'Ограбление', type:'spell', cost:1, robberyDrain:true, robberyAmount:3, rarity:'rare', desc:'Применяется на любую ячейку на своей стороне — похищает 3 здоровья у героя соперника: наносит ему 3 урона и восстанавливает своему герою столько же здоровья.', art:'robbery', faction:'pirates'},
+    {id:'s63', name:'Черная дыра разума', type:'spell', cost:1, blackHoleMindSpell:true, blackHoleMindDmg:3, rarity:'rare', desc:'Наносит 3 урона юниту противника в выбранной ячейке на его поле боя и столько же урона по здоровью героя соперника, сколько маны стоит этот юнит. Если юнита там нет (или он защищён Чаростойкостью/Щитом), заклинание не срабатывает — герой урона не получает.', art:'blackholemind', faction:'pirates'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4207,6 +4208,7 @@
     rarebeast: `<svg viewBox="0 0 64 64"><path d="M14 20l6 8 6-10 6 10 6-10 6 10 6-8-4 24c-2 8-8 12-16 12s-14-4-16-12z" fill="#6b4a2f" stroke="#2b1d12" stroke-width="1.6"/><circle cx="24" cy="34" r="3" fill="#8be04a"/><circle cx="40" cy="34" r="3" fill="#8be04a"/><path d="M26 44l3 4 3-4 3 4 3-4" stroke="#2b1d12" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`,
     littlewitch: `<svg viewBox="0 0 64 64"><path d="M20 30l12-24 12 24z" fill="#4a2e63" stroke="#1c1026" stroke-width="1.6"/><circle cx="32" cy="12" r="2.2" fill="#8be04a"/><circle cx="32" cy="42" r="11" fill="#e9c6a0"/><circle cx="28" cy="41" r="2" fill="#1c1026"/><circle cx="36" cy="41" r="2" fill="#1c1026"/><path d="M28 47q4 2 8 0" stroke="#1c1026" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>`,
     robbery: `<svg viewBox="0 0 64 64"><path d="M22 26c-6 8-6 20 2 28 5 5 11 6 16 2 7-5 8-17 2-27-3-5-7-9-10-13z" fill="#6b4423" stroke="#2b1a0e" stroke-width="1.6"/><path d="M24 24l16-6" stroke="#2b1a0e" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="40" r="4" fill="#e8c547" stroke="#8a6c1e" stroke-width="1"/><circle cx="38" cy="46" r="4" fill="#e8c547" stroke="#8a6c1e" stroke-width="1"/></svg>`,
+    blackholemind: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#0b0712"/><path d="M32 10a22 22 0 0 1 22 22" stroke="#8b5cf6" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M32 54a22 22 0 0 1-22-22" stroke="#5b2a8c" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="32" cy="32" r="9" fill="#1c1026" stroke="#8b5cf6" stroke-width="1.5"/><circle cx="14" cy="20" r="1.6" fill="#8b5cf6"/><circle cx="50" cy="44" r="1.6" fill="#8b5cf6"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -4897,6 +4899,9 @@
       } else if(card.madFireballDmg){
         el.hint.textContent = `Выбери вражескую ячейку — если там боец, он получит ${card.madFireballDmg} урона. Если ячейка пуста, заклинание не сработает.`;
         highlightEnemyCellsForSpell();
+      } else if(card.blackHoleMindSpell){
+        el.hint.textContent = `Выбери вражескую ячейку — если там боец, он получит ${card.blackHoleMindDmg} урона, а герой соперника потеряет здоровье, равное стоимости этого бойца в мане. Если ячейка пуста, заклинание не сработает.`;
+        highlightEnemyCellsForSpell();
       } else if(card.meteorDmg){
         el.hint.textContent = `Выбери вражескую ячейку — метеорит нанесёт ${card.meteorDmg} урона бойцу в ней или герою соперника, если она пуста.`;
         highlightEnemyCellsForSpell();
@@ -5013,7 +5018,7 @@
   }
   function castEnemyCellSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.heatSurge || card.painHeartCurse || card.madFireballDmg || card.meteorDmg || card.soulDrainSpell || card.deathChill || card.ignitionDmg || card.muteStrike || card.burdenDebuff)) return;
+    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.heatSurge || card.painHeartCurse || card.madFireballDmg || card.meteorDmg || card.soulDrainSpell || card.deathChill || card.ignitionDmg || card.muteStrike || card.burdenDebuff || card.blackHoleMindSpell)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -6021,6 +6026,35 @@
           unit.hp -= ev.amount;
           if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
           log(`«${label}» обрушивается на ${unit.name}, нанося ${ev.amount}.`);
+          if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
+        }
+        setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+      }, 300);
+      return;
+    }
+    if(ev.kind==='blackHoleMind'){
+      // Черная дыра разума: same specific-cell targeting/all-or-nothing
+      // resist shape as Безумный огненный шар right above (empty cell or
+      // resisted hit means the spell does nothing at all, no hero damage
+      // whatsoever) — but when it DOES land, the targeted unit's own
+      // owner's hero ALSO takes damage, equal to that unit's own mana
+      // cost (ev.heroDmg), landing alongside the unit hit itself.
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const unit = board[ev.laneIdx] ? board[ev.laneIdx][ev.targetDepth] : null;
+      const targetEl = findUnitEl(ev.laneIdx, targetMine, ev.targetDepth) || findSlotEl(ev.laneIdx, targetMine, ev.targetDepth);
+      const targetHeroEl = targetMine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+      spawnSpellBurst(targetEl, 'dmg');
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» раскрывается над пустой ячейкой и схлопывается без следа.`);
+        } else if(ev.resisted){
+          log(`«${label}» не действует на ${unit?unit.name:'бойца'} — Чаростойкость.`);
+        } else if(unit){
+          unit.hp -= ev.amount;
+          if(targetEl) spawnDamageNumber(targetEl, '-'+ev.amount, 'dmg');
+          if(targetMine) state.playerHp -= ev.heroDmg; else state.enemyHp -= ev.heroDmg;
+          if(targetHeroEl) spawnDamageNumber(targetHeroEl, '-'+ev.heroDmg, 'dmg');
+          log(`«${label}» поглощает разум ${unit.name}, нанося ${ev.amount}, и забирает у героя соперника ${ev.heroDmg} здоровья.`);
           if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
         }
         setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
@@ -9985,6 +10019,7 @@
     if(card.lightningStrike) return `−${card.lightningDmg} бойцу и герою`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} бойцу/герою, +${card.heatSurgeHeal} своему герою`;
     if(card.madFireballDmg) return `−${card.madFireballDmg} бойцу в ячейке · герою урона нет`;
+    if(card.blackHoleMindSpell) return `−${card.blackHoleMindDmg} бойцу в ячейке, герою −♥ по его стоимости в мане`;
     if(card.meteorDmg) return `−${card.meteorDmg} бойцу в ячейке или герою`;
     if(card.ignitionDmg) return `−${card.ignitionDmg} бойцу в ячейке или герою (−${card.ignitionEmptyHandDmg} при пустой руке)`;
     if(card.soulDrainSpell) return `−${card.soulDrainDmg} случайному бойцу врага, −1 карта из руки врага`;
@@ -10022,6 +10057,7 @@
     if(card.lightningStrike) return `−${card.lightningDmg} выбранному бойцу и герою одновременно`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} выбранному бойцу или его герою, +${card.heatSurgeHeal} своему герою`;
     if(card.madFireballDmg) return `−${card.madFireballDmg} юниту в выбранной ячейке; если ячейка пуста, заклинание не срабатывает и герой урона не получает`;
+    if(card.blackHoleMindSpell) return `наносит ${card.blackHoleMindDmg} урона юниту в выбранной ячейке и столько же урона по здоровью его героя, сколько маны стоит этот юнит; если ячейка пуста или юнит защищён Чаростойкостью/Щитом, заклинание не срабатывает`;
     if(card.meteorDmg) return `−${card.meteorDmg} выбранному юниту в ячейке; если ячейка пуста, урон достаётся герою соперника`;
     if(card.ignitionDmg) return `−${card.ignitionDmg} выбранному юниту в ячейке или герою соперника, если она пуста; если у тебя нет карт в руке — урон увеличивается до ${card.ignitionEmptyHandDmg}`;
     if(card.soulDrainSpell) return `наносит ${card.soulDrainDmg} урона случайному бойцу соперника (не действует на бойцов с Чаростойкостью) и заставляет соперника сбросить случайную карту из руки`;
