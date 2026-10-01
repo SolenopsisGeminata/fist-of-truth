@@ -2983,6 +2983,7 @@
     {id:'c261', name:'Ковчег Мирры', type:'creature', cost:7, atk:8, hp:15, armor:2, magicShield:2, pierce:true, rockEffect:true, arkOfMyrrhGrowOnAllyDeath:true, rarity:'epic', desc:'Броня гасит часть входящего урона от каждого удара. Магическая защита 2: снижает урон от заклинаний и способностей других бойцов на это значение (не действует на обычные атаки). Несёт эффект Пробитие: при атаке наносит урон напрямую вражескому герою, игнорируя всех стоящих перед ним юнитов, включая Чаростойкость и Щит. Несёт эффект Скала: невосприимчив к эффектам мгновенного уничтожения, возврата в руку и Контроля разума. При смерти любого союзного юнита увеличивает свою атаку и здоровье на 2.', art:'arkofmyrrh', faction:'mystery'},
     {id:'c262', name:'Граф Исторвилль', type:'creature', cost:9, atk:3, hp:3, countHistorvilleOnRoundStart:true, rarity:'legendary', desc:'В начале раунда переманивает случайного вражеского юнита на случайную клетку на своём поле боя, превращая его в своего союзника (Скала защищает от этого эффекта). Также увеличивает атаку и здоровье случайного союзника на 1 (может сработать и на самого Графа).', art:'counthistorville', faction:'mystery'},
     {id:'c263', name:'Редкий зверь', type:'creature', cost:1, atk:4, hp:5, conditionalDefender:true, rarity:'rare', desc:'Перед своей атакой проверяет всё поле боя соперника: если там есть хотя бы один вражеский юнит, не атакует в этом раунде и ведёт себя как Защитник. Если поле боя соперника пусто, атакует как обычно.', art:'rarebeast', faction:'pirates'},
+    {id:'c264', name:'Маленькая ведьма', type:'creature', cost:1, atk:1, hp:1, littleWitchSpellPower:true, rarity:'rare', desc:'Перед своей атакой увеличивает свою атаку на 1 за каждое применённое игроком в этом раунде заклинание и уменьшает атаку случайного вражеского юнита на 1 за каждое применённое соперником в этом раунде заклинание (Чаростойкость и Щит защищают от этого эффекта).', art:'littlewitch', faction:'pirates'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4203,6 +4204,7 @@
     arkofmyrrh: `<svg viewBox="0 0 64 64"><rect x="12" y="28" width="40" height="22" rx="3" fill="#5c4a2a" stroke="#0f0b08" stroke-width="1.8"/><path d="M12 28c0-8 8-14 20-14s20 6 20 14z" fill="#d4af37" stroke="#8a6d1f" stroke-width="1.6"/><circle cx="32" cy="38" r="7" fill="#8b5cf6" opacity=".8"/><circle cx="32" cy="38" r="3" fill="#e8d9ff"/><rect x="10" y="26" width="44" height="4" rx="1.5" fill="#d4af37" stroke="#8a6d1f" stroke-width="1"/><rect x="18" y="44" width="4" height="6" fill="#d4af37"/><rect x="42" y="44" width="4" height="6" fill="#d4af37"/></svg>`,
     counthistorville: `<svg viewBox="0 0 64 64"><path d="M20 18c0 16-8 22-8 34h40c0-12-8-18-8-34z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><ellipse cx="32" cy="22" rx="10" ry="11" fill="#c9a98a"/><circle cx="28" cy="21" r="2.2" fill="#8b5cf6"/><circle cx="36" cy="21" r="2.2" fill="#8b5cf6"/><path d="M27 27q5 2 10 0" stroke="#0f0b08" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M22 14c2-4 6-6 10-6s8 2 10 6" stroke="#0f0b08" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
     rarebeast: `<svg viewBox="0 0 64 64"><path d="M14 20l6 8 6-10 6 10 6-10 6 10 6-8-4 24c-2 8-8 12-16 12s-14-4-16-12z" fill="#6b4a2f" stroke="#2b1d12" stroke-width="1.6"/><circle cx="24" cy="34" r="3" fill="#8be04a"/><circle cx="40" cy="34" r="3" fill="#8be04a"/><path d="M26 44l3 4 3-4 3 4 3-4" stroke="#2b1d12" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`,
+    littlewitch: `<svg viewBox="0 0 64 64"><path d="M20 30l12-24 12 24z" fill="#4a2e63" stroke="#1c1026" stroke-width="1.6"/><circle cx="32" cy="12" r="2.2" fill="#8be04a"/><circle cx="32" cy="42" r="11" fill="#e9c6a0"/><circle cx="28" cy="41" r="2" fill="#1c1026"/><circle cx="36" cy="41" r="2" fill="#1c1026"/><path d="M28 47q4 2 8 0" stroke="#1c1026" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -5661,6 +5663,7 @@
       else if(ev.type==='observatoryProphetDraw') playObservatoryProphetDrawEvent(ev, next);
       else if(ev.type==='wiseSphinxDraw') playWiseSphinxDrawEvent(ev, next);
       else if(ev.type==='countMindControl') playCountMindControlEvent(ev, next);
+      else if(ev.type==='littleWitchHex') playLittleWitchHexEvent(ev, next);
       else if(ev.type==='artProfessorDraw') playArtProfessorDrawEvent(ev, next);
       else if(ev.type==='bloodPoolPulse') playBloodPoolPulseEvent(ev, next);
       else if(ev.type==='chefHeroDouble') playChefHeroDoubleEvent(ev, next);
@@ -6455,6 +6458,31 @@
     }
     setTimeout(()=>{
       if(!ev.resisted && targetUnit){
+        targetUnit.atk = Math.max(0, targetUnit.atk + ev.delta);
+        if(targetEl && ev.delta) spawnDamageNumber(targetEl, `${ev.delta}⚔`, 'dmg');
+      }
+      setTimeout(()=>{ renderAll(); done(); }, 200);
+    }, 150);
+  }
+
+  // Маленькая ведьма: same simple shape as Арктическое пугало's own
+  // arcticScarecrowChill above, but source and target can be in
+  // different lanes (like Ледяной маг's iceMageFreeze), so the source
+  // unit is looked up via laneIdx/depthIdx and the target separately via
+  // targetLaneIdx/targetDepthIdx.
+  function playLittleWitchHexEvent(ev, done){
+    const mine = ev.side === state.myUsername;
+    const targetMine = ev.targetSide === state.myUsername;
+    const sourceBoard = mine ? state.playerBoard : state.enemyBoard;
+    const sourceUnit = sourceBoard[ev.laneIdx] && sourceBoard[ev.laneIdx][ev.depthIdx];
+    const sourceName = sourceUnit ? sourceUnit.name : 'Маленькая ведьма';
+    const targetBoard = targetMine ? state.playerBoard : state.enemyBoard;
+    const targetUnit = targetBoard[ev.targetLaneIdx] && targetBoard[ev.targetLaneIdx][ev.targetDepthIdx];
+    const targetEl = findUnitEl(ev.targetLaneIdx, targetMine, ev.targetDepthIdx);
+    const targetName = targetUnit ? targetUnit.name : 'вражеского бойца';
+    log(`${mine?'Твоя':'Вражеская'} «${sourceName}» сглазила ${targetName}: ${ev.delta}⚔.`);
+    setTimeout(()=>{
+      if(targetUnit){
         targetUnit.atk = Math.max(0, targetUnit.atk + ev.delta);
         if(targetEl && ev.delta) spawnDamageNumber(targetEl, `${ev.delta}⚔`, 'dmg');
       }
@@ -9964,7 +9992,7 @@
   }
 
   function cardStatsLine(card){
-    if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}${card.lifesteal?' · 🩸 при ударе':''}${card.synergy?' · 🔗 синергия':''}${card.firstStrike?' · ⚡ первый удар':''}${card.defender?' · 🛑 защитник':''}${card.sleep?' · 💤 сон':''}${card.spellResist?' · 🔮 чаростойкость':''}${card.trample?' · 🐾 топот':''}${card.pierce?' · 🗡️ пробитие':''}${card.doubleHeal?' · 💞 двойное омоложение':''}${card.doubleStrike?' · ⚔️⚔️ двойной удар':''}${card.tripleStrike?' · ⚔️⚔️⚔️ тройной удар':''}${card.healTrigger?' · 🕊️ священный свет':''}${card.coinFlipAttack?' · 🪙 50% атаки':''}${card.conditionalDefender?' · 🛑❓ защитник при враге':''}`;
+    if(card.type==='creature') return `⚔ ${card.atk} · ♥ ${card.hp}${card.armor?' · 🛡 '+card.armor:''}${card.lifesteal?' · 🩸 при ударе':''}${card.synergy?' · 🔗 синергия':''}${card.firstStrike?' · ⚡ первый удар':''}${card.defender?' · 🛑 защитник':''}${card.sleep?' · 💤 сон':''}${card.spellResist?' · 🔮 чаростойкость':''}${card.trample?' · 🐾 топот':''}${card.pierce?' · 🗡️ пробитие':''}${card.doubleHeal?' · 💞 двойное омоложение':''}${card.doubleStrike?' · ⚔️⚔️ двойной удар':''}${card.tripleStrike?' · ⚔️⚔️⚔️ тройной удар':''}${card.healTrigger?' · 🕊️ священный свет':''}${card.coinFlipAttack?' · 🪙 50% атаки':''}${card.conditionalDefender?' · 🛑❓ защитник при враге':''}${card.littleWitchSpellPower?' · 🧙 сила заклинаний':''}`;
     if(card.dmg) return `−${card.dmg} урона`;
     if(card.wrathDmg) return `−${card.wrathDmg} урона по ряду`;
     if(card.ragingFire) return `−${card.ragingFireDmg} каждому бойцу в ряду, затем −${card.ragingFireHeroDmg} герою`;
