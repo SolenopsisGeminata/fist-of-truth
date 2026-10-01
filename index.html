@@ -2984,6 +2984,7 @@
     {id:'c262', name:'Граф Исторвилль', type:'creature', cost:9, atk:3, hp:3, countHistorvilleOnRoundStart:true, rarity:'legendary', desc:'В начале раунда переманивает случайного вражеского юнита на случайную клетку на своём поле боя, превращая его в своего союзника (Скала защищает от этого эффекта). Также увеличивает атаку и здоровье случайного союзника на 1 (может сработать и на самого Графа).', art:'counthistorville', faction:'mystery'},
     {id:'c263', name:'Редкий зверь', type:'creature', cost:1, atk:4, hp:5, conditionalDefender:true, rarity:'rare', desc:'Перед своей атакой проверяет всё поле боя соперника: если там есть хотя бы один вражеский юнит, не атакует в этом раунде и ведёт себя как Защитник. Если поле боя соперника пусто, атакует как обычно.', art:'rarebeast', faction:'pirates'},
     {id:'c264', name:'Маленькая ведьма', type:'creature', cost:1, atk:1, hp:1, littleWitchSpellPower:true, rarity:'rare', desc:'Перед своей атакой увеличивает свою атаку на 1 за каждое применённое игроком в этом раунде заклинание и уменьшает атаку случайного вражеского юнита на 1 за каждое применённое соперником в этом раунде заклинание (Чаростойкость и Щит защищают от этого эффекта).', art:'littlewitch', faction:'pirates'},
+    {id:'s62', name:'Ограбление', type:'spell', cost:1, robberyDrain:true, robberyAmount:3, rarity:'rare', desc:'Применяется на любую ячейку на своей стороне — похищает 3 здоровья у героя соперника: наносит ему 3 урона и восстанавливает своему герою столько же здоровья.', art:'robbery', faction:'pirates'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4205,6 +4206,7 @@
     counthistorville: `<svg viewBox="0 0 64 64"><path d="M20 18c0 16-8 22-8 34h40c0-12-8-18-8-34z" fill="#3a2a52" stroke="#8b5cf6" stroke-width="1.6"/><ellipse cx="32" cy="22" rx="10" ry="11" fill="#c9a98a"/><circle cx="28" cy="21" r="2.2" fill="#8b5cf6"/><circle cx="36" cy="21" r="2.2" fill="#8b5cf6"/><path d="M27 27q5 2 10 0" stroke="#0f0b08" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M22 14c2-4 6-6 10-6s8 2 10 6" stroke="#0f0b08" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
     rarebeast: `<svg viewBox="0 0 64 64"><path d="M14 20l6 8 6-10 6 10 6-10 6 10 6-8-4 24c-2 8-8 12-16 12s-14-4-16-12z" fill="#6b4a2f" stroke="#2b1d12" stroke-width="1.6"/><circle cx="24" cy="34" r="3" fill="#8be04a"/><circle cx="40" cy="34" r="3" fill="#8be04a"/><path d="M26 44l3 4 3-4 3 4 3-4" stroke="#2b1d12" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`,
     littlewitch: `<svg viewBox="0 0 64 64"><path d="M20 30l12-24 12 24z" fill="#4a2e63" stroke="#1c1026" stroke-width="1.6"/><circle cx="32" cy="12" r="2.2" fill="#8be04a"/><circle cx="32" cy="42" r="11" fill="#e9c6a0"/><circle cx="28" cy="41" r="2" fill="#1c1026"/><circle cx="36" cy="41" r="2" fill="#1c1026"/><path d="M28 47q4 2 8 0" stroke="#1c1026" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>`,
+    robbery: `<svg viewBox="0 0 64 64"><path d="M22 26c-6 8-6 20 2 28 5 5 11 6 16 2 7-5 8-17 2-27-3-5-7-9-10-13z" fill="#6b4423" stroke="#2b1a0e" stroke-width="1.6"/><path d="M24 24l16-6" stroke="#2b1a0e" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="40" r="4" fill="#e8c547" stroke="#8a6c1e" stroke-width="1"/><circle cx="38" cy="46" r="4" fill="#e8c547" stroke="#8a6c1e" stroke-width="1"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -4928,8 +4930,8 @@
       } else if(card.pineForest){
         el.hint.textContent = 'Выбери свободную ячейку на своей стороне — туда призовётся Сосновый отшельник.';
         highlightEmptyOwnCellsForPineForest();
-      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest || card.concentrationDraw){
-        el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.houndCall ? 'Выбери ячейку на своей стороне — туда призовётся Костяная гончая, и ещё одна её копия попадёт в руку.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : (card.songToTheMoon ? 'Выбери любую ячейку на своей стороне.' : 'Выбери любую ячейку на своей стороне.')))));
+      } else if(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest || card.concentrationDraw || card.robberyDrain){
+        el.hint.textContent = card.randomBlind ? 'Выбери любую ячейку — эффект коснётся случайного бойца соперника.' : (card.lifeLight ? 'Выбери ячейку на своей стороне — туда призовётся Ополченец, если условие выполнится.' : (card.guardCall ? 'Выбери ячейку на своей стороне — туда призовётся Страж дворца.' : (card.houndCall ? 'Выбери ячейку на своей стороне — туда призовётся Костяная гончая, и ещё одна её копия попадёт в руку.' : (card.heavenlyRays ? 'Выбери любую ячейку — усилит всех твоих бойцов на поле боя.' : (card.songToTheMoon ? 'Выбери любую ячейку на своей стороне.' : (card.robberyDrain ? `Выбери любую ячейку на своей стороне — похитит ${card.robberyAmount} здоровья у героя соперника.` : 'Выбери любую ячейку на своей стороне.'))))));
         highlightAnyOwnCellForWellspring();
       } else if(card.heal || card.buffHp || card.buffAtk || card.buffLifesteal || card.buffDoubleStrike || card.mountainStrength){
         el.hint.textContent = card.heal ? 'Выбери своего бойца, чтобы вылечить его.' : 'Выбери своего бойца, чтобы усилить его.';
@@ -5112,7 +5114,7 @@
   // player happens to point.
   function castWellspringSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest || card.concentrationDraw)) return;
+    if(!card || !(card.healHero || card.instantSummon || card.endOfRoundSpell || card.randomBlind || card.lifeLight || card.guardCall || card.houndCall || card.heavenlyRays || card.songToTheMoon || card.pineForest || card.concentrationDraw || card.robberyDrain)) return;
     if(card.cost > state.mana) return;
     // No unit-presence check here on purpose — Родник can land on any
     // cell, empty or occupied, since it never actually touches whatever
@@ -5723,6 +5725,25 @@
       log(`«${label}» (${mine?'твой':'соперника'}) добавляет в руку ${ev.drewCount} карт${ev.drewCount===1?'у':ev.drewCount<5?'ы':''} из колоды${bonusText}.`);
       if(sourceEl) spawnSpellBurst(sourceEl, 'heal');
       setTimeout(()=>{ renderAll(); done(); }, 700);
+      return;
+    }
+    if(ev.kind==='robbery'){
+      // Ограбление: same "cast on ANY cell, purely a formality" shape as
+      // Концентрация above — the cast cell is only where the cannonball
+      // visually launches from. The damage always lands directly on the
+      // enemy hero (never a unit), and the self-heal for the same amount
+      // always fires alongside it, landing on both heroes together.
+      const sourceEl = findSlotEl(ev.laneIdx, mine, ev.depthIdx);
+      const enemyHeroEl = mine ? document.querySelector('.hero.enemy') : document.querySelector('.hero.player');
+      const ownHeroEl = mine ? document.querySelector('.hero.player') : document.querySelector('.hero.enemy');
+      log(`«${label}» (${mine?'твой':'соперника'}) похищает ${ev.amount} здоровья у героя соперника, исцеляя своего героя на ${ev.healed}.`);
+      flyProjectileToHero(sourceEl, enemyHeroEl, CANNONBALL_SVG, 'cannonball', 500, ()=>{
+        if(mine){ state.enemyHp -= ev.amount; state.playerHp += ev.healed; }
+        else { state.playerHp -= ev.amount; state.enemyHp += ev.healed; }
+        if(enemyHeroEl) spawnDamageNumber(enemyHeroEl, '-'+ev.amount, 'dmg');
+        if(ownHeroEl) spawnDamageNumber(ownHeroEl, '+'+ev.healed, 'heal');
+        setTimeout(()=>{ renderAll(); done(); }, 700);
+      });
       return;
     }
     if(ev.kind==='wrath'){
@@ -9985,6 +10006,7 @@
     if(card.instantSummon) return `+${card.summonCount} \u0431\u043e\u0439\u0446\u0430`;
     if(card.pineForest) return `+2-3 \u0431\u043e\u0439\u0446\u0430`;
     if(card.concentrationDraw) return `+${card.concentrationDraw} \u043a\u0430\u0440\u0442\u044b, +1 \u043f\u0440\u0438 \u0436\u0435\u0440\u0442\u0432\u0435`;
+    if(card.robberyDrain) return `-${card.robberyAmount}\u2665 \u0432\u0440\u0430\u0433\u0443, +${card.robberyAmount}\u2665 \u0441\u0435\u0431\u0435`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца${card.healAmount?`, +${card.healAmount} HP герою`:''}`;
     if(card.trapKill) return `Уничтожает бойца · +♥ герою по его стоимости`;
     if(card.buffHp || card.buffAtk || card.buffArmor || card.buffLifesteal || card.buffDoubleStrike || card.buffTrample || card.buffLegacy || card.buffSpellResist || card.buffRageOnEnemySummon) return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸':''}${card.buffDoubleStrike?' / ⚔️⚔️':''}${card.buffTrample?' / 🐾':''}${card.buffLegacy?' / 🌱'+card.buffLegacy:''}${card.buffSpellResist?' / 🔮':''}${card.buffRageOnEnemySummon?' / 💢':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ герою':''}${card.drawIfArmored?' / 🃏 если есть броня':''}${card.drawIfAsleep?' / 🃏 если есть Сон':''}`;
@@ -10021,6 +10043,7 @@
     if(card.instantSummon) return `+${card.summonCount} бойца на поле боя`;
     if(card.pineForest) return `призывает Соснового отшельника на выбранную и на случайную клетку, с 60% шансом призвать ещё одного`;
     if(card.concentrationDraw) return `добавляет ${card.concentrationDraw} карты из колоды в руку, и ещё 1 дополнительно, если в этом ходу была принесена жертва`;
+    if(card.robberyDrain) return `наносит ${card.robberyAmount} урона по здоровью вражеского героя и восстанавливает своему герою столько же здоровья`;
     if(card.endOfRoundSpell) return `+${card.summonCount} бойца${card.healAmount?`, +${card.healAmount} HP герою`:''}`;
     if(card.trapKill) return `уничтожает выбранного вражеского бойца и восстанавливает своему герою здоровье, равное его стоимости в мане`;
     return `+${card.buffAtk||0}⚔ / +${card.buffHp||0}♥${card.buffArmor?' / +'+card.buffArmor+'🛡':''}${card.buffLifesteal?' / 🩸 кража жизни':''}${card.buffDoubleStrike?' / ⚔️⚔️ Двойной удар':''}${card.buffTrample?' / 🐾 Топот':''}${card.buffLegacy?' / 🌱 Наследие '+card.buffLegacy:''}${card.buffSpellResist?' / 🔮 Чаростойкость':''}${card.buffRageOnEnemySummon?' / 💢 +1⚔ за каждого нового вражеского юнита':''}${card.buffHeroHeal?' / +'+card.buffHeroHeal+'♥ своему герою':''}${card.drawIfArmored?' / 🃏 карта, если есть броня':''}${card.drawIfAsleep?' / 🃏 карта, если есть эффект Сон':''} навсегда`;
