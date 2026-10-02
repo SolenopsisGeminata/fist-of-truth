@@ -3005,6 +3005,7 @@
     {id:'c279', name:'Собачник', type:'creature', cost:5, atk:3, hp:3, battlecrySummon:'c278', battlecrySummonCount:2, rarity:'common', desc:'При появлении на поле боя призывает 2 Злых щенка на случайные свободные ячейки своего поля боя.', art:'houndmaster', faction:'pirates'},
     {id:'c280', name:'Захмелевший алкоголик', type:'creature', cost:2, atk:1, hp:2, bottleShotOnPlay:2, rarity:'common', desc:'При появлении на поле боя метает пустую бутылку в случайную ячейку противоположного горизонтального ряда соперника. Если бутылка попадает в юнита, он получает 2 урона. Если ячейка пуста, бутылка разбивается о пустую клетку, и 2 урона достаются герою соперника. Не действует на бойцов с Чаростойкостью.', art:'drunkard', faction:'pirates'},
     {id:'c281', name:'Пиратская пушка', type:'creature', cost:3, atk:0, hp:5, defender:true, synergy:2, pirateCannonShotOnRoundStart:true, rarity:'common', desc:'Несёт эффект Защитник. Синергия 2: атака растёт на 2 за каждого союзника по соседству (сверху, снизу, слева, справа). В начале хода стреляет пушечным ядром по случайной ячейке в противоположном горизонтальном ряду противника, нанося урон, равный своей текущей атаке. Если ядро попадает в юнита, урон наносится ему; если ячейка пуста, ядро взрывается в ней, и урон достаётся герою противника. Не действует на бойцов с Чаростойкостью.', art:'piratecannon', faction:'pirates'},
+    {id:'s66', name:'Цепная молния', type:'spell', cost:3, chainLightningSpell:true, chainLightningDmg:3, rarity:'rare', desc:'Выбери вражеского бойца — голубая молния бьёт в него, нанося 3 урона, а затем перескакивает на случайного соседнего бойца соперника и наносит ему столько же урона. Если ячейка пуста, заклинание не срабатывает. Не действует на бойцов с Чаростойкостью или Щитом.', art:'chainlightning', faction:'pirates'},
   ];
 
   // ---------- Factions (deck-builder tabs) ----------
@@ -4247,6 +4248,7 @@
     houndmaster: `<svg viewBox="0 0 64 64"><circle cx="24" cy="18" r="9" fill="#d9a066"/><rect x="17" y="10" width="14" height="5" rx="2" fill="#3a2a1a"/><circle cx="21" cy="18" r="1.4" fill="#1c1026"/><circle cx="27" cy="18" r="1.4" fill="#1c1026"/><path d="M14 46c0-10 8-16 10-16s10 6 10 16" fill="#6b4a2f"/><path d="M34 24c4 2 8 2 10 6M44 30c4 6 2 12-2 14" stroke="#4a3818" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="46" cy="48" rx="10" ry="7" fill="#8a6c4a"/><path d="M38 44l4 6M56 44l-4 6" stroke="#6b4a2f" stroke-width="4" stroke-linecap="round"/></svg>`,
     drunkard: `<svg viewBox="0 0 64 64"><circle cx="30" cy="26" r="12" fill="#e0a878"/><circle cx="24" cy="30" r="2.5" fill="#d4654a" opacity=".7"/><circle cx="36" cy="30" r="2.5" fill="#d4654a" opacity=".7"/><path d="M23 24q3-2 6 0M31 24q3-2 6 0" stroke="#1c1026" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M24 35q6 2 12-1" stroke="#1c1026" stroke-width="1.6" fill="none" stroke-linecap="round"/><rect x="42" y="18" width="8" height="14" rx="2" fill="#3a6b4a" stroke="#1c3a28" stroke-width="1"/><rect x="44" y="14" width="4" height="5" rx="1" fill="#2b1a0e"/></svg>`,
     piratecannon: `<svg viewBox="0 0 64 64"><circle cx="18" cy="52" r="6" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><circle cx="44" cy="52" r="6" fill="#3a2c22" stroke="#5c4536" stroke-width="1.5"/><rect x="12" y="42" width="38" height="8" rx="2" fill="#4a3824"/><path d="M16 40c0-10 6-16 22-16s8 6 8 16z" fill="#1c1026" stroke="#0f0b08" stroke-width="1.5"/><circle cx="48" cy="22" r="5" fill="#0f0b08"/><circle cx="50" cy="48" r="4" fill="#15100d"/></svg>`,
+    chainlightning: `<svg viewBox="0 0 64 64"><path d="M30 4L12 30h10l-5 20 22-26H26l4-20z" fill="#3fb6e8" stroke="#1a5a7a" stroke-width="2" stroke-linejoin="round"/><path d="M28 10l-2 10h5z" fill="#d6f3ff" opacity=".8"/><path d="M39 24c3 3 3 7 1 10" stroke="#9fe3ff" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="2 3"/><path d="M44 36L34 50h7l-3 10 14-16h-8l3-8z" fill="#3fb6e8" stroke="#1a5a7a" stroke-width="1.6" stroke-linejoin="round" opacity=".9"/></svg>`,
     infiniteslime: `<svg viewBox="0 0 64 64"><path d="M20 30c-4 6-4 14 2 19 6 5 16 5 20 0 5-6 4-16-2-22-5-5-15-3-20 3z" fill="#5b3a7a" opacity=".85" stroke="#8b5cf6" stroke-width="1.8"/><circle cx="27" cy="33" r="2.4" fill="#e8d9ff"/><circle cx="35" cy="33" r="2.4" fill="#e8d9ff"/><path d="M27 41c3 2 7 2 10 0" stroke="#e8d9ff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M44 18c-2 3-2 7 1 9 3 2 8 2 10 0 2-3 2-8-1-10-2-3-7-2-10 1z" fill="#5b3a7a" opacity=".65" stroke="#8b5cf6" stroke-width="1.3"/></svg>`
   };
   function cardArt(id){ return ICONS[id] || ''; }
@@ -4928,6 +4930,9 @@
       } else if(card.lightningStrike){
         el.hint.textContent = 'Выбери вражескую ячейку — молния ударит по бойцу в ней и по герою соперника одновременно.';
         highlightEnemyCellsForSpell();
+      } else if(card.chainLightningSpell){
+        el.hint.textContent = `Выбери вражескую ячейку — молния нанесёт ${card.chainLightningDmg} урона бойцу в ней, а затем перескочит на случайного соседнего бойца и нанесёт ему столько же урона. Если ячейка пуста, заклинание не сработает.`;
+        highlightEnemyCellsForSpell();
       } else if(card.heatSurge){
         el.hint.textContent = 'Выбери вражескую ячейку — лавовый сгусток ударит по бойцу в ней (или по герою, если она пуста) и исцелит твоего героя на 4.';
         highlightEnemyCellsForSpell();
@@ -5059,7 +5064,7 @@
   }
   function castEnemyCellSpell(laneIdx, depthIdx){
     const card = state.playerHand.find(c=>c.uid===state.selectedCardUid);
-    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.heatSurge || card.painHeartCurse || card.madFireballDmg || card.meteorDmg || card.soulDrainSpell || card.nightAttackSpell || card.deathChill || card.ignitionDmg || card.muteStrike || card.burdenDebuff || card.blackHoleMindSpell)) return;
+    if(!card || !(card.bounceCellAndNeighbor || card.trapKill || card.lightningStrike || card.chainLightningSpell || card.heatSurge || card.painHeartCurse || card.madFireballDmg || card.meteorDmg || card.soulDrainSpell || card.nightAttackSpell || card.deathChill || card.ignitionDmg || card.muteStrike || card.burdenDebuff || card.blackHoleMindSpell)) return;
     if(card.cost > state.mana) return;
     state.selectedCardUid = null;
     clearLaneHandlers();
@@ -5265,6 +5270,21 @@
     const wrap = document.createElement('div');
     wrap.className = 'lightning-strike';
     wrap.innerHTML = PURPLE_LIGHTNING_BOLT_SVG;
+    container.appendChild(wrap);
+    setTimeout(()=>{ wrap.remove(); }, 450);
+  }
+
+  // Цепная молния: same jagged-bolt-from-above shape as Гнев небес's own
+  // LIGHTNING_BOLT_SVG above, recolored a saturated sky-blue per the
+  // card's own flavor ("голубая молния").
+  const BLUE_LIGHTNING_BOLT_SVG = `<svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 0L3 32h8l-5 28 20-38h-9z" fill="#9fe3ff" stroke="#1a8fcc" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>`;
+  function spawnBlueLightningStrike(container){
+    if(!container) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'lightning-strike';
+    wrap.innerHTML = BLUE_LIGHTNING_BOLT_SVG;
     container.appendChild(wrap);
     setTimeout(()=>{ wrap.remove(); }, 450);
   }
@@ -6130,6 +6150,49 @@
           if(ev.died){ if(targetEl) targetEl.classList.add('unit-dying'); board[ev.laneIdx][ev.targetDepth]=null; }
         }
         setTimeout(()=>{ renderAll(); done(); }, ev.died ? 1200 : 500);
+      }, 300);
+      return;
+    }
+    if(ev.kind==='chainLightning'){
+      // Цепная молния: same specific-cell targeting as Молния, but
+      // instead of also always hitting the hero, it arcs once more to a
+      // random occupied, non-resistant cardinal neighbour of that same
+      // cell for the same amount. An empty primary cell is a complete
+      // no-op (no hero fallback at all, unlike Молния).
+      const board = targetMine ? state.playerBoard : state.enemyBoard;
+      const primaryUnit = ev.empty ? null : (board[ev.laneIdx] ? board[ev.laneIdx][ev.depthIdx] : null);
+      const primaryEl = findUnitEl(ev.laneIdx, targetMine, ev.depthIdx) || findSlotEl(ev.laneIdx, targetMine, ev.depthIdx);
+      spawnBlueLightningStrike(primaryEl);
+      setTimeout(()=>{
+        if(ev.empty){
+          log(`«${label}» бьёт по пустой ячейке соперника и угасает впустую.`);
+        } else if(ev.resisted){
+          log(`«${label}» бьёт в ${primaryUnit?primaryUnit.name:'бойца'} — Чаростойкость спасает его от урона, но молния всё равно ищет, куда перескочить дальше.`);
+        } else if(primaryUnit){
+          primaryUnit.hp -= ev.primaryAmount;
+          if(primaryEl) spawnDamageNumber(primaryEl, '-'+ev.primaryAmount, 'dmg');
+          log(`«${label}» бьёт в ${primaryUnit.name}, нанося ${ev.primaryAmount}.`);
+          if(ev.primaryDied){ if(primaryEl) primaryEl.classList.add('unit-dying'); board[ev.laneIdx][ev.depthIdx]=null; }
+        }
+        const proceedToChain = ()=>{
+          if(ev.chainLaneIdx == null){
+            setTimeout(()=>{ renderAll(); done(); }, ev.primaryDied ? 1400 : 500);
+            return;
+          }
+          const chainUnit = board[ev.chainLaneIdx] ? board[ev.chainLaneIdx][ev.chainDepthIdx] : null;
+          const chainEl = findUnitEl(ev.chainLaneIdx, targetMine, ev.chainDepthIdx) || findSlotEl(ev.chainLaneIdx, targetMine, ev.chainDepthIdx);
+          spawnBlueLightningStrike(chainEl);
+          setTimeout(()=>{
+            if(chainUnit){
+              chainUnit.hp -= ev.chainAmount;
+              if(chainEl) spawnDamageNumber(chainEl, '-'+ev.chainAmount, 'dmg');
+              log(`Молния перескакивает на ${chainUnit.name}, нанося ${ev.chainAmount}.`);
+              if(ev.chainDied){ if(chainEl) chainEl.classList.add('unit-dying'); board[ev.chainLaneIdx][ev.chainDepthIdx]=null; }
+            }
+            setTimeout(()=>{ renderAll(); done(); }, ev.chainDied ? 1400 : 700);
+          }, 300);
+        };
+        setTimeout(proceedToChain, 300);
       }, 300);
       return;
     }
@@ -10333,6 +10396,7 @@
     if(card.ragingFire) return `−${card.ragingFireDmg} HP по ряду, −${card.ragingFireHeroDmg} герою`;
     if(card.treeWrath) return `−${card.treeWrathAmount} юниту и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} бойцу и герою`;
+    if(card.chainLightningSpell) return `−${card.chainLightningDmg} бойцу, затем −${card.chainLightningDmg} соседнему`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} бойцу/герою, +${card.heatSurgeHeal} своему герою`;
     if(card.madFireballDmg) return `−${card.madFireballDmg} бойцу в ячейке · герою урона нет`;
     if(card.blackHoleMindSpell) return `−${card.blackHoleMindDmg} бойцу в ячейке, герою −♥ по его стоимости в мане`;
@@ -10372,6 +10436,7 @@
     if(card.ragingFire) return `−${card.ragingFireDmg} каждому бойцу в ряду, затем −${card.ragingFireHeroDmg} герою`;
     if(card.treeWrath) return `−${card.treeWrathAmount} случайному бойцу и герою`;
     if(card.lightningStrike) return `−${card.lightningDmg} выбранному бойцу и герою одновременно`;
+    if(card.chainLightningSpell) return `наносит ${card.chainLightningDmg} урона выбранному бойцу, затем столько же случайному соседнему бойцу соперника; если ячейка пуста, заклинание не срабатывает`;
     if(card.heatSurge) return `−${card.heatSurgeDmg} выбранному бойцу или его герою, +${card.heatSurgeHeal} своему герою`;
     if(card.madFireballDmg) return `−${card.madFireballDmg} юниту в выбранной ячейке; если ячейка пуста, заклинание не срабатывает и герой урона не получает`;
     if(card.blackHoleMindSpell) return `наносит ${card.blackHoleMindDmg} урона юниту в выбранной ячейке и столько же урона по здоровью его героя, сколько маны стоит этот юнит; если ячейка пуста или юнит защищён Чаростойкостью/Щитом, заклинание не срабатывает`;
